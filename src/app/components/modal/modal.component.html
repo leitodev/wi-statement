@@ -1,0 +1,14 @@
+<div class="modal {{ size }}">
+    <div class="modal-header">
+        {{ title }}
+        <span class="modal-close" (click)="close()">✕</span>
+    </div>
+    <div class="modal-content">
+        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+    </div>
+    <div class="modal-footer">
+        <button (click)="submit()">Submit</button>
+    </div>
+</div>
+
+<div class="modal-backdrop" (click)="close()"></div>

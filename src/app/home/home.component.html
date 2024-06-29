@@ -8,3 +8,10 @@
     <div class="basis-11/12"></div>
   </div>
 </header>
+
+
+<button (click)="openModal(modalTemplate)">Open modal</button>
+
+<ng-template #modalTemplate>
+    <div>This is our custom modal content</div>
+</ng-template>
