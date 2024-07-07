@@ -23,6 +23,10 @@ export const routes: Routes = [
           .then((m) => m.PartManagementComponent)
       }
     ]
-  }
+  },
+  { path: 'ui-kit',
+    loadComponent: () => import("./ui-kit/ui-kit.component")
+        .then((m) => m.UiKitComponent)
+  },
 ];
 
