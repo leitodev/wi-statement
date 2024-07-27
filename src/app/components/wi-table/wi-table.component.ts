@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 
 @Component({
@@ -9,31 +9,19 @@ import {CommonModule, NgIf} from "@angular/common";
   styleUrl: './wi-table.component.scss'
 })
 export class WiTableComponent {
+  @Input('tableConfigData') tableConfig : any = null;
+  @Input() data : any = null;
 
-  tableConfig = {
-    headers: [
-      {name: 'id', sort: true},
-      {name: 'supplier', sort: true},
-      {name: 'part_number', sort: false},
-      {name: 'components', sort: false},
-      {name: 'description', sort: false},
-    ],
-    data: [
-      {
-        id: 1,
-        supplier: 'Rockstar Games',
-        part_number: '123SU152',
-        components: [
-          {id: 132, name: 'rohs'},
-          {id: 232, name: 'lolipop'}
-        ],
-        description: 'lorem text'
-      }
-    ]
-  }
+  @Output() tableEvent = new EventEmitter();
 
+  tableRowCLick(rowItem: any){
+    this.tableEvent.emit({eventName:'tableRowCLick', data: rowItem });
+  };
 
-
+  tableRowEditBtn(rowItem: any, event: Event){
+    event.stopPropagation();
+    this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
+  };
   /*
   items list (Id (number),
    supplier (string),

@@ -1,17 +1,30 @@
 <header>
   <div class="flex flex-row">
-    <div class="hover:bg-violet-700 bg-violet-500 basis-1/12 text-center shadow-md text-white">
-      <ul>
-        <li><a routerLink="/auth" routerLinkActive="active" class="hover:underline hover:decoration-1">Sign in</a></li>
+    <div class="text-center shadow-md text-white">
+      <ul class="flex gap-1">
+
+        <li class="hover:bg-violet-700 bg-violet-500 p-1 px-5 hover:cursor-pointer"
+            routerLink="/auth"
+            routerLinkActive="active">Sign in</li>
+
+        <li class="hover:bg-violet-700 bg-violet-500 p-1 px-5 hover:cursor-pointer"
+            routerLink="/ui-kit"
+            routerLinkActive="active">Ui Kit</li>
       </ul>
     </div>
-    <div class="basis-11/12"></div>
   </div>
 </header>
 
 
 <button (click)="openModal(modalTemplate)">Open modal</button>
 
-<ng-template #modalTemplate>
-    <div>This is our custom modal content</div>
+<ng-template #modalTemplate let-data="data">
+    <app-product-modal [data]="data"></app-product-modal>
 </ng-template>
+
+
+<button style="color: red" (click)="toggleShowComponent()">product modal</button>
+
+@if(showComp1){
+<app-product-modal [data]="{name: 'new'}"></app-product-modal>
+}

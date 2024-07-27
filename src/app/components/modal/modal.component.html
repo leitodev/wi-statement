@@ -1,14 +1,14 @@
-<div class="modal {{ size }}">
-    <div class="modal-header">
+<div class="modal {{ modalSizeClass && modalSizeClass[size] ? modalSizeClass[size] : 'sm' }} absolute z-20 left-1/2 top-1/2 h-auto bg-white rounded-[5px] py-2 px-3">
+    <div class="modal-header flex justify-between mb-3 text-lg">
         {{ title }}
-        <span class="modal-close" (click)="close()">✕</span>
+        <span class="modal-close cursor-pointer" (click)="close()">✕</span>
     </div>
-    <div class="modal-content">
-        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+    <div class="modal-content mb-5">
+        <ng-container *ngTemplateOutlet="contentTemplate; context: { data: data }"></ng-container>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer flex justify-end">
         <button (click)="submit()">Submit</button>
     </div>
 </div>
 
-<div class="modal-backdrop" (click)="close()"></div>
+<div class="modal-backdrop w-full h-full bg-black bg-opacity-40 fixed z-10 inset-x-0 inset-y-0 flex items-center justify-center" (click)="close()"></div>

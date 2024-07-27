@@ -2,7 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
+  Input, OnDestroy,
   Output, TemplateRef,
 } from '@angular/core';
 import {CommonModule} from "@angular/common";
@@ -14,11 +14,17 @@ import {CommonModule} from "@angular/common";
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss'
 })
-export class ModalComponent {
-  @Input() contentTemplate!: TemplateRef<any>;
+export class ModalComponent implements OnDestroy {
+  modalSizeClass: {[key: string]: string} = {
+    'sm': 'w-1/4',
+    'md': 'w-1/2',
+    'lg': 'w-4/5',
+  };
 
-  @Input() size? = 'md';
-  @Input() title? = 'Modal title';
+  @Input() contentTemplate!: TemplateRef<any>;
+  @Input() size: string = 'md';
+  @Input() title?: string = 'Modal title';
+  @Input() data? = null;
 
   @Output() closeEvent = new EventEmitter();
   @Output() submitEvent = new EventEmitter();
@@ -34,4 +40,6 @@ export class ModalComponent {
     this.elementRef.nativeElement.remove();
     this.submitEvent.emit();
   }
+
+  ngOnDestroy(){}
 }

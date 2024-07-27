@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {NgOptimizedImage} from "@angular/common";
+
 
 @Component({
   selector: 'app-ui-kit',
@@ -7,7 +9,8 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
   imports: [
     RouterLink,
     RouterLinkActive,
-    RouterOutlet
+    RouterOutlet,
+    NgOptimizedImage
   ],
   templateUrl: './ui-kit.component.html',
   styleUrl: './ui-kit.component.scss'

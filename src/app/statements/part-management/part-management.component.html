@@ -1,6 +1,9 @@
-<h1>DATA</h1>
+<wi-table
+        [tableConfigData]="tableConfig"
+        [data]="data"
+        (tableEvent)="tableEvent($event)">
+</wi-table>
 
-
-
-<wi-table></wi-table>
-
+<ng-template #modalTemplate let-data="data">
+    <app-product-modal [data]="data"></app-product-modal>
+</ng-template>
