@@ -1,6 +1,5 @@
 import { DOCUMENT } from '@angular/common';
 import {
-  ComponentRef,
   Inject,
   Injectable,
   TemplateRef, ViewContainerRef,
@@ -8,9 +7,11 @@ import {
 import { Subject } from 'rxjs';
 import { ModalComponent } from './modal.component';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class ModalService {
-  private modalNotifier?: Subject<string>;
+  private modalNotifier?: Subject<{ event: string, data?: any }>;
   private modalComponent: any = null;
 
   constructor(
@@ -26,7 +27,6 @@ export class ModalService {
     this.modalComponent.instance.data = options?.data;
     this.modalComponent.instance.title = options?.title;
     this.modalComponent.instance.closeEvent.subscribe(() => this.closeModal());
-    this.modalComponent.instance.submitEvent.subscribe(() => this.submitModal());
 
     this.modalComponent.hostView.detectChanges();
 
@@ -40,8 +40,12 @@ export class ModalService {
     this.modalComponent.destroy();
   }
 
-  submitModal() {
-    this.modalNotifier?.next('confirm');
+  submitModal(data: any) {
+    this.modalNotifier?.next({
+      event: 'confirm',
+      data
+    });
+
     this.closeModal();
   }
 }

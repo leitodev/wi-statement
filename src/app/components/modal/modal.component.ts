@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input, OnDestroy,
-  Output, TemplateRef,
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, Output, TemplateRef,} from '@angular/core';
 import {CommonModule} from "@angular/common";
 
 @Component({
@@ -21,6 +15,8 @@ export class ModalComponent implements OnDestroy {
     'lg': 'w-4/5',
   };
 
+  isInnerBackdropActive = false;
+
   @Input() contentTemplate!: TemplateRef<any>;
   @Input() size: string = 'md';
   @Input() title?: string = 'Modal title';
@@ -29,17 +25,22 @@ export class ModalComponent implements OnDestroy {
   @Output() closeEvent = new EventEmitter();
   @Output() submitEvent = new EventEmitter();
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) {
+  }
 
   close(): void {
     this.elementRef.nativeElement.remove();
     this.closeEvent.emit();
   }
 
-  submit(): void {
-    this.elementRef.nativeElement.remove();
-    this.submitEvent.emit();
-  }
+  closeBackdrop() {
+    this.isInnerBackdropActive = false;
+  };
+
+  // submit(): void {
+  //   this.elementRef.nativeElement.remove();
+  //   this.submitEvent.emit();
+  // }
 
   ngOnDestroy(){}
 }

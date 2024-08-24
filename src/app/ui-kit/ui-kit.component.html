@@ -5,16 +5,47 @@
     </div>
 
     <ul class="mt-5">
-        <li
-            class="flex items-center m-1 p-1 gap-1 cursor-pointer hover:bg-indigo-700 text-slate-300">
+        <li class="flex items-center m-1 p-1 gap-1 cursor-pointer hover:bg-indigo-700 text-slate-300">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
             </svg>
             <span>Buttons</span>
         </li>
+
+        <li class="flex items-center m-1 p-1 gap-1 cursor-pointer hover:bg-indigo-700 text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+            </svg>
+            <span>Form</span>
+        </li>
     </ul>
 </div>
 <div class="main-content ml-[250px] p-5">
     <h1>Main Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda eveniet ipsa itaque labore nulla obcaecati placeat! Architecto atque consequuntur dicta nostrum, numquam quae quibusdam sapiente tempore vel voluptatibus voluptatum?</h1>
+
+    <button class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
+
+
+    <div class="flex flex-col mt-5">
+        <app-dropdown-search class="w-2/6"
+            [label]="'app-dropdown-search label'"
+            [searchDataList]="productSearchList"
+            [listKeys]="['partNumber', 'description']"
+            (selectedItem)="selectedItemUIkit($event)"
+            (searchedItem)="searchedItemUIkit($event)">
+        </app-dropdown-search>
+    </div>
+
+    <div class="flex flex-col mt-5">
+        <app-dropdown class="w-2/6"
+             [label]="'app-dropdown Label'"
+             [default]="dropdownDataList[2]"
+             [dataList]="dropdownDataList"
+             [listKeys]="['name']"
+             (selectedItem)="selectedItemUIkit($event)">
+        </app-dropdown>
+    </div>
+
 </div>

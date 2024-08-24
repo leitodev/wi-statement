@@ -9,7 +9,7 @@ import {ProductModalComponent} from "../statements/part-management/product-modal
   imports: [RouterLink, RouterLinkActive, ProductModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  providers: [ModalService]
+  providers: []
 })
 export class HomeComponent {
   constructor(private modalService: ModalService) {}

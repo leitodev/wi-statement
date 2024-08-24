@@ -1,120 +1,105 @@
-<form [formGroup]="productForm">
-    @if (showParentChoseInput()) {
-    <div class="flex items-center gap-1 mb-5">
-        <input id="relatedParent"
-               type="checkbox"
-               name="relatedParent"
-               (click)="uncheckRelatedParent()"
-               [checked]="isParentChosen"
-               [disabled]="!isParentChosen"
-               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
-        <label for="relatedParent" class="py-4 text-sm font-medium text-gray-900">Related to</label>
+<div class="modal-header flex justify-between mb-3 text-lg">
+    {{ data ? data.partNumber : 'New Product'  }}
+    <span class="modal-close cursor-pointer" (click)="close()">✕</span>
+</div>
+<div class="modal-content mb-5">
+    <ng-container *ngTemplateOutlet="modalBody"></ng-container>
+</div>
+<div class="modal-footer flex justify-end gap-1">
+    <button (click)="close()" class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
+    <button (click)="submitModal()" class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">Submit</button>
+</div>
 
-        @if (!isParentChosen) {
-        <div class="dropdown--search w-2/5 relative">
-            <input [(ngModel)]="parentSearch"
-                   [ngModelOptions]="{standalone: true}"
-                   name="relatedParentValue" type="text" class="w-full h-[2rem] border px-2 py-1">
-            <button (click)="searchParent(parentSearch)" type="button" class="absolute right-1 top-1 bg-blue-700 hover:bg-blue-900 text-white rounded p-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
-            </button>
-            @if (isParentListAvailable) {
-            <ul class="search-result absolute top-8 left-0 border rounded w-full shadow-2xl p-1 z-20 bg-white">
-                @for (product of productSearchList; track product.id) {
-                    <li (click)="selectParentProduct(product)"
-                        class="hover:bg-gray-50 cursor-pointer">{{product.partNumber}} - {{product.description}}</li>
+<ng-template #modalBody>
+    <form [formGroup]="productForm">
+        @if (showParentChoseInput()) {
+            <div class="flex items-center gap-1 mb-5">
+                <input id="relatedParent"
+                       type="checkbox"
+                       name="relatedParent"
+                       (click)="uncheckRelatedParent()"
+                       [checked]="isParentChosen"
+                       [disabled]="!isParentChosen"
+                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
+                <label for="relatedParent" class="py-4 text-sm font-medium text-gray-900">Related to</label>
+
+                <app-dropdown-search
+                        class="w-2/5"
+                        [searchDataList]="productSearchList"
+                        [listKeys]="['partNumber', 'description']"
+                        (selectedItem)="selectParentProduct($event)"
+                        (searchedItem)="searchParent($event)"
+                        (changeEvent)="uncheckRelatedParent()"
+                ></app-dropdown-search>
+            </div>
+        }
+
+        <div class="flex w-full gap-10 mb-5">
+            <div class="flex flex-col w-2/4">
+                <label for="partNumber" class="text-sm font-medium text-gray-900">Part Number</label>
+                <input  id="partNumber"
+                        name="partNumber"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="partNumber">
+            </div>
+
+            <app-dropdown-search
+                [label]="'Supplier'"
+                class="flex flex-col w-2/4"
+                [searchDataList]="availableSuppliers"
+                [listKeys]="['name']"
+                (selectedItem)="selectSupplier($event)"
+                (searchedItem)="searchSupplier($event)">
+            </app-dropdown-search>
+        </div>
+
+        <div class="flex w-full gap-10 mb-5">
+            <app-dropdown
+                    [label]="'Status'"
+                    [default]="statusDataList[2]"
+                    [dataList]="statusDataList"
+                    [listKeys]="['name']"
+                    (selectedItem)="selectStatus($event)"
+                    class="flex flex-col w-2/4">
+            </app-dropdown>
+
+            <div class="flex flex-col w-2/4">
+                <label for="description" class="text-sm font-medium text-gray-900">Description</label>
+                <input id="description"
+                       name="description"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="description">
+            </div>
+        </div>
+
+        <div class="flex w-full gap-10 mb-5">
+            <div class="flex flex-col w-2/4">
+                <label class="text-sm font-medium text-gray-900">Components</label>
+                @if (data) {
+                    <ul class="tree">
+                        <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: data, level: 0 }"></ng-container>
+                    </ul>
                 }
-            </ul>
-            }
-        </div>
-        }
-
-        @if (isParentChosen) {
-            <b>{{ isParentChosen.partNumber}} - {{isParentChosen.description }}</b>
-        }
-    </div>
-    }
-
-    <div class="flex w-full gap-10 mb-5">
-        <div class="flex flex-col w-2/4">
-            <label for="partNumber" class="text-sm font-medium text-gray-900">Part Number</label>
-            <input  id="partNumber"
-                    name="partNumber"
-                    type="text"
-                    class="w-full h-[2rem] border px-2 py-1"
-                    formControlName="partNumber">
+            </div>
+            <div class="flex flex-col w-2/4">
+                <label for="plant" class="text-sm font-medium text-gray-900">Plant</label>
+                <input id="plant"
+                       name="plant"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="plant">
+            </div>
         </div>
 
-        <div class="flex flex-col w-2/4">
-            <label for="supplier" class="text-sm font-medium text-gray-900">Supplier</label>
-            @if (currentSupplier()) {
-                <div class="flex">
-                    <b>{{currentSupplier().name}}</b>
-                    <span (click)="clearCurrentSupplier()" class="cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                        </svg>
-                    </span>
-                </div>
-            }
-            @if (!currentSupplier()) {
-                <div class="dropdown--search w-full relative">
-                    <input id="supplier"
-                           autocomplete="off"
-                           (focus)="focusSupplierInput()"
-                           [(ngModel)]="supplierSearch"
-                           [ngModelOptions]="{standalone: true}"
-                           name="supplier" type="text" class="w-full h-[2rem] border px-2 py-1">
-                    <button (click)="searchSupplier(supplierSearch)" type="button" class="absolute right-1 top-1 bg-blue-700 hover:bg-blue-900 text-white rounded p-0.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </button>
-                    @if (isSupplierAvailable) {
-                        <ul class="search-result absolute top-8 left-0 border rounded w-full shadow-2xl p-1 z-20 bg-white">
-                            @for (supplier of availableSuppliers; track supplier.id) {
-                                <li (click)="selectSupplier(supplier)"
-                                    class="hover:bg-gray-50 cursor-pointer">{{supplier.name}}</li>
-                            }
-                        </ul>
-                    }
-                </div>
-            }
-
-        </div>
-    </div>
-
-    <div class="flex w-full gap-10">
-<!--        <div class="flex flex-col w-2/4">-->
-<!--            <label for="components" class="text-sm font-medium text-gray-900">Components</label>-->
-<!--            <input id="components"-->
-<!--                   name="components"-->
-<!--                   type="text"-->
-<!--                   class="w-full h-[2rem] border px-2 py-1"-->
-<!--                   formControlName="components">-->
-<!--        </div>-->
-        <div class="flex flex-col w-2/4">
-            <label class="text-sm font-medium text-gray-900">Components</label>
-            <ul class="tree">
-                <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: data, level: 0 }"></ng-container>
-            </ul>
+        <div>
+            <h2>Regulatory compliance - список регулирующих актов</h2>
         </div>
 
-        <div class="flex flex-col w-2/4">
-            <label for="description" class="text-sm font-medium text-gray-900">Description</label>
-            <input id="description"
-                   name="description"
-                   type="text"
-                   class="w-full h-[2rem] border px-2 py-1"
-                   formControlName="description">
-        </div>
-    </div>
 
-
-</form>
-
+    </form>
+</ng-template>
 
 <ng-template #recursiveTree let-node let-level="level">
     <li [ngStyle]="{'margin-left.px': level * 10}" class="mb-2" (click)="changeModalComponent(node, $event)">
@@ -122,7 +107,7 @@
             <span>level: {{level}} </span>
             <strong> {{ node.partNumber }}</strong> - {{ node.description }} - {{ node.supplier }}
         </div>
-        <ul *ngIf="node.components.length">
+        <ul *ngIf="node.components && node.components.length">
             <ng-container *ngFor="let child of node.components">
                 <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: child, level: level + 1 }"></ng-container>
             </ng-container>

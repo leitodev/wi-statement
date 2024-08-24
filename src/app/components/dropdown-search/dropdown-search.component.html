@@ -1,0 +1,35 @@
+<div class="dropdown--search relative">
+    @if (label) {
+        <label for="{{label}}" class="{{LabelClass}}">{{label}}</label>
+    }
+    <div class="relative">
+        <input id="{{label}}"
+               #inputRef [(ngModel)]="search"
+               autocomplete="off"
+               (keydown)="change()"
+               [ngModelOptions]="{standalone: true}"
+               name="relatedParentValue" type="text" class="w-full h-[2rem] border px-2 py-1">
+
+        @if(isSearchModeActive){
+        <button (click)="searchItem(search)" type="button" class="absolute right-1 top-1 bg-blue-700 hover:bg-blue-900 text-white rounded p-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+        </button>
+        } @else {
+        <button (click)="clear()" type="button" class="absolute right-1 top-1 bg-slate-100 hover:bg-slate-200 text-black rounded p-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12 12 14.25m-2.58 4.92-6.374-6.375a1.125 1.125 0 0 1 0-1.59L9.42 4.83c.21-.211.497-.33.795-.33H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5a2.25 2.25 0 0 1-2.25 2.25h-9.284c-.298 0-.585-.119-.795-.33Z" />
+            </svg>
+        </button>
+        }
+    </div>
+
+    @if (isParentListAvailable) {
+        <ul class="search-result absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white">
+            @for (item of searchDataList; track item.id) {
+                <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ parseItemListKey(item) }}</li>
+            }
+        </ul>
+    }
+</div>
