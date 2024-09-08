@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
+import {ConfigStorageService} from "../../services/config-storage.service";
 
 @Component({
   selector: 'wi-table',
@@ -8,11 +9,25 @@ import {CommonModule, NgIf} from "@angular/common";
   templateUrl: './wi-table.component.html',
   styleUrl: './wi-table.component.scss'
 })
-export class WiTableComponent {
+export class WiTableComponent implements OnInit {
+
+  isTableSettingActive = false;
+
   @Input('tableConfigData') tableConfig : any = null;
   @Input() data : any = null;
-
   @Output() tableEvent = new EventEmitter();
+
+  constructor(private configStorageService: ConfigStorageService) {
+  }
+
+  ngOnInit() {
+    const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
+    if (settings) {
+      this.tableConfig = settings;
+    }
+
+    console.log('data [WiTableComponent]', this.data);
+  }
 
   tableRowCLick(rowItem: any){
     this.tableEvent.emit({eventName:'tableRowCLick', data: rowItem });
@@ -22,13 +37,27 @@ export class WiTableComponent {
     event.stopPropagation();
     this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
   };
-  /*
-  items list (Id (number),
-   supplier (string),
-    part number (string),
-     components (list of part numbers),
-      description (string)),
-       нужно добавить динамические поля,
-        которые содержать в себе названия регулирующих актов (REACH, RoHS etc),
-  */
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  toggleSettings() {
+    this.isTableSettingActive = !this.isTableSettingActive;
+  }
+
+  changeCellVisibility(cell: any) {
+    cell.visible = !cell.visible;
+  }
+
+  saveSettings() {
+    this.isTableSettingActive = false;
+    this.configStorageService.setTableSettings(this.tableConfig);
+  }
+
+  resetSettings() {
+    this.isTableSettingActive = false;
+    this.configStorageService.resetTableSettings(this.tableConfig.tableName);
+  }
+
 }

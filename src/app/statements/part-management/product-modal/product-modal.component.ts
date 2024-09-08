@@ -38,6 +38,24 @@ export class ProductModalComponent implements OnInit {
   availableSuppliers: any[] = [];
 
   // for parent list
+
+  // partManagement?page=2&sort=createData
+
+  tableData = {
+    count: 179,
+    data: [
+      {parentID: null,
+        id: 1,
+        supplier: 'Rockstar Games',
+        partNumber: '123SU152',
+        plant: 'PLANT1'
+      }
+    ],
+    page: 2,
+    availableNextPage: true
+  }
+
+
   allProduct = [
     {
       parentID: null,
@@ -200,6 +218,8 @@ export class ProductModalComponent implements OnInit {
     this.currentID.set(data.id);
 
     this.showParentChoseInput.set(data.parentID);
+
+    console.log('initForm data', data);
 
     if (data) {
       this.productForm.setValue({

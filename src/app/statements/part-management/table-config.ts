@@ -1,11 +1,50 @@
 
+// textCenter componentsTemplate rcList
 const tableConfig = {
-  headers: [
-    {name: 'id', sort: true},
-    {name: 'supplier', sort: true},
-    {name: 'part_number', sort: false},
-    {name: 'components', sort: false},
-    {name: 'description', sort: false},
+  tableName: 'part-management',
+  cells: [
+    {
+      name: 'id',
+      sort: true,
+      value: '_id',
+      type: 'textCenter',
+      visible: true,
+    },
+    {
+      name: 'Supplier',
+      sort: true,
+      value: 'supplier',
+      type: 'textCenter',
+      visible: true,
+    },
+    {
+      name: 'Part Number',
+      sort: false,
+      value: 'partNumber',
+      type: 'textCenter',
+      visible: true,
+    },
+    {
+      name: 'Components',
+      sort: false,
+      value: 'components',
+      type: 'componentsTemplate',
+      visible: true,
+    },
+    {
+      name: 'Description',
+      sort: false,
+      value: 'description',
+      type: 'textCenter',
+      visible: true,
+    },
+    {
+      name: 'RCompliance',
+      sort: false,
+      value: 'regulatoryCompliance',
+      type: 'rcList',
+      visible: false,
+    },
   ]
 }
 export default tableConfig;

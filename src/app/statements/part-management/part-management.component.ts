@@ -7,11 +7,13 @@ import {PartManagementService} from "./part-management.service";
 import {DropdownSearchComponent} from "../../components/dropdown-search/dropdown-search.component";
 import {MockDataService} from "../../services/mock-data.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
+import {AsyncPipe, CommonModule} from "@angular/common";
+import {map, tap} from "rxjs";
 
 @Component({
   selector: 'app-part-management',
   standalone: true,
-  imports: [WiTableComponent, ProductModalComponent, DropdownSearchComponent, DropdownComponent],
+  imports: [WiTableComponent, ProductModalComponent, DropdownSearchComponent, DropdownComponent, AsyncPipe, CommonModule],
   templateUrl: './part-management.component.html',
   styleUrl: './part-management.component.scss',
   providers: [PartManagementService]
@@ -19,12 +21,15 @@ import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 export class PartManagementComponent implements OnInit {
 
   // DATA from Back-End (without components nesting)
-  public data =  this.partManagementService.getData();
+  public data$ =  this.partManagementService.getData().pipe(
+    map(result => result.data),
+    map(data => data.materials),
+  );
 
   statusDataList = this.mockDataService.statusDataList;
 
   public tableConfig = tableConfig;
-  public isFilterVisible = true;
+  public isFilterVisible = false;
 
   // for filter
   isSupplierAvailable = false
@@ -34,12 +39,17 @@ export class PartManagementComponent implements OnInit {
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
-  constructor(private modalService: ModalService,
+  constructor(
+              private modalService: ModalService,
               private partManagementService: PartManagementService,
               private mockDataService: MockDataService) {
   };
 
-  ngOnInit() {};
+  ngOnInit() {
+    this.data$.subscribe((data) => {
+      console.log('[materialService]1 data', data);
+    })
+  };
 
   tableEvent(event: any) {
     this.openModal(this.modalTemplate, event.data);

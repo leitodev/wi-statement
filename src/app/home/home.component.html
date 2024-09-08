@@ -14,17 +14,4 @@
     </div>
   </div>
 </header>
-
-
-<button (click)="openModal(modalTemplate)">Open modal</button>
-
-<ng-template #modalTemplate let-data="data">
-    <app-product-modal [data]="data"></app-product-modal>
-</ng-template>
-
-
-<button style="color: red" (click)="toggleShowComponent()">product modal</button>
-
-@if(showComp1){
-<app-product-modal [data]="{name: 'new'}"></app-product-modal>
-}
+<h1>Environment: {{ envName }}</h1>

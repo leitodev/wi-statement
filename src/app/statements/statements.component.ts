@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {Component, inject} from '@angular/core';
+import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-statements',
@@ -9,5 +10,10 @@ import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
   styleUrl: './statements.component.scss'
 })
 export class StatementsComponent {
-
+  authService = inject(AuthService);
+  router = inject(Router);
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
 }

@@ -28,3 +28,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Deploy on github pages
 `ng build --output-path docs --base-href /wi-statement/`
+`ng build --output-path docs --base-href /wi-statement-demo/` - for DEMO

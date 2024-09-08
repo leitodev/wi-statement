@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import {MaterialService} from "../../services/material.service";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -91,9 +93,10 @@ export class PartManagementService {
     }
   ];
 
-  getData() {
-    return this.partManagementData;
+  getData(): Observable<any> {
+    // return this.partManagementData;
+    return this.materialService.get();
   }
 
-  constructor() { }
+  constructor(private materialService: MaterialService) { }
 }
