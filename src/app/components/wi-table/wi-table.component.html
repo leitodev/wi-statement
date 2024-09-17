@@ -74,6 +74,23 @@
 
 </table>
 }
+@if (tableConfig.paginator) {
+    <div id="paginator" class="flex justify-center items-center space-x-2 mt-3">
+        <!-- Previous Button -->
+        <button (click)="prevPage()" class="px-3 py-1 text-sm text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300" aria-label="Previous">
+            Previous
+        </button>
+
+        <!-- Page Numbers -->
+        @for (page of tablePages; track page.id) {
+            <button  (click)="changePage(page.value)"
+                    [ngClass]="currentPage != page.value ? 'text-gray-600 bg-gray-200 hover:bg-gray-300' : 'text-white bg-blue-500 hover:bg-blue-600'" class="px-3 py-1 text-sm rounded-md">{{page.value}}</button>
+        }
+        <button (click)="nextPage()" class="px-3 py-1 text-sm text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300" aria-label="Next">
+            Next
+        </button>
+    </div>
+}
 
 <ng-template #defaultTemplate let-data>
     <td class="border border-slate-300">{{ data }}</td>

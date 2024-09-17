@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {CommonModule} from "@angular/common";
 import {ModalService} from "./components/modal/modal.service";
-import {environment} from "../environments/environment";
+import {AuthService} from "./services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -12,8 +12,14 @@ import {environment} from "../environments/environment";
   styleUrl: './app.component.scss',
   providers: [ModalService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
   title = 'wi-statement';
+
+  ngOnInit() {
+    this.authService.checkToken().subscribe(res => {
+      this.authService.currentUser.set(res.data);
+    });
+  }
 }

@@ -19,7 +19,7 @@ import {FormsModule} from "@angular/forms";
 export class DropdownComponent implements OnInit {
   public value: string = '';
 
-  @Input() default: {id: number, name: string} | null = null;
+  @Input() default: {id: number, name: string} | any = null;
   @Input() dataList: Array<{id: number, name: string}> = [];
   @Input() listKeys: string[] = [];
   @Input() label: string = '';

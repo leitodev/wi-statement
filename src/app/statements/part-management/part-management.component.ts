@@ -3,12 +3,12 @@ import {WiTableComponent} from "../../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
 import {ModalService} from "../../components/modal/modal.service";
 import {ProductModalComponent} from "./product-modal/product-modal.component";
-import {PartManagementService} from "./part-management.service";
 import {DropdownSearchComponent} from "../../components/dropdown-search/dropdown-search.component";
 import {MockDataService} from "../../services/mock-data.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 import {AsyncPipe, CommonModule} from "@angular/common";
-import {map, tap} from "rxjs";
+import {catchError, map, Observable, of, tap} from "rxjs";
+import {MaterialService} from "../../services/material.service";
 
 @Component({
   selector: 'app-part-management',
@@ -16,16 +16,9 @@ import {map, tap} from "rxjs";
   imports: [WiTableComponent, ProductModalComponent, DropdownSearchComponent, DropdownComponent, AsyncPipe, CommonModule],
   templateUrl: './part-management.component.html',
   styleUrl: './part-management.component.scss',
-  providers: [PartManagementService]
+  providers: []
 })
 export class PartManagementComponent implements OnInit {
-
-  // DATA from Back-End (without components nesting)
-  public data$ =  this.partManagementService.getData().pipe(
-    map(result => result.data),
-    map(data => data.materials),
-  );
-
   statusDataList = this.mockDataService.statusDataList;
 
   public tableConfig = tableConfig;
@@ -37,22 +30,42 @@ export class PartManagementComponent implements OnInit {
   public availableSuppliers: any[] = [];
   public allSuppliersData = [...this.mockDataService.getSuppliers()]
 
+  public data$ =  this.materialService.get().pipe(
+    tap(data => {
+      this.tableConfig.paginator.totalPages = data.data.totalPages;
+      console.log('[materialService] data', data);
+    }),
+    map(result => result.data),
+    map(data => data.materials)
+  );
+
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
   constructor(
               private modalService: ModalService,
-              private partManagementService: PartManagementService,
+              private materialService: MaterialService,
               private mockDataService: MockDataService) {
   };
 
-  ngOnInit() {
-    this.data$.subscribe((data) => {
-      console.log('[materialService]1 data', data);
-    })
-  };
+  ngOnInit() {};
+
+  refreshData(page: number) {
+    this.data$ =  this.materialService.get(page).pipe(
+      map(result => result.data),
+      map(data => data.materials),
+    );
+  }
 
   tableEvent(event: any) {
-    this.openModal(this.modalTemplate, event.data);
+    console.log('[tableEvent] event', event);
+    // TODO to enum types
+    if (event.eventName == 'changePage') {
+      this.refreshData(event.data);
+    }
+
+    if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
+      this.openModal(this.modalTemplate, event.data);
+    }
   };
 
   addNew() {
@@ -74,8 +87,16 @@ export class PartManagementComponent implements OnInit {
         .subscribe((action: any) => {
           console.log('modalTemplate', modalTemplate);
           console.log('modalAction', action);
+          this.addNewMaterial(action.data);
         });
   };
+
+  addNewMaterial(data: any) {
+    this.materialService.addMaterial(data.form)
+      .subscribe((result: any) => {
+        console.log('post result', result);
+      });
+  }
 
   // filters
   searchSupplier(search: string) {

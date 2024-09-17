@@ -4,3 +4,6 @@ export const environment = {
   apiUrl: 'http://localhost:3000/api',
   featureFlag: true,
 };
+
+// https://project-mgk6.onrender.com
+// "http://localhost:3000/

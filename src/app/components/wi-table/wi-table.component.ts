@@ -10,15 +10,18 @@ import {ConfigStorageService} from "../../services/config-storage.service";
   styleUrl: './wi-table.component.scss'
 })
 export class WiTableComponent implements OnInit {
+  currentPage = 1;
+  totalPages = 10;
+  limit = 10;
+  tablePages: any[] = [];
 
   isTableSettingActive = false;
 
-  @Input('tableConfigData') tableConfig : any = null;
-  @Input() data : any = null;
+  @Input('tableConfigData') tableConfig: any = null;
+  @Input() data: any = null;
   @Output() tableEvent = new EventEmitter();
 
-  constructor(private configStorageService: ConfigStorageService) {
-  }
+  constructor(private configStorageService: ConfigStorageService) {}
 
   ngOnInit() {
     const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
@@ -26,7 +29,10 @@ export class WiTableComponent implements OnInit {
       this.tableConfig = settings;
     }
 
-    console.log('data [WiTableComponent]', this.data);
+    this.currentPage = this.tableConfig.paginator.currentPage;
+    this.totalPages = this.tableConfig.paginator.totalPages;
+    this.limit = this.tableConfig.paginator.limit;
+    this.tablePages = Array.from({ length: this.totalPages }, (_, i) => ({ id: i + 1, value: i + 1 }));
   }
 
   tableRowCLick(rowItem: any){
@@ -37,10 +43,6 @@ export class WiTableComponent implements OnInit {
     event.stopPropagation();
     this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
   };
-
-  trackByIndex(index: number, item: any): number {
-    return index;
-  }
 
   toggleSettings() {
     this.isTableSettingActive = !this.isTableSettingActive;
@@ -58,6 +60,20 @@ export class WiTableComponent implements OnInit {
   resetSettings() {
     this.isTableSettingActive = false;
     this.configStorageService.resetTableSettings(this.tableConfig.tableName);
+  }
+  prevPage() {
+    if (this.currentPage && this.currentPage != 1) {
+      this.changePage(this.currentPage - 1);
+    }
+  }
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.changePage(this.currentPage + 1);
+    }
+  }
+  changePage(value: number){
+    this.currentPage = value;
+    this.tableEvent.emit({eventName:'changePage',  data: this.currentPage });
   }
 
 }

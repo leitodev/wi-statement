@@ -16,7 +16,8 @@ export class MockDataService {
    statusDataList = [
     {id: 1, name: "Rejected"},
     {id: 2, name: "Approved"},
-    {id: 3, name: "Pending"}
+    {id: 3, name: "Pending"},
+    {id: 4, name: "Active"},
   ];
 
   constructor() { }

@@ -1,5 +1,7 @@
 export interface UserInterface {
-  email: string;
-  token: string;
-  name: string;
+  email?: string;
+  token?: string;
+  role: string;
+  username: string;
+  _id: string;
 }

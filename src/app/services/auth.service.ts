@@ -12,6 +12,11 @@ export class AuthService {
   private apiUrl = environment.host;
 
   constructor(private http: HttpClient) { }
+
+  checkToken() {
+    return <Observable<{status: string, data: UserInterface, code: number}>>this.http.post(this.apiUrl+'token', {});
+  }
+
   login(data: {email: string, password: string}) {
     return <Observable<{status: string, data: UserInterface, code: number}>>this.http.post(this.apiUrl+'login', data);
   }

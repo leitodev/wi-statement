@@ -45,6 +45,11 @@ const tableConfig = {
       type: 'rcList',
       visible: false,
     },
-  ]
+  ],
+  paginator: {
+    currentPage: 1,
+    totalPages: 2,
+  },
+  limit: 20
 }
 export default tableConfig;

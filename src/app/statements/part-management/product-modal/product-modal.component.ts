@@ -5,6 +5,7 @@ import {ModalService} from "../../../components/modal/modal.service";
 import {DropdownSearchComponent} from "../../../components/dropdown-search/dropdown-search.component";
 import {DropdownComponent} from "../../../components/dropdown/dropdown.component";
 import {MockDataService} from "../../../services/mock-data.service";
+import {writeErrorToLogFile} from "@angular/cli/src/utilities/log-file";
 
 @Component({
   selector: 'app-product-modal',
@@ -27,10 +28,11 @@ export class ProductModalComponent implements OnInit {
   currentSupplier: any = signal(null);
 
   productForm = this.fb.group({
-    parentID: [''],
+    parentID: [null],
     partNumber: [''],
     description: [''],
-    plant: [''],
+    status: [''],
+    // plant: [''],
   });
   productSearchList: any = [];
   allSuppliersData= this.mockDataService.allSuppliersData;
@@ -146,11 +148,12 @@ export class ProductModalComponent implements OnInit {
   };
 
   submitModal() {
+    console.log('submitModal___', this.data);
+
     this.modal.submitModal({
-      oldData: this.data,
-      newData: {
-        currentSupplier: this.currentSupplier()
-      }
+      id: this.data?._id ? this.data._id : null,
+      currentSupplier: this.currentSupplier(),
+      form: this.productForm.getRawValue()
     });
   };
 
@@ -183,8 +186,8 @@ export class ProductModalComponent implements OnInit {
   };
 
   selectStatus(data: any) {
-    console.log('selectStatus', data)
-  }
+    this.productForm.patchValue({status: data.name})
+  };
 
   focusSupplierInput() {
     this.availableSuppliers = [...this.allSuppliersData];
@@ -226,10 +229,17 @@ export class ProductModalComponent implements OnInit {
         parentID: data.parentID,
         partNumber: data.partNumber,
         description: data.description,
-        plant: data.plant
+        status: data.status,
+        // plant: data.plant
       });
+
+      this.setStatus(data.status);
     };
   };
+
+  setStatus(status: any) {
+    return this.statusDataList.find(data => data.name === status);
+  }
 
   ngOnInit() {
     if (!this.data) {

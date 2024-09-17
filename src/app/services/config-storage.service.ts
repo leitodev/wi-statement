@@ -7,7 +7,7 @@ export class ConfigStorageService {
 
   constructor() { }
 
-  setToken(token: string) {
+  setToken(token: string = '') {
     localStorage.setItem('token', token);
   }
 
