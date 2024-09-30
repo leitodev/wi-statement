@@ -37,6 +37,15 @@ export class AuthComponent {
         });
     }
 
+    fastLogin(email: string, pass: string) {
+        this.form.setValue({
+            email: email,
+            password: pass
+        });
+
+        this.login();
+    }
+
     success(res: {status: string, data: UserInterface, code: number}) {
         this.toastr.success('Successful Authorization');
         this.configStorageService.setToken(res.data.token);

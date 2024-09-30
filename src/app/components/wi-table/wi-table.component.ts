@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'wi-table',
@@ -24,15 +25,15 @@ export class WiTableComponent implements OnInit {
   constructor(private configStorageService: ConfigStorageService) {}
 
   ngOnInit() {
+    this.totalPages = this.tableConfig.paginator.totalPages
+    this.currentPage = this.tableConfig.paginator.currentPage;
+    this.limit = this.tableConfig.limit;
+    this.tablePages = Array.from({ length: this.totalPages }, (_, i) => ({ id: i + 1, value: i + 1 }));
     const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
+
     if (settings) {
       this.tableConfig = settings;
     }
-
-    this.currentPage = this.tableConfig.paginator.currentPage;
-    this.totalPages = this.tableConfig.paginator.totalPages;
-    this.limit = this.tableConfig.paginator.limit;
-    this.tablePages = Array.from({ length: this.totalPages }, (_, i) => ({ id: i + 1, value: i + 1 }));
   }
 
   tableRowCLick(rowItem: any){
@@ -74,6 +75,10 @@ export class WiTableComponent implements OnInit {
   changePage(value: number){
     this.currentPage = value;
     this.tableEvent.emit({eventName:'changePage',  data: this.currentPage });
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
 
 }

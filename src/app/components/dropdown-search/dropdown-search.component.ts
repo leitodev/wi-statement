@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, forwardRef,
   HostListener,
   Input,
   OnInit,
@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 
-import {FormsModule} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
   selector: 'app-dropdown-search',
@@ -18,9 +18,29 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ],
   templateUrl: './dropdown-search.component.html',
-  styleUrl: './dropdown-search.component.scss'
+  styleUrl: './dropdown-search.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DropdownSearchComponent),
+      multi: true
+    }
+  ]
 })
-export class DropdownSearchComponent implements OnInit {
+export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
+  public search = '';
+  public isParentListAvailable = false;
+  public isSearchModeActive = true;
+
+  writeValue(search: string): void {
+    this.search = search;
+    if (search) {
+      this.isSearchModeActive = false;
+    };
+  }
+  onChange(value: any){};
+  onTouched(){};
+
   @Input() searchDataList: Array<{id: number}> = [];
   @Input() listKeys: string[] = [];
   @Input() label: string = '';
@@ -46,12 +66,7 @@ export class DropdownSearchComponent implements OnInit {
     }
   }
 
-  public search = '';
-  public isParentListAvailable = false;
-  public isSearchModeActive = true;
-
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {}
 
@@ -89,4 +104,28 @@ export class DropdownSearchComponent implements OnInit {
     this.isSearchModeActive = true;
     this.inputElement.nativeElement.focus();
   }
+
+  // Registers a change handler that is called when the form control value changes
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  // Registers a touched handler
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  // Disables or enables the control
+  setDisabledState(isDisabled: boolean): void {
+    // Handle disabled state
+  }
+
+  // When the user selects an option
+  handleSelection(value: any) {
+    this.search = value;
+    if (this.onChange) {
+      this.onChange(value);
+    }
+  }
+
 }

@@ -75,7 +75,7 @@
 
 <wi-table
         [tableConfigData]="tableConfig"
-        [data]="data$ | async"
+        [data]="tableData$$ | async"
         (tableEvent)="tableEvent($event)">
 </wi-table>
 

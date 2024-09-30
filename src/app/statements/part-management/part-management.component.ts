@@ -7,8 +7,9 @@ import {DropdownSearchComponent} from "../../components/dropdown-search/dropdown
 import {MockDataService} from "../../services/mock-data.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 import {AsyncPipe, CommonModule} from "@angular/common";
-import {catchError, map, Observable, of, tap} from "rxjs";
+import {BehaviorSubject, map, tap} from "rxjs";
 import {MaterialService} from "../../services/material.service";
+import {ModalEventType} from "../../components/modal/modal-event-type";
 
 @Component({
   selector: 'app-part-management',
@@ -19,6 +20,9 @@ import {MaterialService} from "../../services/material.service";
   providers: []
 })
 export class PartManagementComponent implements OnInit {
+
+  tableData$$ = new BehaviorSubject<any[]>([]);
+
   statusDataList = this.mockDataService.statusDataList;
 
   public tableConfig = tableConfig;
@@ -30,14 +34,13 @@ export class PartManagementComponent implements OnInit {
   public availableSuppliers: any[] = [];
   public allSuppliersData = [...this.mockDataService.getSuppliers()]
 
-  public data$ =  this.materialService.get().pipe(
-    tap(data => {
-      this.tableConfig.paginator.totalPages = data.data.totalPages;
-      console.log('[materialService] data', data);
-    }),
-    map(result => result.data),
-    map(data => data.materials)
-  );
+  // public data$ =  this.materialService.get().pipe(
+  //   tap(material => {
+  //     this.tableConfig.paginator.totalPages = material.data.totalPages;
+  //   }),
+  //   map(result => result.data),
+  //   map(data => data.materials)
+  // );
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
@@ -47,13 +50,21 @@ export class PartManagementComponent implements OnInit {
               private mockDataService: MockDataService) {
   };
 
-  ngOnInit() {};
+  ngOnInit() {
+    this.refreshData();
+  };
 
-  refreshData(page: number) {
-    this.data$ =  this.materialService.get(page).pipe(
+  refreshData(page: number = 1) {
+    this.materialService.get(page).pipe(
+      tap(material => {
+        this.tableConfig.paginator.totalPages = material.data.totalPages;
+      }),
       map(result => result.data),
-      map(data => data.materials),
-    );
+      map(data => data.materials)
+    ).subscribe(data => {
+      console.log('[subscribe] data', data);
+      this.tableData$$.next(data);
+    })
   }
 
   tableEvent(event: any) {
@@ -85,16 +96,33 @@ export class PartManagementComponent implements OnInit {
             data: data
         })
         .subscribe((action: any) => {
-          console.log('modalTemplate', modalTemplate);
-          console.log('modalAction', action);
-          this.addNewMaterial(action.data);
+          if (action.event === ModalEventType.NEW) {
+            this.addNewMaterial(action.data);
+          } else if (action.event === ModalEventType.UPDATE) {
+            this.updateMaterial(action.data.id, action.data);
+          }
+
         });
   };
 
   addNewMaterial(data: any) {
-    this.materialService.addMaterial(data.form)
+    this.materialService.addMaterial(data)
       .subscribe((result: any) => {
-        console.log('post result', result);
+        if (result) {
+          //todo change logic (push new material to tableData$$)
+          this.tableData$$.next([result.data.material, ...this.tableData$$.value]);
+          this.modalService.closeModal();
+        }
+      });
+  }
+
+  updateMaterial(id: any, data: any){
+    this.materialService.update(id, data)
+      .subscribe((result: any) => {
+        if (result) {
+          this.refreshData();
+          this.modalService.closeModal();
+        }
       });
   }
 

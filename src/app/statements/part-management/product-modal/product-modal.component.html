@@ -1,54 +1,94 @@
 <div class="modal-header flex justify-between mb-3 text-lg">
     {{ data ? data.partNumber : 'New Product'  }}
-    <span class="modal-close cursor-pointer" (click)="close()">✕</span>
+
+    @if (data && data.parentID) {
+        <span class="ml-1 p-0.5 rounded-md text-white bg-orange-500 hover:bg-orange-600" title="component of another material">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z" />
+            </svg>
+        </span>
+    }
+
+    @if (data && !data.parentID) {
+        <span class="ml-1 p-0.5 rounded-md text-white bg-blue-500 hover:bg-blue-600" title="Main">
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+            </svg>
+        </span>
+    }
+
+    <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
 </div>
+
+<div class="modal-tabs flex space-x-1 border-b border-gray-300">
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='General'"
+         [class.bg-gray-100]="tabActive!=='General'">
+        <span class="text-sm font-medium">General</span>
+    </div>
+
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='Compliance'"
+         [class.bg-gray-100]="tabActive!=='Compliance'">
+        <span class="text-sm font-medium">Compliance</span>
+    </div>
+</div>
+
 <div class="modal-content mb-5">
     <ng-container *ngTemplateOutlet="modalBody"></ng-container>
+    <ng-container *ngTemplateOutlet="complianceContent"></ng-container>
 </div>
 <div class="modal-footer flex justify-end gap-1">
     <button (click)="close()" class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
-    <button (click)="submitModal()" class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">Submit</button>
+    <button [disabled]="!productForm.valid"
+            (click)="submitModal()"
+            class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 disabled:bg-gray-500 disabled:cursor-not-allowed">Submit</button>
 </div>
 
 <ng-template #modalBody>
-    <form [formGroup]="productForm">
-        @if (showParentChoseInput()) {
-            <div class="flex items-center gap-1 mb-5">
-                <input id="relatedParent"
-                       type="checkbox"
-                       name="relatedParent"
-                       (click)="uncheckRelatedParent()"
-                       [checked]="isParentChosen"
-                       [disabled]="!isParentChosen"
-                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
-                <label for="relatedParent" class="py-4 text-sm font-medium text-gray-900">Related to</label>
+    <form [formGroup]="productForm" [hidden]="tabActive!=='General'">
+        <div class="flex items-center gap-1 mb-5">
+            <input id="relatedParent"
+                   type="checkbox"
+                   name="relatedParent"
+                   (click)="uncheckRelatedParent()"
+                   [checked]="isParentChosen"
+                   [disabled]="!isParentChosen"
+                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
+            <label for="relatedParent" class="py-4 text-sm font-medium text-gray-900">Related to</label>
 
-                <app-dropdown-search
-                        class="w-2/5"
-                        [searchDataList]="productSearchList"
-                        [listKeys]="['partNumber', 'description']"
-                        (selectedItem)="selectParentProduct($event)"
-                        (searchedItem)="searchParent($event)"
-                        (changeEvent)="uncheckRelatedParent()"
-                ></app-dropdown-search>
-            </div>
-        }
+            <app-dropdown-search
+                    formControlName="parentID"
+                    class="w-2/5"
+                    [searchDataList]="productSearchList"
+                    [listKeys]="['partNumber', 'description']"
+                    (selectedItem)="selectParentProduct($event)"
+                    (searchedItem)="searchParent($event)"
+                    (changeEvent)="uncheckRelatedParent()"
+            ></app-dropdown-search>
+        </div>
 
         <div class="flex w-full gap-10 mb-5">
             <div class="flex flex-col w-2/4">
-                <label for="partNumber" class="text-sm font-medium text-gray-900">Part Number</label>
+                <label for="partNumber" class="text-sm font-medium text-gray-900">Part Number
+                    <span *ngIf="productForm.controls['partNumber'].hasError('required') && productForm.controls['partNumber'].touched" class="text-red-500">
+                        is required!
+                    </span>
+
+                </label>
                 <input  id="partNumber"
                         name="partNumber"
                         type="text"
                         class="w-full h-[2rem] border px-2 py-1"
                         formControlName="partNumber">
             </div>
-
             <app-dropdown-search
+                formControlName="supplier"
                 [label]="'Supplier'"
                 class="flex flex-col w-2/4"
                 [searchDataList]="availableSuppliers"
                 [listKeys]="['name']"
+                (changeEvent)="supplierChange($event)"
                 (selectedItem)="selectSupplier($event)"
                 (searchedItem)="searchSupplier($event)">
             </app-dropdown-search>
@@ -89,8 +129,28 @@
         <div>
             <h2>Regulatory compliance - список регулирующих актов</h2>
         </div>
-        
     </form>
+</ng-template>
+
+<ng-template #complianceContent>
+    <div [hidden]="tabActive!=='Compliance'">
+        @if(data && data.regulatoryCompliance) {
+            <div class="flex min-h-[400px]">
+                <ul>
+                    @for(compliance of data.regulatoryCompliance; track compliance.title ){
+                        <li class="flex cursor-pointer" title="{{compliance.status}}">
+                            <app-status-svg [complianceStatus]="compliance.status"></app-status-svg>
+                            {{compliance.title}}
+                        </li>
+                        <!-- desc: {{compliance.description}}  -->
+                    }
+                </ul>
+                <div class="complianceBody">
+                    qwe
+                </div>
+            </div>
+        }
+    </div>
 </ng-template>
 
 <ng-template #recursiveTree let-node let-level="level">

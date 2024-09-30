@@ -21,6 +21,8 @@ import {DropdownComponent} from "../components/dropdown/dropdown.component";
 })
 export class UiKitComponent {
 
+  public tabActive = 'General';
+
   public dropdownDataList = [
     {id: 1, name: "Rejected"},
     {id: 2, name: "Approved"},
