@@ -22,7 +22,7 @@
         </li>
     </ul>
 </div>
-<div class="main-content ml-[250px] p-5">
+<div class="main-content ml-[250px] p-5" [formGroup]="form">
     <h1>Main Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda eveniet ipsa itaque labore nulla obcaecati placeat! Architecto atque consequuntur dicta nostrum, numquam quae quibusdam sapiente tempore vel voluptatibus voluptatum?</h1>
 
     <button class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
@@ -118,6 +118,32 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="flex mt-5">
+        <app-radio
+                formControlName="radio"
+                [label]="'some'"
+                [options]="optionsForRadio">
+        </app-radio>
+    </div>
+
+    <div class="flex">
+        <div class="flex items-center justify-center w-full">
+            <label for="file-upload" class="flex flex-col items-center px-4 py-6 bg-white border-2 border-dashed rounded-lg cursor-pointer hover:border-blue-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span class="mt-2 text-sm leading-normal text-gray-600">Upload a document</span>
+                <input id="file-upload" type="file" (change)="onFileSelected($event)" class="hidden" />
+            </label>
+        </div>
+
+        <div *ngIf="fileName" class="text-center text-sm text-gray-500">
+            Selected File: <span class="font-semibold">{{ fileName }}</span>
+        </div>
     </div>
 
 </div>

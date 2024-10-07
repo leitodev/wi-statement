@@ -10,6 +10,7 @@ import {AsyncPipe, CommonModule} from "@angular/common";
 import {BehaviorSubject, map, tap} from "rxjs";
 import {MaterialService} from "../../services/material.service";
 import {ModalEventType} from "../../components/modal/modal-event-type";
+import {materialStatus} from "../../config/status-config";
 
 @Component({
   selector: 'app-part-management',
@@ -20,11 +21,8 @@ import {ModalEventType} from "../../components/modal/modal-event-type";
   providers: []
 })
 export class PartManagementComponent implements OnInit {
-
   tableData$$ = new BehaviorSubject<any[]>([]);
-
-  statusDataList = this.mockDataService.statusDataList;
-
+  statusDataList = materialStatus;
   public tableConfig = tableConfig;
   public isFilterVisible = false;
 

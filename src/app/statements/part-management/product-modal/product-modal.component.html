@@ -135,20 +135,7 @@
 <ng-template #complianceContent>
     <div [hidden]="tabActive!=='Compliance'">
         @if(data && data.regulatoryCompliance) {
-            <div class="flex min-h-[400px]">
-                <ul>
-                    @for(compliance of data.regulatoryCompliance; track compliance.title ){
-                        <li class="flex cursor-pointer" title="{{compliance.status}}">
-                            <app-status-svg [complianceStatus]="compliance.status"></app-status-svg>
-                            {{compliance.title}}
-                        </li>
-                        <!-- desc: {{compliance.description}}  -->
-                    }
-                </ul>
-                <div class="complianceBody">
-                    qwe
-                </div>
-            </div>
+            <app-compliance [data]="data"></app-compliance>
         }
     </div>
 </ng-template>

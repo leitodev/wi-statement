@@ -4,31 +4,29 @@ import {CommonModule} from "@angular/common";
 import {ModalService} from "../../../components/modal/modal.service";
 import {DropdownSearchComponent} from "../../../components/dropdown-search/dropdown-search.component";
 import {DropdownComponent} from "../../../components/dropdown/dropdown.component";
-import {MockDataService} from "../../../services/mock-data.service";
 import {SupplierService} from "../../../services/supplier.service";
 import {MaterialService} from "../../../services/material.service";
 import {ToastrService} from "ngx-toastr";
 import {ModalEventType} from "../../../components/modal/modal-event-type";
 import {StatusSvgComponent} from "../../../components/status-svg/status-svg.component";
+import {materialStatus} from "../../../config/status-config";
+import {ComplianceComponent} from "./compliance/compliance.component";
 
 @Component({
   selector: 'app-product-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule, DropdownSearchComponent, DropdownComponent, StatusSvgComponent],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, DropdownSearchComponent, DropdownComponent, StatusSvgComponent, ComplianceComponent],
   templateUrl: './product-modal.component.html',
   styleUrl: './product-modal.component.scss'
 })
 export class ProductModalComponent implements OnInit {
   @Input() data?: any = null;
   public tabActive = 'General';
-
   currentID = signal(null);
   oldParentID = null; // need for back if we wanna change parent
-
   parentSearch = '';
   isParentListAvailable = false;
   isParentChosen: any = false;
-
   productForm = this.fb.group({
     parentID: [''], // need only for view partNumber + Desc
     partNumber: ['', [Validators.required]],
@@ -38,13 +36,12 @@ export class ProductModalComponent implements OnInit {
   });
 
   productSearchList: any = [];
-  statusDataList = this.mockDataService.statusDataList;
+  statusDataList = materialStatus;
   availableSuppliers: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private modal: ModalService,
-    private mockDataService: MockDataService,
     private supplierService: SupplierService,
     private materialService: MaterialService,
     private toastr: ToastrService

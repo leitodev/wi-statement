@@ -42,7 +42,7 @@
 
   <tbody>
   @for (item of data; track item._id) {
-  <tr (click)="tableRowCLick(item)">
+  <tr (click)="tableRowCLick(item)" class="hover:bg-gray-100 cursor-pointer">
       @for (cell of tableConfig.cells; track cell.value) {
           @if (cell.visible) {
           <ng-container *ngTemplateOutlet="
