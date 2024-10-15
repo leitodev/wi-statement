@@ -52,8 +52,8 @@ export class ComplianceComponent {
 
   complianceForm = this.fb.group({
     status: [''],
-    applyStatusFor: ['current'],
-    documentConfirmation: [false],
+    applyStatusFor: ['current'], // current or allMaterials
+    documentConfirmation: [false], // true - // false - non-confirmation
     name: [''],
     description: [''],
   });
