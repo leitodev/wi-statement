@@ -48,7 +48,7 @@ const tableConfig = {
   ],
   paginator: {
     currentPage: 1,
-    totalPages: 2,
+    totalPages: 1,
   },
   limit: 20
 }

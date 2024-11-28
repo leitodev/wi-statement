@@ -1,4 +1,5 @@
 <div class="sidebar fixed top-0 bottom-0 h-full w-[250px] p-5 text-white bg-indigo-600">
+
     <!--  bg-indigo-500  -->
     <div class="flex justify-center rounded-md">
         <img class="w-40 h-40 border-solid border-white border" src="img/leito_ui-kit_logo.jpeg" alt="">
@@ -23,6 +24,106 @@
     </ul>
 </div>
 <div class="main-content ml-[250px] p-5" [formGroup]="form">
+
+    <h2 class="font-bold uppercase mt-2">Defining the Number of Columns</h2>
+    <div class="grid grid-cols-3">
+        <div class="bg-red-500">1</div>
+        <div class="bg-green-500">2</div>
+        <div class="bg-blue-500">3</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">Setting Column Widths</h2>
+    <div class="grid grid-cols-5">
+        <div class="col-span-3 bg-gray-300">Column 1</div>
+        <div class="col-span-1 bg-gray-400">Column 2</div>
+        <div class="col-span-1 bg-gray-500">Column 3</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">Setting Gaps Between Grid Items</h2>
+    <div class="grid grid-cols-3 gap-4">
+        <div class="bg-red-200">Item 1</div>
+        <div class="bg-green-200">Item 2</div>
+        <div class="bg-blue-200">Item 3</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">12 cols</h2>
+
+    <div class="grid grid-cols-12 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12">
+        <div class="bg-green-500">Col 1</div>
+        <div class="bg-red-500">Col 2</div>
+        <div class="bg-blue-500">Col 3</div>
+        <div class="bg-red-500">Col 4</div>
+        <div class="bg-green-500">Col 5</div>
+        <div class="bg-blue-500">Col 6</div>
+        <div class="bg-green-500">Col 7</div>
+        <div class="bg-red-500">Col 8</div>
+        <div class="bg-blue-500">Col 9</div>
+        <div class="bg-red-500">Col 10</div>
+        <div class="bg-green-500">Col 11</div>
+        <div class="bg-blue-500">Col 12</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">Responsive Grids</h2>
+    <h3>
+        <ul>
+            <li>sm for small screens (min-width: 640px)</li>
+            <li>md for medium screens (min-width: 768px)</li>
+            <li>lg for large screens (min-width: 1024px)</li>
+            <li>xl for extra-large screens (min-width: 1280px)</li>
+            <li>2xl for 2x large screens (min-width: 1536px)</li>
+        </ul>
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+        <div class="bg-green-500">1</div>
+        <div class="bg-red-500">2</div>
+        <div class="bg-blue-500">3</div>
+        <div class="bg-yellow-700">4</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">Using Grid Template Rows</h2>
+    <div class="grid grid-rows-3 gap-4">
+        <div class="bg-purple-300">Row 1</div>
+        <div class="bg-purple-400">Row 2</div>
+        <div class="bg-purple-500">Row 3</div>
+    </div>
+
+    <h2 class="font-bold uppercase mt-2">Grid Template Areas</h2>
+    <div class="grid grid-areas-template gap-4">
+        <div class="area-header bg-gray-200 p-4">Header</div>
+        <div class="area-sidebar bg-gray-200 p-4">Sidebar</div>
+        <div class="area-main bg-gray-200 p-4">Main Content</div>
+        <div class="area-footer bg-gray-200 p-4">Footer</div>
+    </div>
+
+    <style>
+        .grid-areas-template {
+            display: grid;
+            grid-template-areas:
+      'header header'
+      'sidebar main'
+      'footer footer';
+            grid-template-columns: 1fr 2fr;
+            grid-template-rows: auto 1fr auto;
+        }
+        .area-header { grid-area: header; }
+        .area-sidebar { grid-area: sidebar; }
+        .area-main { grid-area: main; }
+        .area-footer { grid-area: footer; }
+    </style>
+
+    <h3>
+    <pre>
+    Control the alignment and justification of grid items using utilities like
+        justify-items, justify-self, align-items, and align-self:
+
+    Aligning items: items-start, items-center, items-end
+    Justifying items: justify-items-start, justify-items-center, justify-items-end
+    </pre>
+    </h3>
+
+
+
+
     <h1>Main Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda eveniet ipsa itaque labore nulla obcaecati placeat! Architecto atque consequuntur dicta nostrum, numquam quae quibusdam sapiente tempore vel voluptatibus voluptatum?</h1>
 
     <button class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
@@ -144,6 +245,10 @@
         <div *ngIf="fileName" class="text-center text-sm text-gray-500">
             Selected File: <span class="font-semibold">{{ fileName }}</span>
         </div>
+    </div>
+
+    <div class="flex mt-5">
+        <app-compliance-multi-select [complianceData]="complianceData"></app-compliance-multi-select>
     </div>
 
 </div>

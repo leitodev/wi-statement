@@ -1,0 +1,52 @@
+
+<div class="complianceMultiSelect min-w-[500px]">
+    <div class="relative">
+        <input
+            #inputRef
+            [(ngModel)]="searchedCompliance"
+            [ngModelOptions]="{standalone: true}"
+            autocomplete="off"
+            type="text" class="w-full h-[2rem] border px-2 py-1">
+
+        @if(isSearchModeActive){
+            <button (click)="searchCompliance(searchedCompliance)" type="button" class="absolute right-1 top-1 bg-blue-700 hover:bg-blue-900 text-white rounded p-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </button>
+        } @else {
+            <button (click)="clearComplianceSearch()" type="button" class="absolute right-1 top-1 bg-slate-100 hover:bg-slate-200 text-black rounded p-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12 12 14.25m-2.58 4.92-6.374-6.375a1.125 1.125 0 0 1 0-1.59L9.42 4.83c.21-.211.497-.33.795-.33H19.5a2.25 2.25 0 0 1 2.25 2.25v10.5a2.25 2.25 0 0 1-2.25 2.25h-9.284c-.298 0-.585-.119-.795-.33Z" />
+                </svg>
+            </button>
+        }
+
+    </div>
+
+    <ul class="max-h-[280px] overflow-auto">
+        @for(compliance of complianceMultiData; track compliance.id; let idx = $index) {
+            @if(compliance.visible){
+                <li>
+                    <div class="flex items-center justify-between border rounded-md p-4 mb-1">
+                    <span class="flex items-center">
+                    <input (change)="toggleCompliance($event, idx)"
+                           id="checkbox{{compliance.id}}"
+                           type="checkbox"
+                           [checked]="compliance.selected"
+                           value="{{compliance.title}}" class="w-4 h-4 text-blue-600 border-gray-400 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 hover:cursor-pointer">
+                    <label for="checkbox{{compliance.id}}" class="ms-1 text-md text-gray-700 cursor-pointer pl-1 pr-1">{{compliance.title}}</label>
+                    </span>
+                        <app-dropdown
+                                [label]="''"
+                                [default]="compliance.status"
+                                [dataList]="statuses"
+                                [listKeys]="['name']"
+                                (selectedItem)="selectStatus($event, idx)">
+                        </app-dropdown>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+</div>

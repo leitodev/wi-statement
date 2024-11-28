@@ -1,25 +1,33 @@
 import { Component } from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
-import {NgOptimizedImage} from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {DropdownSearchComponent} from "../components/dropdown-search/dropdown-search.component";
 import {DropdownComponent} from "../components/dropdown/dropdown.component";
 import {RadioComponent} from "../components/radio/radio.component";
-import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {complianceStatus} from "../config/status-config";
+import {
+  ComplianceMultiSelectComponent,
+  IComplianceInputData
+} from "../components/compliance-multi-select/compliance-multi-select.component";
 
 
 @Component({
   selector: 'app-ui-kit',
   standalone: true,
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    NgOptimizedImage,
-    DropdownSearchComponent,
-    DropdownComponent,
-    RadioComponent,
-    ReactiveFormsModule
-  ],
+    imports: [
+        RouterLink,
+        RouterLinkActive,
+        RouterOutlet,
+        NgOptimizedImage,
+        DropdownSearchComponent,
+        DropdownComponent,
+        RadioComponent,
+        ReactiveFormsModule,
+        CommonModule,
+        FormsModule,
+        ComplianceMultiSelectComponent
+    ],
   templateUrl: './ui-kit.component.html',
   styleUrl: './ui-kit.component.scss'
 })
@@ -43,6 +51,8 @@ export class UiKitComponent {
       value: 'test47'
     }
   ];
+
+
 
   form = this.fb.group({
     radio: ['test30003'],
@@ -130,17 +140,40 @@ export class UiKitComponent {
 
   // DROPDOWN with SEARCH
   public selectedItemUIkit(value: any) {
-    console.log('[UiKit] Selected Item:', value);
   }
   public searchedItemUIkit(value: any) {
-    console.log('[UiKit] Searched Item:', value);
   }
   //-
 
 
   onFileSelected(file: any) {
-    console.log('file for upload', file);
   }
 
+  complianceData: IComplianceInputData[] = [
+    {
+      id: 123,
+      title: "EU REACH",
+      status: {
+        name: 'does_not_comply',
+        id: 2324
+      }
+    },
+    {
+      id: 32,
+      title: "EU RoHS",
+      status: {
+        name: 'comply',
+        id: 23244
+      }
+    },
+    {
+      id: 87,
+      title: "PFAS",
+      status: {
+        name: 'na',
+        id: 23244
+      }
+    },
+  ];
 
 }

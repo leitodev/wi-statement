@@ -8,8 +8,8 @@ import {MockDataService} from "../../services/mock-data.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 import {AsyncPipe, CommonModule} from "@angular/common";
 import {BehaviorSubject, map, tap} from "rxjs";
-import {MaterialService} from "../../services/material.service";
-import {ModalEventType} from "../../components/modal/modal-event-type";
+import {MaterialList, MaterialService} from "../../services/material.service";
+import {ModalTypes} from "../../components/modal/modal-types";
 import {materialStatus} from "../../config/status-config";
 
 @Component({
@@ -21,24 +21,14 @@ import {materialStatus} from "../../config/status-config";
   providers: []
 })
 export class PartManagementComponent implements OnInit {
-  tableData$$ = new BehaviorSubject<any[]>([]);
+  tableData$$ = new BehaviorSubject<MaterialList[]>([]);
   statusDataList = materialStatus;
-  public tableConfig = tableConfig;
-  public isFilterVisible = false;
+  tableConfig = tableConfig;
+  isFilterVisible = false;
 
   // for filter
-  isSupplierAvailable = false
-  currentSupplier: any = signal(null);
-  public availableSuppliers: any[] = [];
-  public allSuppliersData = [...this.mockDataService.getSuppliers()]
-
-  // public data$ =  this.materialService.get().pipe(
-  //   tap(material => {
-  //     this.tableConfig.paginator.totalPages = material.data.totalPages;
-  //   }),
-  //   map(result => result.data),
-  //   map(data => data.materials)
-  // );
+  availableSuppliers: any[] = [];
+  allSuppliersData = [...this.mockDataService.getSuppliers()]
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
@@ -60,13 +50,11 @@ export class PartManagementComponent implements OnInit {
       map(result => result.data),
       map(data => data.materials)
     ).subscribe(data => {
-      console.log('[subscribe] data', data);
       this.tableData$$.next(data);
     })
   }
 
   tableEvent(event: any) {
-    console.log('[tableEvent] event', event);
     // TODO to enum types
     if (event.eventName == 'changePage') {
       this.refreshData(event.data);
@@ -93,21 +81,53 @@ export class PartManagementComponent implements OnInit {
             size: 'lg',
             data: data
         })
-        .subscribe((action: any) => {
-          if (action.event === ModalEventType.NEW) {
-            this.addNewMaterial(action.data);
-          } else if (action.event === ModalEventType.UPDATE) {
-            this.updateMaterial(action.data.id, action.data);
+        .subscribe((action) => {
+
+          // Custom tabs events
+          if (action.data && action.data.tabActive) {
+            if (action.data.state === 'addNewCompliance') {
+              this.addNewCompliance(action.data);
+            }
+
+            if (action.data.state === 'changeCompliance') {
+              this.changeCompliance(action.data);
+            }
+            return;
           }
 
+          // General Modal Events
+          if (action.event === ModalTypes.NEW) {
+            this.addNewMaterial(action.data);
+          } else if (action.event === ModalTypes.UPDATE) {
+            this.updateMaterial(action.data.id, action.data);
+          }
         });
   };
+
+  changeCompliance(data: any) {
+    this.materialService.changeCompliance(data)
+      .subscribe((result: any) => {
+        if (result) {
+          this.refreshData();
+          this.modalService.closeModal();
+        }
+      });
+  }
+
+  addNewCompliance(data: any) {
+    this.materialService.addNewCompliance(data)
+      .subscribe((result: any) => {
+        if (result) {
+          this.refreshData();
+          this.modalService.closeModal();
+        }
+      });
+  }
 
   addNewMaterial(data: any) {
     this.materialService.addMaterial(data)
       .subscribe((result: any) => {
         if (result) {
-          //todo change logic (push new material to tableData$$)
           this.tableData$$.next([result.data.material, ...this.tableData$$.value]);
           this.modalService.closeModal();
         }
@@ -124,19 +144,15 @@ export class PartManagementComponent implements OnInit {
       });
   }
 
-  // filters
   searchSupplier(search: string) {
-    this.availableSuppliers = this.allSuppliersData.filter(supplier => supplier.name.includes(search) || supplier.name.toLowerCase().includes(search.toLowerCase()))
-    this.isSupplierAvailable = true;
+    this.availableSuppliers = this.allSuppliersData
+      .filter(supplier =>
+        supplier.name.includes(search) || supplier.name.toLowerCase().includes(search.toLowerCase())
+      )
   };
 
   selectSupplier(supplier: { id: number, name: string }) {
-    this.currentSupplier.set(supplier);
-    this.isSupplierAvailable = false;
-  };
-
-  clearCurrentSupplier() {
-    this.currentSupplier.set(null);
+    // TODO filter
   };
 
   selectStatus(status: any) {

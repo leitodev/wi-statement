@@ -1,6 +1,6 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {TitleCasePipe} from "@angular/common";
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 export interface RadioOption {
   id: number,
@@ -12,7 +12,8 @@ export interface RadioOption {
   selector: 'app-radio',
   standalone: true,
   imports: [
-    TitleCasePipe
+    TitleCasePipe,
+    FormsModule
   ],
   templateUrl: './radio.component.html',
   styleUrl: './radio.component.scss',
@@ -35,16 +36,21 @@ export class RadioComponent implements ControlValueAccessor{
   }];
 
   writeValue(value: string): void {
-    console.log('writeValue',  value);
     this.value = value;
   }
-  onChange(value: any){};
+  onChange(value: any){
+    this.onChangeCallback(value);
+  };
   onTouched(){};
 
   registerOnChange(fn: any): void {
-    this.onChange = fn;
+    this.onChangeCallback = fn;
   }
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  private onChangeCallback(value: any) {
+
   }
 }

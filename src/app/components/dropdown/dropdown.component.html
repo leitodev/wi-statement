@@ -3,7 +3,7 @@
         <label (click)="toggleChoice()" class="{{LabelClass}}">{{label}}</label>
     }
     <div class="relative">
-        <div (click)="toggleChoice()" class="flex justify-between w-full h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
+        <div (click)="toggleChoice()" class="flex justify-between w-full min-w-[220px] h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
             <span>{{value}}</span>
             @if (!listAvailable){
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

@@ -8,6 +8,8 @@
             name="{{groupName}}"
             value="{{option.value}}"
             [checked]="value === option.value"
+            [(ngModel)]="value"
+            (change)="onChange(value)"
             class="cursor-pointer appearance-none mr-2 h-4 w-4 border border-gray-400 rounded-full checked:bg-blue-600 checked:border-blue-600 focus:ring-2 focus:ring-blue-500 relative checked:before:block checked:before:absolute checked:before:inset-1 checked:before:bg-white checked:before:rounded-full"
         />
         <label for="{{option.name}}{{option.id}}" class=" text-sm text-gray-700 cursor-pointer">{{option.name | titlecase}}</label>

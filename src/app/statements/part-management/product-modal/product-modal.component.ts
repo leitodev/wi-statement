@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, signal} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {ModalService} from "../../../components/modal/modal.service";
@@ -7,7 +7,7 @@ import {DropdownComponent} from "../../../components/dropdown/dropdown.component
 import {SupplierService} from "../../../services/supplier.service";
 import {MaterialService} from "../../../services/material.service";
 import {ToastrService} from "ngx-toastr";
-import {ModalEventType} from "../../../components/modal/modal-event-type";
+import {ModalTypes} from "../../../components/modal/modal-types";
 import {StatusSvgComponent} from "../../../components/status-svg/status-svg.component";
 import {materialStatus} from "../../../config/status-config";
 import {ComplianceComponent} from "./compliance/compliance.component";
@@ -19,7 +19,8 @@ import {ComplianceComponent} from "./compliance/compliance.component";
   templateUrl: './product-modal.component.html',
   styleUrl: './product-modal.component.scss'
 })
-export class ProductModalComponent implements OnInit {
+export class ProductModalComponent implements OnInit, OnDestroy {
+  @ViewChild(ComplianceComponent) childFormComponent!: ComplianceComponent;
   @Input() data?: any = null;
   public tabActive = 'General';
   currentID = signal(null);
@@ -58,12 +59,23 @@ export class ProductModalComponent implements OnInit {
   };
 
   submitModal() {
-    let modalEvent = ModalEventType.NEW;
+    let modalEvent = ModalTypes.NEW;
 
-    if (this.currentID()) {
-      modalEvent = ModalEventType.UPDATE;
+    if(this.currentID()) {
+      modalEvent = ModalTypes.UPDATE;
     };
 
+    if(this.tabActive == 'Compliance') {
+      this.modal.submitModal({
+        complianceList: this.childFormComponent.getComplianceMultiData(),
+        tabActive: this.tabActive,
+        state: this.childFormComponent.currentState(),
+        form: this.childFormComponent.getForm(),
+        modalData: this.data,
+      }, modalEvent);
+      return;
+    }
+    // Tab General Data
     this.modal.submitModal({
       isParentChosen: this.isParentChosen,
       oldParentID: this.oldParentID,
@@ -104,8 +116,6 @@ export class ProductModalComponent implements OnInit {
   };
 
   selectParentProduct(product: any) {
-    console.log('selectParentProduct [product]', product);
-    // product.id 66eaf395d7a0aa4fa4ba336b
     this.isParentListAvailable = false;
     this.parentSearch = '';
     this.isParentChosen = product;
@@ -133,10 +143,9 @@ export class ProductModalComponent implements OnInit {
 
   initForm(data: any) {
     this.currentID.set(data._id);
-    console.log('[initForm] data', data);
 
     if (data) {
-      if (data.parentID){
+      if (data.parentID && data.parentID.length > 0) {
         this.oldParentID = data.parentID;
         this.materialService.searchById(data.parentID).subscribe(res => {
           this.productForm.patchValue({
@@ -153,7 +162,7 @@ export class ProductModalComponent implements OnInit {
         supplier: data.supplier
       });
 
-      this.setStatus(data.status);
+      // this.setStatus(data.status);
     };
   };
 
@@ -169,6 +178,12 @@ export class ProductModalComponent implements OnInit {
     if (!this.data) {
       return
     };
+
+
     this.initForm(this.data);
+  }
+
+  ngOnDestroy() {
+    console.log('ngOnDestroy product modal')
   }
 }

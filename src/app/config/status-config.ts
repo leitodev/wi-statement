@@ -13,18 +13,18 @@ Limited Availability — Материал доступен в ограничен
 On Hold — Материал заморожен до разрешения какой-то проблемы или проверки.
 */
 export const materialStatus = [
-    { id: 1, name: 'Active' },
-    { id: 2, name: 'Obsolete' },
-    { id: 3, name: 'Pending Approval' },
-    { id: 4, name: 'Under Review' },
-    { id: 5, name: 'Discontinued' },
-    { id: 6, name: 'In Development' },
-    { id: 7, name: 'Inactive' },
-    { id: 8, name: 'Prototype' },
-    { id: 9, name: 'Recalled' },
-    { id: 10, name: 'Needs Review' },
-    { id: 11, name: 'Limited Availability' },
-    { id: 12, name: 'On Hold' }
+    { id: 1, name: 'active' },
+    { id: 2, name: 'obsolete' },
+    { id: 3, name: 'pending approval' },
+    { id: 4, name: 'under review' },
+    { id: 5, name: 'discontinued' },
+    { id: 6, name: 'in development' },
+    { id: 7, name: 'inactive' },
+    { id: 8, name: 'prototype' },
+    { id: 9, name: 'recalled' },
+    { id: 10, name: 'needs review' },
+    { id: 11, name: 'limited availability' },
+    { id: 12, name: 'on hold' }
 ];
 
 

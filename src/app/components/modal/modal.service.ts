@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ModalComponent } from './modal.component';
-import {ModalEventType} from "./modal-event-type";
+import {ModalTypes} from "./modal-types";
 
 @Injectable({
     providedIn: 'root'
@@ -37,13 +37,14 @@ export class ModalService {
   };
 
   closeModal() {
+    this.modalNotifier?.next({
+      event: ModalTypes.CLOSE
+    });
     this.modalNotifier?.complete();
     this.modalComponent.destroy();
   }
 
-  submitModal(data: any, event: ModalEventType) {
-    console.log('___ [submitModal] event', event);
-
+  submitModal(data: any, event: ModalTypes) {
     this.modalNotifier?.next({
       event,
       data
