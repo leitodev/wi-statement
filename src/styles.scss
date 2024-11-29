@@ -10,3 +10,13 @@
   padding: 0px;
   margin: 0px;
 }
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.cdk-overlay-connected-position-bounding-box {
+  position: absolute;
+  width: auto !important;
+  z-index: 999;
+}

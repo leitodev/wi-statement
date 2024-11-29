@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {complianceStatus} from "../../config/status-config";
 import {DropdownComponent} from "../dropdown/dropdown.component";
 import {FormsModule} from "@angular/forms";
+import {ScrollDispatcher} from "@angular/cdk/scrolling";
 
 export interface IComplianceInputData {
     id: string | number,
@@ -52,6 +53,8 @@ export class ComplianceMultiSelectComponent {
         });
     }
 
+    constructor() {}
+
     getComplianceMultiData() {
         return [...this.complianceMultiData];
     }
@@ -83,5 +86,9 @@ export class ComplianceMultiSelectComponent {
 
     toggleCompliance(e: Event, idx: any) {
         this.complianceMultiData[idx].selected = (e.target as HTMLInputElement).checked;
+    }
+
+    onScroll(event: Event): void {
+        console.log('scrollEvent MULTI', event);
     }
 }

@@ -3,7 +3,7 @@
         <label (click)="toggleChoice()" class="{{LabelClass}}">{{label}}</label>
     }
     <div class="relative">
-        <div (click)="toggleChoice()" class="flex justify-between w-full min-w-[220px] h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
+        <div #trigger (click)="toggleChoice()" class="flex justify-between w-full min-w-[220px] h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
             <span>{{value}}</span>
             @if (!listAvailable){
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -16,12 +16,12 @@
             }
         </div>
     </div>
-
-    @if (listAvailable) {
-        <ul class="absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white">
-            @for (item of dataList; track item.id) {
-                <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ parseItemListKey(item) }}</li>
-            }
-        </ul>
-    }
 </div>
+
+<ng-template #dropdownTemplate>
+    <ul class="absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white" (mouseleave)="onMouseLeaveContent()">
+        @for (item of dataList; track item.id) {
+            <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ parseItemListKey(item) }}</li>
+        }
+    </ul>
+</ng-template>

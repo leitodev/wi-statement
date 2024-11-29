@@ -119,6 +119,27 @@
 
         <div class="flex w-full gap-10 mb-5">
             <div class="flex flex-col w-2/4">
+                <label for="supplierItemNumber" class="text-sm font-medium text-gray-900">Supplier Item Number</label>
+                <input id="supplierItemNumber"
+                       name="supplierItemNumber"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="supplierItemNumber">
+            </div>
+
+            <div class="flex flex-col w-2/4">
+                <label for="countryOfOrigin" class="text-sm font-medium text-gray-900">Country Of Origin</label>
+                <input id="countryOfOrigin"
+                       name="countryOfOrigin"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="countryOfOrigin">
+            </div>
+
+        </div>
+
+        <div class="flex w-full gap-10 mb-5">
+            <div class="flex flex-col w-2/4">
                 <label class="text-sm font-medium text-gray-900">Components</label>
                 @if (data) {
                     <ul class="tree">

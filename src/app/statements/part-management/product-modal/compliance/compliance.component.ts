@@ -37,7 +37,7 @@ export class ComplianceComponent{
   @Input()
   set data(value: any) {
     this._data = value;
-    this.selectFirstCompliance();
+    // this.selectFirstCompliance();
 
     if (!this._data || !this._data.regulatoryCompliance) {
       return;
@@ -61,18 +61,19 @@ export class ComplianceComponent{
 
   uploadedFile: File | null = null;
   currentState: WritableSignal<State> = signal('docList');
-  documents: WritableSignal<IDocument[]>  = signal([
-    {
-      _id: '777777771',
-      title: 'no document',
-      comments: '',
-      fileUrl: '',
-      updatedAt: '2024-10-16T18:01:39.839Z',
-      uploadedBy: {
-          name: ''
-      }
-    }
-  ]);
+  // documents: WritableSignal<IDocument[]>  = signal([
+  //   {
+  //     _id: '777777771',
+  //     title: 'no document',
+  //     comments: '',
+  //     fileUrl: '',
+  //     updatedAt: '2024-10-16T18:01:39.839Z',
+  //     uploadedBy: {
+  //         name: ''
+  //     }
+  //   }
+  // ]);
+  documents: WritableSignal<IDocument[]>  = signal([]);
 
   fileName = '';
   statuses = complianceStatus;
@@ -107,8 +108,6 @@ export class ComplianceComponent{
   }
 
   changeCompliance(e: Event) {
-    e.stopPropagation();
-
     this.currentState.set('changeCompliance');
   }
 

@@ -33,10 +33,14 @@ export class ModalService {
 
     this.document.body.appendChild(this.modalComponent.location.nativeElement);
     this.modalNotifier = new Subject();
+
+    document.body.classList.add('no-scroll');
+
     return this.modalNotifier?.asObservable();
   };
 
   closeModal() {
+    document.body.classList.remove('no-scroll');
     this.modalNotifier?.next({
       event: ModalTypes.CLOSE
     });

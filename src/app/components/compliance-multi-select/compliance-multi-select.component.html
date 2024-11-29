@@ -1,5 +1,4 @@
-
-<div class="complianceMultiSelect min-w-[500px]">
+<div class="complianceMultiSelect">
     <div class="relative">
         <input
             #inputRef
@@ -24,7 +23,7 @@
 
     </div>
 
-    <ul class="max-h-[280px] overflow-auto">
+    <ul  (scroll)="onScroll($event)">
         @for(compliance of complianceMultiData; track compliance.id; let idx = $index) {
             @if(compliance.visible){
                 <li>
@@ -38,6 +37,7 @@
                     <label for="checkbox{{compliance.id}}" class="ms-1 text-md text-gray-700 cursor-pointer pl-1 pr-1">{{compliance.title}}</label>
                     </span>
                         <app-dropdown
+                                [closeIfLeaveContent]="true"
                                 [label]="''"
                                 [default]="compliance.status"
                                 [dataList]="statuses"

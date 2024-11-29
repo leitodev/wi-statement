@@ -33,7 +33,9 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     partNumber: ['', [Validators.required]],
     description: [''],
     status: [''],
-    supplier: ['']
+    supplier: [''],
+    supplierItemNumber: [''],
+    countryOfOrigin: [''],
   });
 
   productSearchList: any = [];
@@ -159,7 +161,10 @@ export class ProductModalComponent implements OnInit, OnDestroy {
         partNumber: data.partNumber,
         description: data.description,
         status: data.status,
-        supplier: data.supplier
+        supplier: data.supplier,
+        supplierItemNumber: data.supplierItemNumber,
+        countryOfOrigin: data.countryOfOrigin,
+
       });
 
       // this.setStatus(data.status);
@@ -178,8 +183,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     if (!this.data) {
       return
     };
-
-
     this.initForm(this.data);
   }
 

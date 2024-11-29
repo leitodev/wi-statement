@@ -1,22 +1,26 @@
 
 <div class="flex min-h-[400px] w-full">
     <div class="w-3/12">
-        <button (click)="addNewCompliance()" class="mb-3 mt-3 text-xs flex items-center gap-1 submit-button px-1 py-0.5 bg-green-400 text-white font-semibold rounded-lg shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg> Add Compliance
-        </button>
+        <div class="flex gap-3">
+            <button (click)="addNewCompliance()" class="w-2/4 mb-3 mt-3 text-xs flex items-center gap-1 submit-button px-1 py-0.5 bg-green-400 text-white font-semibold rounded-lg shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg> Add Compliance
+            </button>
+
+            <button (click)="changeCompliance($event)" class="w-2/4 mb-3 mt-3 text-xs flex items-center gap-1 submit-button px-1 py-0.5 bg-green-400 text-white font-semibold rounded-lg shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg> Group Change
+            </button>
+        </div>
+
         <ul>
             @for(compliance of data?.regulatoryCompliance; track compliance.title ){
             <li (click)="selectCompliance(compliance)"  class="flex justify-between cursor-pointer border border-slate-300 mb-1 px-2 py-1 hover:bg-gray-100 cursor-pointer" title="{{compliance.status}}">
                 <span class="flex">
                     <app-status-svg [complianceStatus]="compliance.status"></app-status-svg>
                     {{compliance.title}}
-                </span>
-                <span (click)="changeCompliance($event)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                    </svg>
                 </span>
             </li>
                 <!-- desc: {{compliance.description}}  -->
@@ -55,6 +59,8 @@
                         </span>
                     </td>
                 </tr>
+                } @empty {
+                    <h1>Please select compliance</h1>
                 }
             </tbody>
         </table>
