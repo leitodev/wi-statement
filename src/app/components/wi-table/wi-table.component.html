@@ -114,7 +114,7 @@
 
 <ng-template #rcList let-data>
     <td class="border border-slate-300 pl-2">
-        <ul>
+        <ul class="h-auto">
             @for (item of data; track item.description) {
                 <li class="flex pl-2" title="{{item.status}}">
                     <span [ngSwitch]="item.status | lowercase">

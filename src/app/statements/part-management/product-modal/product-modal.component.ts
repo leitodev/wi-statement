@@ -36,6 +36,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     supplier: [''],
     supplierItemNumber: [''],
     countryOfOrigin: [''],
+    BOMcomponent: [''],
   });
 
   productSearchList: any = [];
@@ -164,7 +165,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
         supplier: data.supplier,
         supplierItemNumber: data.supplierItemNumber,
         countryOfOrigin: data.countryOfOrigin,
-
+        BOMcomponent: data.BOMcomponent,
       });
 
       // this.setStatus(data.status);
@@ -183,6 +184,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     if (!this.data) {
       return
     };
+    console.log('this.data modal', this.data);
     this.initForm(this.data);
   }
 
