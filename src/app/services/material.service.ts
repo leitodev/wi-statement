@@ -21,6 +21,29 @@ export interface MaterialList {
   updatedAt: string
 };
 
+/*
+* {
+    "regulationType": "other",
+    "status": "active",
+    "jurisdiction": [],
+    "_id": "66d74d37c32d0715a4ff7a7b",
+    "title": "EU REACH",
+    "description": "Regulation concerning the Registration, Evaluation, Authorisation and Restriction of Chemicals",
+    "createdAt": "2024-09-03T17:53:59.167Z",
+    "updatedAt": "2024-09-05T16:17:13.589Z"
+}*/
+
+export interface RegulationList {
+  regulationType: string;
+  status: string,
+  jurisdiction: [],
+  _id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export interface MaterialsResponse {
   code: number;
   status: string;
@@ -30,6 +53,17 @@ export interface MaterialsResponse {
     materials: MaterialList[],
   }
 };
+
+export interface RegulationsResponse {
+  code: number;
+  status: string;
+  data: {
+    currentPage: number,
+    totalPages: number,
+    regulations: RegulationList[],
+  }
+}
+
 
 interface foundMaterial {
   code: number;
@@ -95,10 +129,16 @@ export class MaterialService {
   }
 
   addMaterial(data: any) {
-    const body  = {
+    let body  = {
       ...data.form,
       parentID: data.isParentChosen ? data.isParentChosen.id : null
     };
+
+    if (body.parentID !== null) {
+      body.parentID = [body.parentID];
+    } else {
+      delete body.parentID;
+    }
 
     return this.http.post(this.apiUrl+'/materials', body).pipe(
       tap((res: any) => {
@@ -207,6 +247,23 @@ export class MaterialService {
         return of(null);
       })
     )
+  }
+
+
+  getAllComplianceList() {
+    return this.http.get<RegulationsResponse>(this.apiUrl+'/regulatories').pipe(
+      catchError((error) => {
+        this.toastr.error(error.error.message)
+
+        const emptyRegulationsObj = {
+          data: {
+            regulations: [],
+          }
+        };
+
+        return of(emptyRegulationsObj);
+      })
+    );
   }
 
 

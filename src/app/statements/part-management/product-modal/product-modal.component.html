@@ -27,11 +27,13 @@
         <span class="text-sm font-medium">General</span>
     </div>
 
-    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
-         (click)="tabActive='Compliance'"
-         [class.bg-gray-100]="tabActive!=='Compliance'">
-        <span class="text-sm font-medium">Compliance</span>
-    </div>
+    @if(data && data.partNumber) {
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='Compliance'"
+             [class.bg-gray-100]="tabActive!=='Compliance'">
+            <span class="text-sm font-medium">Compliance</span>
+        </div>
+    }
 </div>
 
 <div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">

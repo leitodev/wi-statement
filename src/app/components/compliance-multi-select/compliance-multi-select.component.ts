@@ -48,7 +48,7 @@ export class ComplianceMultiSelectComponent {
                 title: item.title,
                 status: item.status,
                 visible: true,
-                selected: false,
+                selected: item.selected ? true : false,
             }
         });
     }

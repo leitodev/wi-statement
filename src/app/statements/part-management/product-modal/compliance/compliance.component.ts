@@ -1,4 +1,4 @@
-import {Component, Input, signal, ViewChild, WritableSignal} from '@angular/core';
+import {Component, Input, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
 import {StatusSvgComponent} from "../../../../components/status-svg/status-svg.component";
 import {DatePipe, NgClass, NgIf} from "@angular/common";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
@@ -10,8 +10,19 @@ import {map} from "rxjs";
 import {
   ComplianceMultiSelectComponent
 } from "../../../../components/compliance-multi-select/compliance-multi-select.component";
+import {MaterialService, RegulationList} from "../../../../services/material.service";
 
 type State = 'docList' | 'addNewDoc' | 'addNewCompliance' | 'changeCompliance';
+
+interface IComplianceData {
+  id: string;
+  title: string;
+  status: {
+    id: number;
+    name: string;
+  };
+  selected?: boolean;
+}
 
 @Component({
   selector: 'app-compliance',
@@ -29,10 +40,11 @@ type State = 'docList' | 'addNewDoc' | 'addNewCompliance' | 'changeCompliance';
   templateUrl: './compliance.component.html',
   styleUrl: './compliance.component.scss'
 })
-export class ComplianceComponent{
+export class ComplianceComponent implements OnInit {
   @ViewChild(ComplianceMultiSelectComponent) complianceMultiSelectComponent!: ComplianceMultiSelectComponent;
   private _data: any = null;
-  complianceData = [];
+  complianceData: IComplianceData[] = [];
+  complianceFromCurrentMaterial: IComplianceData[] = [];
 
   @Input()
   set data(value: any) {
@@ -43,7 +55,7 @@ export class ComplianceComponent{
       return;
     }
 
-    this.complianceData = this._data.regulatoryCompliance.map((item: any) => {
+    this.complianceFromCurrentMaterial = this._data.regulatoryCompliance.map((item: any) => {
       return {
         id: item._id,
         title: item.title,
@@ -55,24 +67,41 @@ export class ComplianceComponent{
     });
   }
 
+  ngOnInit() {
+    this.materialService.getAllComplianceList().subscribe(res => {
+      this.complianceData = res.data.regulations.map(data => {
+        return {
+          id: data._id,
+          title: data.title,
+          status: {
+            id: Math.floor(Math.random() * 10000),
+            name: data.status
+          },
+        }
+      });
+
+      for (let i = 0; i < this.complianceData.length; i++) {
+        this.complianceData[i].status.name = '';
+
+        for (let j = 0; j < this.complianceFromCurrentMaterial.length; j++) {
+          if (this.complianceFromCurrentMaterial[j].id === this.complianceData[i].id) {
+            this.complianceData[i].status.name = this.complianceFromCurrentMaterial[j].status.name;
+            this.complianceData[i].selected = true;
+            break;
+          }
+        }
+
+      } // for
+
+    });
+  }
+
   get data(): any {
     return this._data;
   }
 
   uploadedFile: File | null = null;
   currentState: WritableSignal<State> = signal('docList');
-  // documents: WritableSignal<IDocument[]>  = signal([
-  //   {
-  //     _id: '777777771',
-  //     title: 'no document',
-  //     comments: '',
-  //     fileUrl: '',
-  //     updatedAt: '2024-10-16T18:01:39.839Z',
-  //     uploadedBy: {
-  //         name: ''
-  //     }
-  //   }
-  // ]);
   documents: WritableSignal<IDocument[]>  = signal([]);
 
   fileName = '';
@@ -104,7 +133,8 @@ export class ComplianceComponent{
   }
 
   constructor(private fb: FormBuilder,
-              private documentService: DocumentService) {
+              private documentService: DocumentService,
+              private materialService: MaterialService) {
   }
 
   changeCompliance(e: Event) {
