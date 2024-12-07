@@ -12,14 +12,14 @@ const tableConfig = {
     },
     {
       name: 'Supplier',
-      sort: true,
+      sort: false,
       value: 'supplier',
       type: 'textCenter',
       visible: true,
     },
     {
       name: 'Part Number',
-      sort: false,
+      sort: true,
       value: 'partNumber',
       type: 'textCenter',
       visible: true,

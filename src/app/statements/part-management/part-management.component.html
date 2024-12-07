@@ -75,7 +75,8 @@
 
 <wi-table
         [tableConfigData]="tableConfig"
-        [data]="tableData$$ | async"
+        [tableData]="tableData()"
+        [totalPages]="totalPages()"
         (tableEvent)="tableEvent($event)">
 </wi-table>
 

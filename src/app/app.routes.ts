@@ -23,7 +23,11 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'list', loadComponent: () => import("./statements/part-management/part-management.component")
           .then((m) => m.PartManagementComponent)
-      }
+      },
+      { path: 'users',
+        loadComponent: () => import("./users/users.component")
+          .then((m) => m.UsersComponent)
+      },
     ]
   },
   { path: 'ui-kit',

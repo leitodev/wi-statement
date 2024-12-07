@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {catchError, of, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
@@ -84,8 +84,17 @@ export class MaterialService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  get(page = 1) {
-    return this.http.get<MaterialsResponse>(`${this.apiUrl}/materials?page=${page}&limit=15`).pipe(
+  get(tableQueryParams: { [key: string]: any }) {
+    let params = new HttpParams();
+    if (tableQueryParams) {
+      for (const key in tableQueryParams) {
+        if (tableQueryParams.hasOwnProperty(key) && tableQueryParams[key] !== undefined && tableQueryParams[key] !== null) {
+          params = params.set(key, tableQueryParams[key]);
+        }
+      }
+      console.log('params', params);
+    }
+    return this.http.get<MaterialsResponse>(`${this.apiUrl}/materials`, { params }).pipe(
       catchError((error) => {
         this.toastr.error(error.error.message)
 

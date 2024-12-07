@@ -1,7 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+  Component, effect,
+  EventEmitter,
+  input,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
-import {environment} from "../../../environments/environment";
+
+export interface IFieldSortData {
+  sortBy: string;
+  sortOrder: string;
+}
 
 @Component({
   selector: 'wi-table',
@@ -12,32 +23,64 @@ import {environment} from "../../../environments/environment";
 })
 export class WiTableComponent implements OnInit {
   currentPage = 1;
-  totalPages = 10;
-  limit = 10;
-  tablePages: any[] = [];
-
+  tablePages: Array<{ id: number, value: number }> = [];
+  data: any[] = []; // why? because have problem with type of tableData signal input
   isTableSettingActive = false;
+  fieldSort: IFieldSortData = {
+    sortBy: '',
+    sortOrder: 'asc'
+  };
 
   @Input('tableConfigData') tableConfig: any = null;
-  @Input() data: any = null;
+  tableData = input.required();
+  totalPages = input(1);
   @Output() tableEvent = new EventEmitter();
 
-  constructor(private configStorageService: ConfigStorageService) {}
+  constructor(private configStorageService: ConfigStorageService) {
+    effect(() => {
+      this.data = this.tableData() as any[];
 
-  ngOnInit() {
-    this.totalPages = this.tableConfig.paginator.totalPages
-    this.currentPage = this.tableConfig.paginator.currentPage;
-    this.limit = this.tableConfig.limit;
-    this.tablePages = Array.from({ length: this.totalPages }, (_, i) => ({ id: i + 1, value: i + 1 }));
-    const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
-
-    if (settings) {
-      this.tableConfig = settings;
-    }
+      // re-generate pagination
+      this.tablePages = Array.from({ length: this.totalPages() }, (_, i) => ({ id: i + 1, value: i + 1 }));
+    });
   }
 
+  ngOnInit() {
+    const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
+
+    // TODO need better implementation for store table settings
+    if (settings) {
+      for (let i = 0; i < settings.cells.length; i++) {
+        for (let j = 0; j < this.tableConfig.cells.length; j++) {
+          if (this.tableConfig.cells[j].name === settings.cells[i].name) {
+            this.tableConfig.cells[j].visible = settings.cells[i].visible;
+            break;
+          }
+        }
+      }
+    } // if
+  }
+
+  sortByField(field: any){
+
+    if (!field.sort) {
+      return;
+    }
+
+    if (this.fieldSort && this.fieldSort.sortBy === field.value) {
+      this.fieldSort.sortOrder = this.fieldSort.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.fieldSort = {
+        sortBy: field.value,
+        sortOrder: 'asc'
+      }
+    }
+
+    this.tableEvent.emit({eventName:'applySort', data: this.fieldSort });
+  };
+
   tableRowCLick(rowItem: any){
-    this.tableEvent.emit({eventName:'tableRowCLick', data: rowItem });
+    //this.tableEvent.emit({eventName:'tableRowCLick', data: rowItem });
   };
 
   tableRowEditBtn(rowItem: any, event: Event){
@@ -68,7 +111,7 @@ export class WiTableComponent implements OnInit {
     }
   }
   nextPage() {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages()) {
       this.changePage(this.currentPage + 1);
     }
   }
