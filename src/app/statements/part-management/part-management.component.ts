@@ -1,4 +1,4 @@
-import {Component, OnInit, Signal, signal, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, signal, TemplateRef, ViewChild} from '@angular/core';
 import {IFieldSortData, WiTableComponent} from "../../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
 import {ModalService} from "../../components/modal/modal.service";
@@ -11,11 +11,12 @@ import { map, tap} from "rxjs";
 import {MaterialList, MaterialService} from "../../services/material.service";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {materialStatus} from "../../config/status-config";
+import {MaterialsFilterComponent} from "./materials-filter/materials-filter.component";
 
 @Component({
   selector: 'app-part-management',
   standalone: true,
-  imports: [WiTableComponent, ProductModalComponent, DropdownSearchComponent, DropdownComponent, AsyncPipe, CommonModule],
+  imports: [WiTableComponent, ProductModalComponent, DropdownSearchComponent, DropdownComponent, AsyncPipe, CommonModule, MaterialsFilterComponent],
   templateUrl: './part-management.component.html',
   styleUrl: './part-management.component.scss',
   providers: []
@@ -50,7 +51,7 @@ export class PartManagementComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.refreshData();
+    this.refreshData(this.tableQueryParams);
   };
 
   refreshData(tableQueryParams: any = null) {
@@ -89,8 +90,6 @@ export class PartManagementComponent implements OnInit {
   toggleFilter() {
     this.isFilterVisible = !this.isFilterVisible;
   };
-
-  applyFilter() {}
 
   openModal(modalTemplate: TemplateRef<any>, data: any) {
     this.modalService
@@ -182,6 +181,28 @@ export class PartManagementComponent implements OnInit {
     this.tableQueryParams['sortBy'] = data.sortBy;
     this.tableQueryParams['sortOrder'] = data.sortOrder;
     this.refreshData(this.tableQueryParams);
+  }
+
+  applyFilter(data: { [key: string]: string }){
+
+    if (data === null) {
+    this.tableQueryParams  = {
+        ...this.defaultTableQueryParams
+      };
+
+      this.refreshData(this.tableQueryParams);
+      return;
+    }
+
+    console.log('applyFilter', data);
+    for (const property in data) {
+      if (data[property]) {
+        this.tableQueryParams[property] = data[property];
+      }
+    };
+
+    this.refreshData(this.tableQueryParams);
+
   }
 
 }// Part Management

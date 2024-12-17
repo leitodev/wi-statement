@@ -5,14 +5,14 @@ const tableConfig = {
   cells: [
     {
       name: 'id',
-      sort: true,
+      sort: false,
       value: '_id',
       type: 'textCenter',
       visible: true,
     },
     {
       name: 'Supplier',
-      sort: false,
+      sort: true,
       value: 'supplier',
       type: 'textCenter',
       visible: true,
@@ -33,14 +33,14 @@ const tableConfig = {
     },
     {
       name: 'Description',
-      sort: false,
+      sort: true,
       value: 'description',
       type: 'textCenter',
       visible: true,
     },
     {
       name: 'RCompliance',
-      sort: false,
+      sort: true,
       value: 'regulatoryCompliance',
       type: 'rcList',
       visible: false,
@@ -50,6 +50,6 @@ const tableConfig = {
     currentPage: 1,
     totalPages: 1,
   },
-  limit: 20
+  limit: 15
 }
 export default tableConfig;

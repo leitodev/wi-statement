@@ -1,0 +1,85 @@
+<div [formGroup]="form" class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+    <!--
+       Бек поддерживает фильтрацию по следующим полям:
+       -supplier
+       -status
+       -partNumber
+       -countryOfOrigin
+       -description
+       -parentID
+       -componentPartNumber
+       -regulatoryCompliance && complianceStatus
+       -->
+
+    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
+        <div class="input-group">
+            <label id="supplier" class="font-medium">Supplier</label>
+            <input type="text" formControlName="supplier" class="w-full h-[2rem] border px-2 py-1" name="supplier">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
+        <div class="input-group">
+            <label id="partNumber" class="font-medium">Part Number</label>
+            <input type="text" formControlName="partNumber" class="w-full h-[2rem] border px-2 py-1" name="partNumber">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
+        <div class="input-group">
+            <label id="status" class="font-medium">Status</label>
+            <input type="text" formControlName="status" class="w-full h-[2rem] border px-2 py-1" name="status">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
+        <div class="input-group">
+            <label id="countryOfOrigin" class="font-medium">Country Of Origin</label>
+            <input type="text" formControlName="countryOfOrigin" class="w-full h-[2rem] border px-2 py-1" name="countryOfOrigin">
+        </div>
+    </div>
+
+    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
+        <div class="input-group">
+            <label id="description" class="font-medium">Description</label>
+            <input type="text" formControlName="description" class="w-full h-[2rem] border px-2 py-1" name="description">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
+        <div class="input-group">
+            <label id="parentID" class="font-medium">ParentID</label>
+            <input type="text" formControlName="parentID" class="w-full h-[2rem] border px-2 py-1" name="parentID">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
+        <div class="input-group">
+            <label id="componentPartNumber" class="font-medium overflow-auto whitespace-nowrap">Component Part Number</label>
+            <input type="text" class="w-full h-[2rem] border px-2 py-1" name="componentPartNumber">
+        </div>
+    </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
+        <div class="input-group">
+            <label id="regulatoryCompliance" class="font-medium overflow-auto whitespace-nowrap">Regulatory Compliance</label>
+            <input type="text" formControlName="regulatoryCompliance" class="w-full h-[2rem] border px-2 py-1" name="regulatoryCompliance">
+        </div>
+    </div>
+<!--    col-span-3 lg:col-span-3 md:col-auto sm:col-span-6 -->
+    <div class="col-span-3 lg:col-span-3 md:col-span-5 sm:col-span-6">
+        <div class="input-group">
+            <label id="complianceStatus" class="font-medium overflow-auto whitespace-nowrap">Compliance Status</label>
+            <input type="text" formControlName="complianceStatus" class="w-full h-[2rem] border px-2 py-1" name="complianceStatus">
+        </div>
+    </div>
+
+    <footer class="col-span-12 flex gap-2 justify-end">
+        @if (isFilterApplied) {
+            <button (click)="reset()" class="flex items-center gap-1 submit-button px-1 py-0.5 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg> Reset
+            </button>
+        }
+        <button (click)="applyFilter()" class="flex items-center gap-1 submit-button px-1 py-0.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg> Apply
+        </button>
+    </footer>
+</div>
