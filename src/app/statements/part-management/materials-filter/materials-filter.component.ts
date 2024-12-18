@@ -15,13 +15,12 @@ export class MaterialsFilterComponent {
   isFilterApplied = false;
 
   form = this.fb.group({
-    // componentPartNumber ?
+    // parentID: [''],
     supplier: [''],
     status: [''],
     partNumber: [''],
     countryOfOrigin: [''],
     description: [''],
-    parentID: [''],
     regulatoryCompliance: [''],
     complianceStatus: [''],
     componentPartNumber: ['']
