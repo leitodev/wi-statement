@@ -8,21 +8,23 @@ import {
 } from '@angular/core';
 
 import {FormsModule} from "@angular/forms";
-import {OverlayModule} from '@angular/cdk/overlay';
+import {Overlay, OverlayModule, OverlayRef} from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 
 @Component({
-  selector: 'app-dropdown',
+  selector: 'app-dropdown-multi',
   standalone: true,
   imports: [FormsModule, OverlayModule],
-  templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.scss'
+  templateUrl: './dropdown-multi.component.html',
+  styleUrl: './dropdown-multi.component.scss'
 })
-export class DropdownComponent implements OnInit {
+export class DropdownMultiComponent implements OnInit {
   value: string = '';
   listAvailable = false;
-  @ViewChild('trigger') trigger!: ElementRef;
-  @ViewChild('dropdownTemplate') dropdownTemplate!: any;
+  @ViewChild('trigger', { static: true, read: ElementRef }) trigger!: ElementRef<HTMLElement>;
+
+  @ViewChild('dropdownTemplate2') dropdownTemplate!: any;
 
   @Input() default: {id: number, name: string} | any = null;
   @Input() dataList: Array<{id: number, name: string}> = [];
@@ -60,6 +62,7 @@ export class DropdownComponent implements OnInit {
   }
 
   parseItemListKey(item: any) {
+    // console.log('this data', this.dataList);
     let values: string[] = [];
 
     for (let i = 0; i < this.listKeys.length; i++) {
@@ -82,7 +85,7 @@ export class DropdownComponent implements OnInit {
   toggleChoice() {
     this.listAvailable = !this.listAvailable;
     this.ddPortalManagerService.managePortal(this.trigger, this.dropdownTemplate, this.viewContainerRef);
-  };
+  }
 
   onMouseLeaveContent() {
     if (this.closeIfLeaveContent) {

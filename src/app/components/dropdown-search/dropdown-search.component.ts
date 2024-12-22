@@ -11,6 +11,10 @@ import {
 
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 
+type Data<T = any> = {
+  id: number;
+} & T;
+
 @Component({
   selector: 'app-dropdown-search',
   standalone: true,
@@ -41,8 +45,8 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
   onChange(value: any){};
   onTouched(){};
 
-  @Input() searchDataList: Array<{id: number}> = [];
-  @Input() listKeys: string[] = [];
+  @Input() searchDataList: Array<Data> = []; // <li> DATA
+  @Input() listKeys: string[] = []; // for list <li> view [ NAME + PartNumber ]
   @Input() label: string = '';
   @Input() LabelClass: string = 'block text-sm font-medium text-gray-900';
 
@@ -82,7 +86,7 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
     return values.join(' - ');
   }
 
-  selectItem(item: any) {
+  selectItem(item: Data) {
     this.search = this.parseItemListKey(item);
     this.selectedItem.emit(item);
     this.isParentListAvailable = false;
@@ -119,13 +123,4 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     // Handle disabled state
   }
-
-  // When the user selects an option
-  handleSelection(value: any) {
-    this.search = value;
-    if (this.onChange) {
-      this.onChange(value);
-    }
-  }
-
 }

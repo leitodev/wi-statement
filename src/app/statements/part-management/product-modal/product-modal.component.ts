@@ -107,6 +107,9 @@ export class ProductModalComponent implements OnInit, OnDestroy {
           description: material.description
         };
       });
+
+      console.log('this.productSearchList', this.productSearchList)
+
     });
   };
 
@@ -184,7 +187,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     if (!this.data) {
       return
     };
-    console.log('this.data modal', this.data);
     this.initForm(this.data);
   }
 

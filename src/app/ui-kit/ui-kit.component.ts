@@ -4,12 +4,13 @@ import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {DropdownSearchComponent} from "../components/dropdown-search/dropdown-search.component";
 import {DropdownComponent} from "../components/dropdown/dropdown.component";
 import {RadioComponent} from "../components/radio/radio.component";
-import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {complianceStatus} from "../config/status-config";
 import {
   ComplianceMultiSelectComponent,
   IComplianceInputData
 } from "../components/compliance-multi-select/compliance-multi-select.component";
+import {DropdownMultiComponent} from "../components/dropdown-multi/dropdown-multi.component";
 
 
 @Component({
@@ -26,7 +27,8 @@ import {
         ReactiveFormsModule,
         CommonModule,
         FormsModule,
-        ComplianceMultiSelectComponent
+        ComplianceMultiSelectComponent,
+        DropdownMultiComponent
     ],
   templateUrl: './ui-kit.component.html',
   styleUrl: './ui-kit.component.scss'
@@ -176,4 +178,5 @@ export class UiKitComponent {
     },
   ];
 
+  protected readonly statuses = complianceStatus;
 }
