@@ -1,10 +1,12 @@
 @if (tableConfig) {
+
+ <div class="overflow-x-auto">
 <table class="w-full table-auto border-collapse border border-slate-400">
   <thead>
   <tr>
     @for (header of tableConfig.cells; track header.name) {
         @if (header.visible) {
-            <th class="border border-slate-300">
+            <th class="border border-slate-300 whitespace-nowrap px-1">
                 <span class="flex justify-center items-center group">
                     @if (header.sort) {
                         <span (click)="sortByField(header)" class="hover:cursor-pointer hover:font-extrabold">{{ header.name }}</span>
@@ -97,6 +99,7 @@
   </tbody>
 
 </table>
+ </div>
 }
 @if (tableConfig.paginator && tablePages.length > 1) {
     <div id="paginator" class="flex justify-center items-center space-x-2 mt-3">
