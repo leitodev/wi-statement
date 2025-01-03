@@ -1,13 +1,13 @@
 import {
   Component, ElementRef,
-  EventEmitter,
+  EventEmitter, forwardRef,
   HostListener,
   Input,
   OnInit,
   Output, ViewChild, ViewContainerRef
 } from '@angular/core';
 
-import {FormsModule} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
@@ -22,9 +22,16 @@ interface Data {
   standalone: true,
   imports: [FormsModule, OverlayModule, ParseItemListKeyPipe],
   templateUrl: './dropdown-multi.component.html',
-  styleUrl: './dropdown-multi.component.scss'
+  styleUrl: './dropdown-multi.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DropdownMultiComponent),
+      multi: true
+    },
+  ]
 })
-export class DropdownMultiComponent implements OnInit {
+export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   values: Data[] = [];
   isListAvailable = false;
   availableItems: Data[] = [];
@@ -35,11 +42,14 @@ export class DropdownMultiComponent implements OnInit {
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
 
   @Input() default: {id: number, name: string} | any = null;
+  // @Input() set default(value: Data) {
+  //   this.values.push(value);
+  // };
   @Input() set dataList(value: Data[]) {
     this.availableItems = [...value];
     this.availableItemsBeforeSearch = [...value];
   };
-  @Input() listKeys: string[] = [];
+  @Input() listKeys: string[] = []; // [listKeys]="['partNumber', 'description']"
   @Input() label: string = '';
   @Input() LabelClass: string = 'block text-sm font-medium text-gray-900';
 
@@ -61,6 +71,16 @@ export class DropdownMultiComponent implements OnInit {
     }
   }
 
+  writeValue(value: Data[]): void {
+    if (Array.isArray(value) && value.length > 0) {
+      this.values = [...value];
+    } else {
+      this.values = [];
+    }
+  }
+  onChange(value: any){};
+  onTouched(){};
+
   closeOverlay() {
     this.ddPortalManagerService.detach();
   }
@@ -73,6 +93,7 @@ export class DropdownMultiComponent implements OnInit {
 
   selectItem(item: { id: number, name: string }) {
     this.values.push(item);
+    this.onChange(this.values.map(value => value.name));
     this.selectedItem.emit(this.values);
     this.isListAvailable = false;
     this.availableItems = this.availableItems.filter(value => value !== item);
@@ -94,5 +115,18 @@ export class DropdownMultiComponent implements OnInit {
     this.availableItems = this.availableItemsBeforeSearch.filter(item => {
       return item.name.includes(this.search) || item.name.toLowerCase().includes(this.search.toLowerCase());
     }).filter(item => !this.values.includes(item));
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  // Disables or enables the control
+  setDisabledState(isDisabled: boolean): void {
+    // Handle disabled state
   }
 }

@@ -1,11 +1,14 @@
 import {Component, output, OutputEmitterRef} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
+import {materialStatus} from "../../../config/status-config";
 
 @Component({
   selector: 'app-materials-filter',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DropdownMultiComponent
   ],
   templateUrl: './materials-filter.component.html',
   styleUrl: './materials-filter.component.scss'
@@ -14,10 +17,12 @@ export class MaterialsFilterComponent {
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
 
+  statusList = materialStatus;
+
   form = this.fb.group({
     // parentID: [''],
     supplier: [''],
-    status: [''],
+    status: [[]],
     partNumber: [''],
     countryOfOrigin: [''],
     description: [''],
