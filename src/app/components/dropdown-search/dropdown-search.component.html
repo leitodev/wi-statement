@@ -28,7 +28,7 @@
     @if (isParentListAvailable) {
         <ul class="search-result absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white">
             @for (item of searchDataList; track item.id) {
-                <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ parseItemListKey(item) }}</li>
+                <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ item | parseItemListKeyPipe:listKeys }}</li>
             }
         </ul>
     }

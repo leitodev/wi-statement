@@ -3,9 +3,21 @@
         <label (click)="toggleChoice()" class="{{LabelClass}}">{{label}}</label>
     }
     <div class="relative">
-        <div #trigger (click)="toggleChoice()" class="flex justify-between w-full min-w-[220px] h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
-            <span>{{value}}</span>
-            @if (!listAvailable){
+        <div #trigger (click)="toggleChoice()" class="flex justify-between w-full min-w-[220px] min-h-[2rem] border px-2 py-1 hover:cursor-pointer bg-white">
+
+            <div class="flex flex-wrap">
+                @for (value of values; track value.id; let idx = $index) {
+                    <!--   bg-zinc-200-->
+                    <span (click)="$event.stopPropagation()" class="flex items-center gap-1 bg-blue-700 text-white border-slate-100 rounded px-1 border text-sm cursor-auto">
+                        {{value.name}}
+                        <span (click)="unselect(value, idx)" class="rounded px-1 hover:bg-blue-900 cursor-pointer">x</span></span>
+                } @empty {
+                    <span></span>
+                }
+            </div>
+
+
+            @if (!isListAvailable){
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -18,10 +30,18 @@
     </div>
 </div>
 
-<ng-template #dropdownTemplate2>
-    <ul class="absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white" (mouseleave)="onMouseLeaveContent()">
-        @for (item of dataList; track item.id) {
-            <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ parseItemListKey(item) }}</li>
+<ng-template #dropdownTemplate>
+    <ul class="dropdown-content absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white">
+        <li>
+            <input [(ngModel)]="search"
+                   placeholder="Search..."
+                   autocomplete="off"
+                   (keyup)="searchItem()"
+                   [ngModelOptions]="{standalone: true}"
+                   name="search" type="text" class="search w-full h-[2rem] border px-2 py-1">
+        </li>
+        @for (item of availableItems; track item.id) {
+            <li (click)="selectItem(item)" class="hover:bg-gray-50 cursor-pointer">{{ item | parseItemListKeyPipe:listKeys }}</li>
         }
     </ul>
 </ng-template>

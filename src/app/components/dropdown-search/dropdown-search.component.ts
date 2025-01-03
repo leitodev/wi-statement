@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
 
 type Data<T = any> = {
   id: number;
@@ -19,7 +20,8 @@ type Data<T = any> = {
   selector: 'app-dropdown-search',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    ParseItemListKeyPipe
   ],
   templateUrl: './dropdown-search.component.html',
   styleUrl: './dropdown-search.component.scss',
@@ -28,7 +30,8 @@ type Data<T = any> = {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DropdownSearchComponent),
       multi: true
-    }
+    },
+    ParseItemListKeyPipe
   ]
 })
 export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
@@ -70,7 +73,7 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  constructor() {}
+  constructor(private parseItemListKeyPipe: ParseItemListKeyPipe) {}
 
   ngOnInit() {}
 
@@ -87,7 +90,7 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
   }
 
   selectItem(item: Data) {
-    this.search = this.parseItemListKey(item);
+    this.search = this.parseItemListKeyPipe.transform(item, this.listKeys);
     this.selectedItem.emit(item);
     this.isParentListAvailable = false;
     this.isSearchModeActive = false;

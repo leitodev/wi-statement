@@ -65,7 +65,9 @@ export class UiKitComponent {
   public dropdownDataList = [
     {id: 1, name: "Rejected"},
     {id: 2, name: "Approved"},
-    {id: 3, name: "Pending"}
+    {id: 3, name: "Pending"},
+    {id: 4, name: "test44"},
+    {id: 5, name: "In Process"},
   ];
 
   public productSearchList = [

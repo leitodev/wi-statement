@@ -1,3 +1,6 @@
+
+
+
 <div class="sidebar fixed top-0 bottom-0 h-full w-[250px] p-5 text-white bg-indigo-600">
     <!--  bg-indigo-500  -->
     <div class="flex justify-center rounded-md">
@@ -23,6 +26,21 @@
     </ul>
 </div>
 <div class="main-content ml-[250px] p-5" [formGroup]="form">
+
+    <div class="grid grid-cols-12 auto-rows-auto mb-5 py-1 px-1 gap-4">
+        <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-3">
+            <app-dropdown-multi
+                    [label]="'Multi Dropdown'"
+                    [dataList]="dropdownDataList"
+                    [listKeys]="['name']"
+            ></app-dropdown-multi>
+        </div>
+    </div>
+
+    <div class="flex mt-5">
+        <app-compliance-multi-select [complianceData]="complianceData"></app-compliance-multi-select>
+    </div>
+
     <h2 class="font-bold uppercase mt-2">Defining the Number of Columns</h2>
     <div class="grid grid-cols-3">
         <div class="bg-red-500">1</div>
@@ -229,15 +247,7 @@
 
 
 
-    <div class="grid grid-cols-12 auto-rows-auto mb-5 py-1 px-1 gap-4">
-        <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-3">
-            <app-dropdown-multi
-                    [label]="'Multi Dropdown'"
-                    [dataList]="dropdownDataList"
-                    [listKeys]="['name']"
-            ></app-dropdown-multi>
-        </div>
-    </div>
+
     <div class="flex">
         <div class="flex items-center justify-center w-full">
             <label for="file-upload" class="flex flex-col items-center px-4 py-6 bg-white border-2 border-dashed rounded-lg cursor-pointer hover:border-blue-500">
@@ -255,11 +265,4 @@
             Selected File: <span class="font-semibold">{{ fileName }}</span>
         </div>
     </div>
-
-    <div class="flex mt-5">
-        <app-compliance-multi-select [complianceData]="complianceData"></app-compliance-multi-select>
-    </div>
-
-
-
 </div>

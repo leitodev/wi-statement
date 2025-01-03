@@ -8,29 +8,39 @@ import {
 } from '@angular/core';
 
 import {FormsModule} from "@angular/forms";
-import {Overlay, OverlayModule, OverlayRef} from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
+import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
+import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
+
+interface Data {
+  id: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-dropdown-multi',
   standalone: true,
-  imports: [FormsModule, OverlayModule],
+  imports: [FormsModule, OverlayModule, ParseItemListKeyPipe],
   templateUrl: './dropdown-multi.component.html',
   styleUrl: './dropdown-multi.component.scss'
 })
 export class DropdownMultiComponent implements OnInit {
-  value: string = '';
-  listAvailable = false;
-  @ViewChild('trigger', { static: true, read: ElementRef }) trigger!: ElementRef<HTMLElement>;
+  values: Data[] = [];
+  isListAvailable = false;
+  availableItems: Data[] = [];
+  availableItemsBeforeSearch: Data[] = [];
+  search = '';
 
-  @ViewChild('dropdownTemplate2') dropdownTemplate!: any;
+  @ViewChild('trigger', { static: true, read: ElementRef }) trigger!: ElementRef<HTMLElement>;
+  @ViewChild('dropdownTemplate') dropdownTemplate!: any;
 
   @Input() default: {id: number, name: string} | any = null;
-  @Input() dataList: Array<{id: number, name: string}> = [];
+  @Input() set dataList(value: Data[]) {
+    this.availableItems = [...value];
+    this.availableItemsBeforeSearch = [...value];
+  };
   @Input() listKeys: string[] = [];
   @Input() label: string = '';
-  @Input() closeIfLeaveContent =  false;
   @Input() LabelClass: string = 'block text-sm font-medium text-gray-900';
 
   @Output() selectedItem = new EventEmitter();
@@ -40,13 +50,13 @@ export class DropdownMultiComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     // Close dropdown if clicked outside
-    if (!this.listAvailable) {
+    if (!this.isListAvailable) {
       return;
     }
 
     const target = event.target as HTMLElement;
-    if (!target.closest('.dropdown')) {
-      this.listAvailable = false;
+    if (!target.closest('.dropdown') && !target.closest('.dropdown-content')) {
+      this.isListAvailable = false;
       this.closeOverlay();
     }
   }
@@ -61,35 +71,28 @@ export class DropdownMultiComponent implements OnInit {
     }
   }
 
-  parseItemListKey(item: any) {
-    // console.log('this data', this.dataList);
-    let values: string[] = [];
-
-    for (let i = 0; i < this.listKeys.length; i++) {
-      if (item[this.listKeys[i]]) {
-        values.push(item[this.listKeys[i]]);
-      };
-    };
-
-    return values.join(' - ');
-  }
-
   selectItem(item: { id: number, name: string }) {
-    this.selectedItem.emit(item);
-    this.value = item.name;
-    this.listAvailable = false;
-
+    this.values.push(item);
+    this.selectedItem.emit(this.values);
+    this.isListAvailable = false;
+    this.availableItems = this.availableItems.filter(value => value !== item);
     this.ddPortalManagerService.detach();
   }
 
   toggleChoice() {
-    this.listAvailable = !this.listAvailable;
+    this.isListAvailable = !this.isListAvailable;
     this.ddPortalManagerService.managePortal(this.trigger, this.dropdownTemplate, this.viewContainerRef);
   }
 
-  onMouseLeaveContent() {
-    if (this.closeIfLeaveContent) {
-      this.closeOverlay();
-    }
+  unselect(value: any, indexToRemove: number) {
+    this.values.splice(indexToRemove, 1);
+    this.selectedItem.emit(this.values);
+    this.availableItems.push(value);
+  }
+
+  searchItem(){
+    this.availableItems = this.availableItemsBeforeSearch.filter(item => {
+      return item.name.includes(this.search) || item.name.toLowerCase().includes(this.search.toLowerCase());
+    }).filter(item => !this.values.includes(item));
   }
 }

@@ -10,11 +10,12 @@ import {
 import {FormsModule} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
+import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
 
 @Component({
   selector: 'app-dropdown',
   standalone: true,
-  imports: [FormsModule, OverlayModule],
+  imports: [FormsModule, OverlayModule, ParseItemListKeyPipe],
   templateUrl: './dropdown.component.html',
   styleUrl: './dropdown.component.scss'
 })
@@ -57,18 +58,6 @@ export class DropdownComponent implements OnInit {
     if (this.default) {
       this.selectItem(this.default);
     }
-  }
-
-  parseItemListKey(item: any) {
-    let values: string[] = [];
-
-    for (let i = 0; i < this.listKeys.length; i++) {
-      if (item[this.listKeys[i]]) {
-        values.push(item[this.listKeys[i]]);
-      };
-    };
-
-    return values.join(' - ');
   }
 
   selectItem(item: { id: number, name: string }) {
