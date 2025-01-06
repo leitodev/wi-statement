@@ -41,7 +41,7 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
 
   writeValue(search: string): void {
     this.search = search;
-    if (search) {
+    if (search && search.length > 0) {
       this.isSearchModeActive = false;
     };
   }

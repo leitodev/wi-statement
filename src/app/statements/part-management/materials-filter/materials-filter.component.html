@@ -1,16 +1,4 @@
 <div [formGroup]="form" class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
-    <!--
-       Бек поддерживает фильтрацию по следующим полям:
-       -supplier
-       -status
-       -partNumber
-       -countryOfOrigin
-       -description
-       -parentID
-       -componentPartNumber
-       -regulatoryCompliance && complianceStatus
-       -->
-
     <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
         <div class="input-group">
             <label id="supplier" class="font-medium">Supplier</label>
@@ -25,8 +13,6 @@
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
         <div class="input-group">
-<!--            <label id="status" class="font-medium">Status</label>-->
-<!--            <input type="text" formControlName="status" class="w-full h-[2rem] border px-2 py-1" name="status">-->
             <app-dropdown-multi
                     [label]="'Status'"
                     [dataList]="statusList"

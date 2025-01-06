@@ -172,6 +172,10 @@ export class MaterialService {
       supplierItemNumber: data.form.supplierItemNumber,
       countryOfOrigin: data.form.countryOfOrigin,
       BOMcomponent: data.form.BOMcomponent,
+      category: data.form.category,
+      unitOfMeasure: data.form.unitOfMeasure,
+      notes: data.form.notes,
+      leadTime: data.form.leadTime,
     }
 
     if (data.isParentChosen) {

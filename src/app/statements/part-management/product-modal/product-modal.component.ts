@@ -37,6 +37,10 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     supplierItemNumber: [''],
     countryOfOrigin: [''],
     BOMcomponent: [''],
+    category: [''],
+    unitOfMeasure: [''],
+    notes: [''],
+    leadTime: [''],
   });
 
   productSearchList: any = [];
@@ -151,9 +155,11 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.currentID.set(data._id);
 
     if (data) {
+      console.log('data.parentID', data.parentID);
       if (data.parentID && data.parentID.length > 0) {
         this.oldParentID = data.parentID;
         this.materialService.searchById(data.parentID).subscribe(res => {
+          console.log('searchById(data.parentID) res', res);
           this.productForm.patchValue({
             parentID: res.data.material.partNumber + ' - ' + res.data.material.description
           });
@@ -169,6 +175,10 @@ export class ProductModalComponent implements OnInit, OnDestroy {
         supplierItemNumber: data.supplierItemNumber,
         countryOfOrigin: data.countryOfOrigin,
         BOMcomponent: data.BOMcomponent,
+        category: data.category,
+        unitOfMeasure: data.unitOfMeasure,
+        notes: data.notes,
+        leadTime: data.leadTime,
       });
 
       // this.setStatus(data.status);

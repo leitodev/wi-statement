@@ -74,6 +74,13 @@ const tableConfig = {
       visible: true,
     },
     {
+      name: 'BOMcomponent',
+      sort: true,
+      value: 'BOMcomponent',
+      type: 'textCenter',
+      visible: true,
+    },
+    {
       name: 'Unit Of Measure',
       sort: true,
       value: 'unitOfMeasure',
@@ -90,8 +97,8 @@ const tableConfig = {
     {
       name: 'Lead Time',
       sort: true,
-      value: 'notes',
-      type: 'leadTime',
+      value: 'leadTime',
+      type: 'textCenter',
       visible: true,
     },
   ],
