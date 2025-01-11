@@ -149,6 +149,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.parentSearch = '';
     this.initForm(data);
     this.data = data;
+    this.tabActive = 'General';
   };
 
   initForm(data: any) {

@@ -28,17 +28,24 @@
     </div>
 
     @if(data && data.partNumber) {
-        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
-             (click)="tabActive='Compliance'"
-             [class.bg-gray-100]="tabActive!=='Compliance'">
-            <span class="text-sm font-medium">Compliance</span>
-        </div>
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='Components'"
+         [class.bg-gray-100]="tabActive!=='Components'">
+        <span class="text-sm font-medium">Components</span>
+    </div>
+
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='Compliance'"
+         [class.bg-gray-100]="tabActive!=='Compliance'">
+        <span class="text-sm font-medium">Compliance</span>
+    </div>
     }
 </div>
 
 <div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
     <ng-container *ngTemplateOutlet="modalBody"></ng-container>
     <ng-container *ngTemplateOutlet="complianceContent"></ng-container>
+    <ng-container *ngTemplateOutlet="componentsContent"></ng-container>
 </div>
 <div class="modal-footer flex justify-end gap-1">
     <button (click)="close()" class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
@@ -181,22 +188,36 @@
             </div>
         </div>
 
-        <div class="flex w-full gap-10 mb-5">
-            <div class="flex flex-col w-2/4">
-                <label class="text-sm font-medium text-gray-900">Components</label>
-                @if (data) {
-                    <ul class="tree">
-                        <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: data, level: 0 }"></ng-container>
-                    </ul>
-                }
-            </div>
-        </div>
+<!--        <div class="flex w-full gap-10 mb-5">-->
+<!--            <div class="flex flex-col w-2/4">-->
+<!--                <label class="text-sm font-medium text-gray-900">Components</label>-->
+<!--                @if (data) {-->
+<!--                    <ul class="tree">-->
+<!--                        <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: data, level: 0 }"></ng-container>-->
+<!--                    </ul>-->
+<!--                }-->
+<!--            </div>-->
+<!--        </div>-->
     </form>
 </ng-template>
 
 <ng-template #complianceContent>
     <div [hidden]="tabActive!=='Compliance'">
         <app-compliance [data]="data"></app-compliance>
+    </div>
+</ng-template>
+
+<ng-template #componentsContent>
+    <div [hidden]="tabActive!=='Components'">
+
+        <div class="flex w-full gap-10 mb-5 mt-5">
+            @if (data) {
+                <ul class="tree">
+                    <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: data, level: 0 }"></ng-container>
+                </ul>
+            }
+        </div>
+
     </div>
 </ng-template>
 
