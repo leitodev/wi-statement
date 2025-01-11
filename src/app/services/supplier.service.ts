@@ -11,7 +11,7 @@ interface Suppliers {
     currentPage: number,
     totalPages: number,
     suppliers: [{
-      _id: number,
+      _id: string,
       name: string
     }],
   }

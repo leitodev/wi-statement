@@ -13,7 +13,7 @@ import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
 
 interface Data {
-  id: number;
+  id: number | string;
   name: string;
 }
 
@@ -92,7 +92,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  selectItem(item: { id: number, name: string }) {
+  selectItem(item: Data) {
     this.values.push(item);
     this.onChange(this.values.map(value => value.name));
     this.selectedItem.emit(this.values);

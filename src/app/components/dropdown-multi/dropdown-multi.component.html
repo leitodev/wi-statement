@@ -32,7 +32,7 @@
 </div>
 
 <ng-template #dropdownTemplate>
-    <ul class="dropdown-content absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white">
+    <ul class="dropdown-content absolute left-0 border rounded w-full shadow-2xl p-1 z-40 bg-white overflow-y-auto max-h-[350px]">
         <li>
             <input [(ngModel)]="search"
                    placeholder="Search..."

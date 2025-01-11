@@ -1,16 +1,21 @@
 import {Component, OnInit, output, OutputEmitterRef} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
-import {materialStatus} from "../../../config/status-config";
+import {complianceStatus, materialStatus} from "../../../config/status-config";
 import {SupplierService} from "../../../services/supplier.service";
-import {map} from "rxjs";
+import {map, Observable} from "rxjs";
+import {AsyncPipe, NgIf} from "@angular/common";
+import {ToastrService} from "ngx-toastr";
+import {MaterialService} from "../../../services/material.service";
 
 @Component({
   selector: 'app-materials-filter',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    DropdownMultiComponent
+    DropdownMultiComponent,
+    AsyncPipe,
+    NgIf
   ],
   templateUrl: './materials-filter.component.html',
   styleUrl: './materials-filter.component.scss'
@@ -18,9 +23,11 @@ import {map} from "rxjs";
 export class MaterialsFilterComponent implements OnInit {
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
-
   statusList = materialStatus;
+  complianceStatusList = complianceStatus;
 
+  supplierList$!: Observable<{ id: string | number; name: string }[]>;
+  complianceList$!: Observable<{ id: string | number; name: string }[]>;
   form = this.fb.group({
     // parentID: [''],
     supplier: [''],
@@ -33,18 +40,41 @@ export class MaterialsFilterComponent implements OnInit {
     componentPartNumber: ['']
   });
 
-  constructor(public fb: FormBuilder, private supplierService: SupplierService) {
+  constructor(
+    public fb: FormBuilder,
+    private supplierService: SupplierService,
+    private toastr: ToastrService,
+    private materialService: MaterialService) {
+  }
+
+  IsComplianceValid() {
+    const regulatoryCompliance = this.form.get('regulatoryCompliance')?.value;
+    const complianceStatus = this.form.get('complianceStatus')?.value;
+
+    if (regulatoryCompliance && !complianceStatus) {
+      return false;
+    }
+
+    if (!regulatoryCompliance && complianceStatus) {
+      return false;
+    }
+
+    return true;
   }
 
   ngOnInit() {
-    this.supplierService.getAll().pipe(
+    this.supplierList$ = this.supplierService.getAll().pipe(
       map(result => result.data.suppliers.map(item => ({
         id: item._id,
         name: item.name
       })))
-    ).subscribe(res => {
-      console.log('get all prepared suppliers', res);
-    });
+    );
+    this.complianceList$ = this.materialService.getAllComplianceList().pipe(
+      map(result => result.data.regulations.map(item => ({
+        id: item._id,
+        name: item.title
+      })))
+    );
   }
 
   reset() {
@@ -55,8 +85,11 @@ export class MaterialsFilterComponent implements OnInit {
 
   applyFilter() {
     this.isFilterApplied = true;
-    console.log('applyFilter', this.form.getRawValue());
-    
-    this.appliedFilter.emit(this.form.getRawValue())
+    if (this.IsComplianceValid()) {
+      this.appliedFilter.emit(this.form.getRawValue());
+    } else {
+      this.toastr.error('Fields "regulatoryCompliance" and "complianceStatus" can be used only in pairs!')
+    }
+
   }
 }

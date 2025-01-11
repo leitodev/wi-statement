@@ -1,9 +1,14 @@
 <div [formGroup]="form" class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
-    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
-        <div class="input-group">
-            <label id="supplier" class="font-medium">Supplier</label>
-            <input type="text" formControlName="supplier" class="w-full h-[2rem] border px-2 py-1" name="supplier">
-        </div>
+    <div *ngIf="supplierList$ | async as supplierList"
+         class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6 flex items-start w-full">
+        <app-dropdown-multi
+                [label]="'Supplier'"
+                [dataList]="supplierList"
+                [listKeys]="['name']"
+                [LabelClass]="'block font-medium text-gray-900'"
+                formControlName="supplier"
+                class="w-full"
+        ></app-dropdown-multi>
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
         <div class="input-group">
@@ -11,7 +16,7 @@
             <input type="text" formControlName="partNumber" class="w-full h-[2rem] border px-2 py-1" name="partNumber">
         </div>
     </div>
-    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6 flex items-end w-full">
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6 flex items-start w-full">
         <app-dropdown-multi
                 [label]="'Status'"
                 [dataList]="statusList"
@@ -40,18 +45,26 @@
             <input type="text" class="w-full h-[2rem] border px-2 py-1" formControlName="componentPartNumber" name="componentPartNumber">
         </div>
     </div>
-    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
-        <div class="input-group">
-            <label id="regulatoryCompliance" class="font-medium overflow-auto whitespace-nowrap">Regulatory Compliance</label>
-            <input type="text" formControlName="regulatoryCompliance" class="w-full h-[2rem] border px-2 py-1" name="regulatoryCompliance">
-        </div>
+    <div *ngIf="complianceList$ | async as complianceList"
+         class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6 flex items-start w-full">
+        <app-dropdown-multi
+                [label]="'Regulatory Compliance'"
+                [dataList]="complianceList"
+                [listKeys]="['name']"
+                [LabelClass]="'block font-medium text-gray-900'"
+                formControlName="regulatoryCompliance"
+                class="w-full"
+        ></app-dropdown-multi>
     </div>
-<!--    col-span-3 lg:col-span-3 md:col-auto sm:col-span-6 -->
-    <div class="col-span-3 lg:col-span-3 md:col-span-5 sm:col-span-6">
-        <div class="input-group">
-            <label id="complianceStatus" class="font-medium overflow-auto whitespace-nowrap">Compliance Status</label>
-            <input type="text" formControlName="complianceStatus" class="w-full h-[2rem] border px-2 py-1" name="complianceStatus">
-        </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6 flex items-start w-full">
+        <app-dropdown-multi
+                [label]="'Compliance Status'"
+                [dataList]="complianceStatusList"
+                [listKeys]="['name']"
+                [LabelClass]="'block font-medium text-gray-900'"
+                formControlName="complianceStatus"
+                class="w-full"
+        ></app-dropdown-multi>
     </div>
 
     <footer class="col-span-12 flex gap-2 justify-end">
