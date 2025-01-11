@@ -11,16 +11,15 @@
             <input type="text" formControlName="partNumber" class="w-full h-[2rem] border px-2 py-1" name="partNumber">
         </div>
     </div>
-    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
-        <div class="input-group">
-            <app-dropdown-multi
-                    [label]="'Status'"
-                    [dataList]="statusList"
-                    [listKeys]="['name']"
-                    formControlName="status"
-            ></app-dropdown-multi>
-
-        </div>
+    <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6 flex items-end w-full">
+        <app-dropdown-multi
+                [label]="'Status'"
+                [dataList]="statusList"
+                [listKeys]="['name']"
+                [LabelClass]="'block font-medium text-gray-900'"
+                formControlName="status"
+                class="w-full"
+        ></app-dropdown-multi>
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6">
         <div class="input-group">

@@ -12,6 +12,7 @@ import {MaterialList, MaterialService} from "../../services/material.service";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {materialStatus} from "../../config/status-config";
 import {MaterialsFilterComponent} from "./materials-filter/materials-filter.component";
+import {SupplierService} from "../../services/supplier.service";
 
 @Component({
   selector: 'app-part-management',

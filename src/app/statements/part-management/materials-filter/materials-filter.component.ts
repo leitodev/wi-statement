@@ -1,7 +1,9 @@
-import {Component, output, OutputEmitterRef} from '@angular/core';
+import {Component, OnInit, output, OutputEmitterRef} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
 import {materialStatus} from "../../../config/status-config";
+import {SupplierService} from "../../../services/supplier.service";
+import {map} from "rxjs";
 
 @Component({
   selector: 'app-materials-filter',
@@ -13,7 +15,7 @@ import {materialStatus} from "../../../config/status-config";
   templateUrl: './materials-filter.component.html',
   styleUrl: './materials-filter.component.scss'
 })
-export class MaterialsFilterComponent {
+export class MaterialsFilterComponent implements OnInit {
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
 
@@ -31,7 +33,18 @@ export class MaterialsFilterComponent {
     componentPartNumber: ['']
   });
 
-  constructor(public fb: FormBuilder) {
+  constructor(public fb: FormBuilder, private supplierService: SupplierService) {
+  }
+
+  ngOnInit() {
+    this.supplierService.getAll().pipe(
+      map(result => result.data.suppliers.map(item => ({
+        id: item._id,
+        name: item.name
+      })))
+    ).subscribe(res => {
+      console.log('get all prepared suppliers', res);
+    });
   }
 
   reset() {

@@ -19,7 +19,12 @@ interface Suppliers {
 
 const emptySuppliersObj = {
   data: {
-    suppliers: [],
+    suppliers: [
+      {
+        _id: 1,
+        name: ''
+      }
+    ],
     totalPages: 0,
   }
 };

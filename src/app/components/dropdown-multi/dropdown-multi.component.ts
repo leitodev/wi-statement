@@ -71,6 +71,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
     }
   }
 
+  // not my
   writeValue(value: Data[]): void {
     if (Array.isArray(value) && value.length > 0) {
       this.values = [...value];
@@ -107,6 +108,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
 
   unselect(value: any, indexToRemove: number) {
     this.values.splice(indexToRemove, 1);
+    this.onChange(this.values.map(value => value.name));
     this.selectedItem.emit(this.values);
     this.availableItems.push(value);
   }
