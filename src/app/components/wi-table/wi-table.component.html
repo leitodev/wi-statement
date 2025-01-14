@@ -73,6 +73,7 @@
             cell.type === 'textCenter' ? textCenter :
             cell.type === 'componentsTemplate' ? componentsTemplate :
             cell.type === 'rcList' ? rcList :
+            cell.type === 'shortDate' ? shortDate :
             defaultTemplate
             context: { $implicit: item[cell.value] }
           "></ng-container>
@@ -135,6 +136,13 @@
                 <li>{{item.partNumber}}</li>
             }
         </ul>
+    </td>
+</ng-template>
+
+<ng-template #shortDate let-data>
+    <td class="border border-slate-300 pl-2 text-center">
+        <p>{{ data | date:'M/d/yy'}}</p>
+        <p>{{ data | date:'h:mm a'}}</p>
     </td>
 </ng-template>
 

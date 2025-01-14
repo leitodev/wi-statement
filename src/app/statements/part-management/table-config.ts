@@ -101,6 +101,21 @@ const tableConfig = {
       type: 'textCenter',
       visible: true,
     },
+    {
+      name: 'Created At',
+      sort: true,
+      value: 'createdAt',
+      type: 'shortDate',
+      visible: true,
+    },
+    {
+      name: 'Updated At',
+      sort: true,
+      value: 'updatedAt',
+      type: 'shortDate',
+      visible: true,
+    },
+
   ],
   paginator: {
     currentPage: 1,

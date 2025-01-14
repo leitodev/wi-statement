@@ -10,9 +10,7 @@ import {AsyncPipe, CommonModule} from "@angular/common";
 import { map, tap} from "rxjs";
 import {MaterialList, MaterialService} from "../../services/material.service";
 import {ModalTypes} from "../../components/modal/modal-types";
-import {materialStatus} from "../../config/status-config";
 import {MaterialsFilterComponent} from "./materials-filter/materials-filter.component";
-import {SupplierService} from "../../services/supplier.service";
 
 @Component({
   selector: 'app-part-management',
@@ -25,15 +23,8 @@ import {SupplierService} from "../../services/supplier.service";
 export class PartManagementComponent implements OnInit {
   tableData = signal<MaterialList[]>([]);
   totalPages = signal(1);
-
-  statusDataList = materialStatus;
   tableConfig = tableConfig;
   isFilterVisible = false;
-
-  availableSuppliers: any[] = [];
-  allSuppliersData = [...this.mockDataService.getSuppliers()]
-
-  private currentPage = 1;
 
   private defaultTableQueryParams = {
     page: tableConfig.paginator.currentPage,
@@ -145,8 +136,6 @@ export class PartManagementComponent implements OnInit {
     this.materialService.addMaterial(data)
       .subscribe((result: any) => {
         if (result) {
-          //this.tableData$$.next([result.data.material, ...this.tableData$$.value]);
-
           this.tableData.set([result.data.material, ...this.tableData()]);
           this.modalService.closeModal();
         }
@@ -163,21 +152,6 @@ export class PartManagementComponent implements OnInit {
       });
   }
 
-  searchSupplier(search: string) {
-    this.availableSuppliers = this.allSuppliersData
-      .filter(supplier =>
-        supplier.name.includes(search) || supplier.name.toLowerCase().includes(search.toLowerCase())
-      )
-  };
-
-  selectSupplier(supplier: { id: number, name: string }) {
-    // TODO filter
-  };
-
-  selectStatus(status: any) {
-    console.log('status selected', status);
-  }
-
   applySort(data: IFieldSortData) {
     this.tableQueryParams['sortBy'] = data.sortBy;
     this.tableQueryParams['sortOrder'] = data.sortOrder;
@@ -185,25 +159,22 @@ export class PartManagementComponent implements OnInit {
   }
 
   applyFilter(data: { [key: string]: string }){
-
     if (data === null) {
-    this.tableQueryParams  = {
+      this.tableQueryParams  = {
         ...this.defaultTableQueryParams
       };
-
       this.refreshData(this.tableQueryParams);
       return;
-    }
+    };
 
-    console.log('applyFilter', data);
+    this.tableQueryParams['page'] = 1; // filter works only with this param !???!?
     for (const property in data) {
-      if (data[property]) {
+      if (data[property] && data[property].length > 0) {
         this.tableQueryParams[property] = data[property];
       }
     };
 
     this.refreshData(this.tableQueryParams);
-
   }
 
 }// Part Management
