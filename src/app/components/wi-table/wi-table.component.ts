@@ -124,4 +124,5 @@ export class WiTableComponent implements OnInit {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
 
+  protected readonly console = console;
 }

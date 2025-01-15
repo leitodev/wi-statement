@@ -1,0 +1,131 @@
+<div class="modal-header flex justify-between mb-3 text-lg">
+    {{ data ? data.userId : 'New User'  }}
+    <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
+</div>
+
+<div class="modal-tabs flex space-x-1 border-b border-gray-300">
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='General'"
+         [class.bg-gray-100]="tabActive!=='General'">
+        <span class="text-sm font-medium">General</span>
+    </div>
+</div>
+
+<div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
+    <ng-container *ngTemplateOutlet="modalBody"></ng-container>
+</div>
+
+<div class="modal-footer flex justify-end gap-1">
+    <button (click)="close()" class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
+    <button (click)="submitModal()"
+            class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 disabled:bg-gray-500 disabled:cursor-not-allowed">Submit</button>
+</div>
+
+<ng-template #modalBody>
+    <form [formGroup]="usersForm" [hidden]="tabActive!=='General'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="name" class="text-sm font-medium text-gray-900">Name
+                    <span *ngIf="usersForm.controls['email'].hasError('required') && usersForm.controls['name'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="name"
+                        name="name"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="name">
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="email" class="text-sm font-medium text-gray-900">Email
+                    <span *ngIf="usersForm.controls['email'].hasError('required') && usersForm.controls['email'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="email"
+                        name="email"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="email">
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="password" class="text-sm font-medium text-gray-900">Password
+                    <span *ngIf="usersForm.controls['password'].hasError('required') && usersForm.controls['password'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="password"
+                        name="password"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="password">
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="email" class="text-sm font-medium text-gray-900">Surname
+                    <span *ngIf="usersForm.controls['surname'].hasError('required') && usersForm.controls['surname'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="surname"
+                        name="surname"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="surname">
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <app-dropdown
+                        [label]="'Role'"
+                        [default]="data && data?.role ? setRole(data?.status) : userRoles[0]"
+                        [dataList]="userRoles"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectRole($event)">
+                </app-dropdown>
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <app-dropdown
+                        [label]="'Status'"
+                        [default]="data && data?.status ? setStatus(data?.status) : userStatuses[0]"
+                        [dataList]="userStatuses"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectStatus($event)">
+                </app-dropdown>
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <app-dropdown
+                        [label]="'Status'"
+                        [default]="data && data?.status ? setLocale(data?.status) : userLocales[0]"
+                        [dataList]="userLocales"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectLocale($event)">
+                </app-dropdown>
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <app-dropdown
+                        [label]="'Time Zone'"
+                        [default]="data && data?.status ? setTimeZone(data?.status) : userTimeZones[0]"
+                        [dataList]="userTimeZones"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectTimeZone($event)">
+                </app-dropdown>
+            </div>
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="email" class="text-sm font-medium text-gray-900">Avatar Url
+                    <span *ngIf="usersForm.controls['avatarUrl'].hasError('required') && usersForm.controls['avatarUrl'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="avatarUrl"
+                        name="avatarUrl"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="avatarUrl">
+            </div>
+        </div>
+    </form>
+</ng-template>
