@@ -92,7 +92,6 @@ export class MaterialService {
           params = params.set(key, tableQueryParams[key]);
         }
       }
-      console.log('params', params);
     }
     return this.http.get<MaterialsResponse>(`${this.apiUrl}/materials`, { params }).pipe(
       catchError((error) => {

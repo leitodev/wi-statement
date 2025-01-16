@@ -151,13 +151,15 @@
                        formControlName="BOMcomponent">
             </div>
 
-            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
-                <label for="category" class="text-sm font-medium text-gray-900">Category</label>
-                <input id="category"
-                       name="category"
-                       type="text"
-                       class="w-full h-[2rem] border px-2 py-1"
-                       formControlName="category">
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6 flex items-end w-full">
+                <app-dropdown
+                        [label]="'Category'"
+                        [default]="materialCategoriesList[3]"
+                        [dataList]="materialCategoriesList"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectCategory($event)">
+                </app-dropdown>
             </div>
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">

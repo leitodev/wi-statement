@@ -35,7 +35,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   values: Data[] = [];
   isListAvailable = false;
   availableItems: Data[] = [];
-  availableItemsBeforeSearch: Data[] = [];
+  itemsCache: Data[] = [];
   search = '';
 
   @ViewChild('trigger', { static: true, read: ElementRef }) trigger!: ElementRef<HTMLElement>;
@@ -47,7 +47,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   // };
   @Input() set dataList(value: Data[]) {
     this.availableItems = [...value];
-    this.availableItemsBeforeSearch = [...value];
+    this.itemsCache = [...value];
   };
   @Input() listKeys: string[] = []; // [listKeys]="['partNumber', 'description']"
   @Input() label: string = '';
@@ -102,6 +102,10 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   }
 
   toggleChoice() {
+    if (this.values.length === 0) { // parent form have reset
+      this.availableItems = [...this.itemsCache];
+    }
+
     this.isListAvailable = !this.isListAvailable;
     this.ddPortalManagerService.managePortal(this.trigger, this.dropdownTemplate, this.viewContainerRef);
   }
@@ -114,7 +118,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   }
 
   searchItem(){
-    this.availableItems = this.availableItemsBeforeSearch.filter(item => {
+    this.availableItems = this.itemsCache.filter(item => {
       return item.name.includes(this.search) || item.name.toLowerCase().includes(this.search.toLowerCase());
     }).filter(item => !this.values.includes(item));
   }
