@@ -3,6 +3,7 @@ import {Injectable, signal, WritableSignal} from '@angular/core';
 export interface Profile{
   avatarUrl: string | null;
 }
+// todo: transfer to another folder (user-roles.ts)
 export enum UserLocale{
   en = 'en',
   uk = 'uk',

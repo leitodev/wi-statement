@@ -26,7 +26,7 @@
         <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <label for="name" class="text-sm font-medium text-gray-900">Name
-                    <span *ngIf="usersForm.controls['email'].hasError('required') && usersForm.controls['name'].touched" class="text-red-500">
+                    <span *ngIf="usersForm.controls['name'].hasError('required') && usersForm.controls['name'].touched" class="text-red-500">
                     is required!
                 </span>
                 </label>
@@ -47,18 +47,6 @@
                         type="text"
                         class="w-full h-[2rem] border px-2 py-1"
                         formControlName="email">
-            </div>
-            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
-                <label for="password" class="text-sm font-medium text-gray-900">Password
-                    <span *ngIf="usersForm.controls['password'].hasError('required') && usersForm.controls['password'].touched" class="text-red-500">
-                    is required!
-                </span>
-                </label>
-                <input  id="password"
-                        name="password"
-                        type="text"
-                        class="w-full h-[2rem] border px-2 py-1"
-                        formControlName="password">
             </div>
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
@@ -96,35 +84,13 @@
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
-                        [label]="'Status'"
+                        [label]="'Locale'"
                         [default]="data && data?.status ? setLocale(data?.status) : userLocales[0]"
                         [dataList]="userLocales"
                         [listKeys]="['name']"
                         class="w-full"
                         (selectedItem)="selectLocale($event)">
                 </app-dropdown>
-            </div>
-            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
-                <app-dropdown
-                        [label]="'Time Zone'"
-                        [default]="data && data?.status ? setTimeZone(data?.status) : userTimeZones[0]"
-                        [dataList]="userTimeZones"
-                        [listKeys]="['name']"
-                        class="w-full"
-                        (selectedItem)="selectTimeZone($event)">
-                </app-dropdown>
-            </div>
-            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
-                <label for="email" class="text-sm font-medium text-gray-900">Avatar Url
-                    <span *ngIf="usersForm.controls['avatarUrl'].hasError('required') && usersForm.controls['avatarUrl'].touched" class="text-red-500">
-                    is required!
-                </span>
-                </label>
-                <input  id="avatarUrl"
-                        name="avatarUrl"
-                        type="text"
-                        class="w-full h-[2rem] border px-2 py-1"
-                        formControlName="avatarUrl">
             </div>
         </div>
     </form>
