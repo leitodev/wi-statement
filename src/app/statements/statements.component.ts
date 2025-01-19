@@ -16,4 +16,8 @@ export class StatementsComponent {
     this.authService.logout();
     this.router.navigate(['/']);
   }
+  isUserMenuOptionsActive: boolean = false;
+  userMenuClicked(){
+    this.isUserMenuOptionsActive = !this.isUserMenuOptionsActive;
+  }
 }
