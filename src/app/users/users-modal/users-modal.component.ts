@@ -7,7 +7,10 @@ import {SupplierService} from "../../services/supplier.service";
 import {MaterialService} from "../../services/material.service";
 import {ToastrService} from "ngx-toastr";
 import {ModalTypes} from "../../components/modal/modal-types";
-import {UserLocale, UserRoles, UserStatus, UserTimeZones} from "../../services/users.service";
+import {UserRoles} from "../enums/user-roles";
+import {UserStatuses} from "../enums/user-statuses";
+import {UserLocales} from "../enums/user-locales";
+import {UserTimeZones} from "../enums/user-timezones";
 
 function dropDownComponentListFromEnum(enumData: any): Array<{ id: number; name: string }> {
     return Object.values(enumData).map((value, index) => ({
@@ -15,9 +18,9 @@ function dropDownComponentListFromEnum(enumData: any): Array<{ id: number; name:
         name: value as string, // Приведення типу до string
     }));
 }
-export const userStatusList = dropDownComponentListFromEnum(UserStatus);
+export const userStatusList = dropDownComponentListFromEnum(UserStatuses);
 export const userRoleList = dropDownComponentListFromEnum(UserRoles);
-export const userLocaleList = dropDownComponentListFromEnum(UserLocale);
+export const userLocaleList = dropDownComponentListFromEnum(UserLocales);
 export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
 @Component({
