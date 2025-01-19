@@ -5,7 +5,10 @@
 @tailwind utilities;
 @import 'ngx-toastr/toastr';
 
-
+html, body{
+  height: 100%;
+  overflow: hidden;
+}
 * {
   padding: 0px;
   margin: 0px;
