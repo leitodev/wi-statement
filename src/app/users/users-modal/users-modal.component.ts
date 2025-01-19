@@ -99,7 +99,7 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         this.currentID.set(data._id);
 
         if (data) {
-            console.log('data', data);
+            console.dir(data.role);
             // if (data.parentID && data.parentID.length > 0) {
             //     this.oldParentID = data.parentID;
             //     this.materialService.searchById(data.parentID).subscribe(res => {
@@ -109,20 +109,19 @@ export class UsersModalComponent implements OnInit, OnDestroy {
             //         });
             //     });
             // }
-
-            this.usersForm.setValue({
+            this.usersForm.patchValue({
                 password: data.password,
                 email: data.email,
                 name: data.name,
                 surname: data.surname,
                 locale: data.locale,
                 timezone: data.timezone,
-                avatarUrl: data.avatarUrl,
+                avatarUrl: data.profile.avatarUrl,
                 status: data.status,
                 role: data.role,
             });
-
         };
+
     };
 
     ngOnInit() {
@@ -137,28 +136,28 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     }
 
     setStatus(status: any) {
-        // return this.statusDataList.find(data => data.name === status);
+        return this.userStatuses.find(data => data.name === status);
     }
     selectStatus(data: any) {
         this.usersForm.patchValue({status: data.name})
     };
 
-    setRole(status: any) {
-        // return this.statusDataList.find(data => data.name === status);
+    setRole(role: any) {
+        return this.userRoles.find(data => data.name === role);
     }
     selectRole(data: any) {
         this.usersForm.patchValue({role: data.name})
     };
 
-    setLocale(status: any) {
-        // return this.statusDataList.find(data => data.name === status);
+    setLocale(locale: any) {
+        return this.userLocales.find(data => data.name === locale);
     }
     selectLocale(data: any) {
         this.usersForm.patchValue({locale: data.name})
     };
 
-    setTimeZone(status: any) {
-        // return this.statusDataList.find(data => data.name === status);
+    setTimeZone(timezone: any) {
+        return this.userTimeZones.find(data => data.name === timezone);
     }
     selectTimeZone(data: any) {
         this.usersForm.patchValue({timezone: data.name})

@@ -64,7 +64,7 @@
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
                         [label]="'Role'"
-                        [default]="data && data?.role ? setRole(data?.status) : userRoles[0]"
+                        [default]="data && data?.role ? setRole(data?.role) : userRoles[0]"
                         [dataList]="userRoles"
                         [listKeys]="['name']"
                         class="w-full"
@@ -85,7 +85,7 @@
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
                         [label]="'Locale'"
-                        [default]="data && data?.status ? setLocale(data?.status) : userLocales[0]"
+                        [default]="data && data?.status ? setLocale(data?.locale) : userLocales[0]"
                         [dataList]="userLocales"
                         [listKeys]="['name']"
                         class="w-full"

@@ -15,7 +15,7 @@ import {UsersModalComponent} from "./users-modal/users-modal.component";
   standalone: true,
   imports: [
     // MaterialsFilterComponent,
-    ProductModalComponent,
+    // ProductModalComponent,
     WiTableComponent,
     UsersModalComponent
   ],
@@ -45,11 +45,24 @@ export class UsersComponent {
         })
         .subscribe((action) => {
           // General Modal Events
+          console.log(action.event);
           if (action.event === ModalTypes.NEW) {
             this.addNewUser(action.data);
           } else if (action.event === ModalTypes.UPDATE) {
             // this.updateMaterial(action.data.id, action.data);
           }
+
+          // Custom tabs events
+          // if (action.data && action.data.tabActive) {
+          //   if (action.data.state === 'addNewCompliance') {
+          //     this.addNewCompliance(action.data);
+          //   }
+          //
+          //   if (action.data.state === 'changeCompliance') {
+          //     this.changeCompliance(action.data);
+          //   }
+          //   return;
+          // }
         });
   };
 
@@ -63,9 +76,9 @@ export class UsersComponent {
     //   this.applySort(event.data);
     // }
     //
-    // if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
-    //   this.openModal(this.modalTemplate, event.data);
-    // }
+    if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
+      this.openModal(this.modalTemplate, event.data);
+    }
   };
   ngOnInit() {
     this.tableData = this.usersService.getAllUsers();
