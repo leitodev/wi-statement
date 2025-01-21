@@ -4,11 +4,13 @@ import {ProductModalComponent} from "../statements/part-management/product-modal
 import {WiTableComponent} from "../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
 import {MaterialList, MaterialService} from "../services/material.service";
-import {User, UsersService} from "../services/users.service";
+import {User, UsersResponse, UsersService} from "../services/users.service";
 import {ModalTypes} from "../components/modal/modal-types";
 import {ModalService} from "../components/modal/modal.service";
 import {MockDataService} from "../services/mock-data.service";
 import {UsersModalComponent} from "./users-modal/users-modal.component";
+import {map, of, tap} from "rxjs";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-users',
@@ -80,16 +82,33 @@ export class UsersComponent {
       this.openModal(this.modalTemplate, event.data);
     }
   };
+
   ngOnInit() {
-    this.tableData = this.usersService.getAllUsers();
+    this.refreshData();
+  }
+
+  refreshData(): void {
+    this.usersService.getAllUsers().subscribe({
+      next: (response: any) => {
+        this.tableData.set(response.data.users); // Відправляємо дані
+        this.tableConfig.paginator.totalPages = response.data.totalPages;
+        this.totalPages.set(response.data.totalPages);
+        console.log(response.data);
+      },
+      error: (error) => {
+        this.toastr.error('User loading failed.');
+      },
+    });
   }
 
   constructor(private usersService: UsersService,
-              private modalService: ModalService,) {
+              private modalService: ModalService,
+              private toastr: ToastrService) {
   }
 
   addNewUser(data: any) {
     this.usersService.createUser(data);
     this.modalService.closeModal();
   }
+
 }

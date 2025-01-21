@@ -20,4 +20,7 @@ export class StatementsComponent {
   userMenuClicked(){
     this.isUserMenuOptionsActive = !this.isUserMenuOptionsActive;
   }
+  ngOnInit(){
+    if(this.router.url=='/statements/users') this.isUserMenuOptionsActive = true;
+  }
 }
