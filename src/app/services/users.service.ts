@@ -7,7 +7,7 @@ import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
 import {catchError, Observable, of} from "rxjs";
-import {MaterialList, MaterialsResponse, RegulationsResponse} from "./material.service";
+import {MaterialsResponse} from "./material.service";
 
 export interface Profile{
   avatarUrl: string | null;
@@ -29,13 +29,22 @@ export interface User{
   token: string | null;
 }
 
+export interface UserResponse {
+
+}
+
 export interface UsersResponse {
-  code: number;
-  status: string;
-  data: User[];
   totalPages: number;
   currentPage: number;
-};
+  code: number;
+  status: string;
+  data: {
+    currentPage: number;
+    totalPages: number;
+    users: User[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,17 +53,27 @@ export class UsersService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAllUsers(){
-    return this.http.get(this.apiUrl+'/users').pipe(
+  getAllUsers(tableQueryParams: { [key: string]: any }) {
+    let params = new HttpParams();
+    if (tableQueryParams) {
+      for (const key in tableQueryParams) {
+        if (tableQueryParams.hasOwnProperty(key) && tableQueryParams[key] !== undefined && tableQueryParams[key] !== null) {
+          params = params.set(key, tableQueryParams[key]);
+        }
+      }
+      console.log('params', params);
+    }
+    return this.http.get<UsersResponse>(`${this.apiUrl}/users`, { params }).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
 
+          // Return an empty array or fallback data in case of error
           const emptyUsersObj = {
             data: {
-              regulations: [],
+              totalPages: 0,
+              users: [],
             }
           };
-
           return of(emptyUsersObj);
         })
     );
@@ -68,7 +87,10 @@ export class UsersService {
     );
   }
   createUser(userData: any) {
-
+    //todo
+  }
+  updateUser(data: User, id: string) {
+    //todo
   }
 }
 
