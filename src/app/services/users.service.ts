@@ -6,7 +6,7 @@ import {UserRoles} from "../users/enums/user-roles";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
-import {catchError, Observable, of} from "rxjs";
+import {catchError, Observable, of, tap} from "rxjs";
 import {MaterialsResponse} from "./material.service";
 
 export interface Profile{
@@ -30,7 +30,11 @@ export interface User{
 }
 
 export interface UserResponse {
-
+  code: number;
+  status: string;
+  data: {
+    user: {},
+  };
 }
 
 export interface UsersResponse {
@@ -86,9 +90,32 @@ export class UsersService {
         })
     );
   }
-  createUser(userData: any) {
-    //todo
+
+  createUser(userData: any):Observable<any> {
+    let avatarUrl = userData.form.avatarUrl;
+    delete userData.form.avatarUrl;
+    let body  = {
+      ...userData.form,
+      profile: {
+        avatarUrl: avatarUrl,
+      }
+    };
+
+    // this.http.post(this.apiUrl+'/users', body).pipe(
+    //     tap((res: any) => {
+    //       if (res.code === 201) {
+    //         this.toastr.success('User has been successfully added');
+    //       }
+    //     }),
+    //     catchError((error) => {
+    //       this.toastr.error(error.error.message);
+    //       return of(null);
+    //     })
+    // )
+
+    return this.http.post(this.apiUrl+'/users', body);
   }
+
   updateUser(data: User, id: string) {
     //todo
   }

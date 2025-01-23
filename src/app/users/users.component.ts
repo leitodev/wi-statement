@@ -1,4 +1,4 @@
-import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
+import {Component, computed, signal, TemplateRef, ViewChild} from '@angular/core';
 import {MaterialsFilterComponent} from "../statements/part-management/materials-filter/materials-filter.component";
 import {ProductModalComponent} from "../statements/part-management/product-modal/product-modal.component";
 import {WiTableComponent} from "../components/wi-table/wi-table.component";
@@ -37,6 +37,9 @@ export class UsersComponent {
   isFilterVisible = false;
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
+  deleteMe(){
+    console.log(this.tableData())
+  }
   addNew() {
     this.openModal(this.modalTemplate, null);
   };
@@ -92,7 +95,27 @@ export class UsersComponent {
               private modalService: ModalService) {
   }
   addNewUser(data: any) {
-    this.usersService.createUser(data);
+    this.usersService.createUser(data).subscribe(
+        {
+          next: res => {
+            console.log("User created successfully:", res);
+            // todo: delete when Back will change 'id' to '_id'
+            let _id = res.data.user.id;
+            let newUser = {
+              _id: _id,
+              ...res.data.user,
+            }
+            delete newUser.id;
+
+            console.log(newUser);
+            this.tableData.update((val)=> [...val, newUser]);
+          },
+          error: err => {
+            if(err.code == 409) console.log("User already exists!");
+            else console.log('User creation error:', err);
+          },
+        }
+    );
     this.modalService.closeModal();
   }
   updateUser(newData: User, id: string){

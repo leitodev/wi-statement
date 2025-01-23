@@ -43,12 +43,12 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         password: ['', [Validators.required]],
         email: ['', [Validators.required]],
         name: ['', [Validators.required]],
-        surname: [''],
-        locale: [''],
-        timezone: [''],
+        surname: ['', [Validators.required]],
+        locale: [UserLocales.en],
+        timezone: [UserTimeZones.UTC],
         avatarUrl: [null],
         status: [''],
-        role: [UserRoles.employee, [Validators.required]],
+        role: [UserRoles.employee],
     });
 
     userStatuses = userStatusList;
@@ -99,16 +99,6 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         this.currentID.set(data._id);
 
         if (data) {
-            console.dir(data.role);
-            // if (data.parentID && data.parentID.length > 0) {
-            //     this.oldParentID = data.parentID;
-            //     this.materialService.searchById(data.parentID).subscribe(res => {
-            //         console.log('searchById(data.parentID) res', res);
-            //         this.usersForm.patchValue({
-            //             parentID: res.data.material.partNumber + ' - ' + res.data.material.description
-            //         });
-            //     });
-            // }
             this.usersForm.patchValue({
                 password: data.password,
                 email: data.email,

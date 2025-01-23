@@ -24,7 +24,7 @@
 <!--    <app-materials-filter (appliedFilter)="applyFilter($event)"></app-materials-filter>-->
 <!--}-->
 
-<wi-table
+<wi-table (click)="deleteMe()"
         [tableConfigData]="tableConfig"
         [tableData]="tableData()"
         [totalPages]="totalPages()"
