@@ -73,7 +73,8 @@ export class UsersService {
       }
       console.log('params', params);
     }
-    return this.http.get<UsersResponse>(`${this.apiUrl}/users/?page=2&limit=10`, { params }).pipe(
+    // ?page=2&limit=10
+    return this.http.get<UsersResponse>(`${this.apiUrl}/users/`, { params }).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
           // Return an empty array or fallback data in case of error

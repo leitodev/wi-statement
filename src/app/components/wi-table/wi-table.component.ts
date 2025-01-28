@@ -39,7 +39,6 @@ export class WiTableComponent implements OnInit {
   constructor(private configStorageService: ConfigStorageService) {
     effect(() => {
       this.data = this.tableData() as any[];
-
       // re-generate pagination
       this.tablePages = Array.from({ length: this.totalPages() }, (_, i) => ({ id: i + 1, value: i + 1 }));
     });
