@@ -123,4 +123,6 @@ export class WiTableComponent implements OnInit {
   trackByFn(index: number, item: any): any {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
+
+  protected readonly console = console;
 }

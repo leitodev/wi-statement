@@ -58,7 +58,7 @@ export class UsersComponent {
           if (action.event === ModalTypes.NEW) {
             this.addNewUser(action.data);
           } else if (action.event === ModalTypes.UPDATE) {
-            this.updateUser(action.data.id, action.data);
+            this.updateUser(action.data, action.data.id);
           }
         });
   };
@@ -99,16 +99,7 @@ export class UsersComponent {
         {
           next: res => {
             console.log("User created successfully:", res);
-            // todo: delete when Back will change 'id' to '_id'
-            let _id = res.data.user.id;
-            let newUser = {
-              _id: _id,
-              ...res.data.user,
-            }
-            delete newUser.id;
-
-            console.log(newUser);
-            this.tableData.update((val)=> [...val, newUser]);
+            this.refreshData();
           },
           error: err => {
             if(err.code == 409) console.log("User already exists!");
@@ -118,8 +109,20 @@ export class UsersComponent {
     );
     this.modalService.closeModal();
   }
-  updateUser(newData: User, id: string){
-    this.usersService.updateUser(newData, id);
+  updateUser(newData: any, id: string){
+    this.usersService.updateUser(newData, id).subscribe(
+        {
+          next: res => {
+            console.log("User updated successfully:", res);
+            this.refreshData();
+          },
+          error: err => {
+            if(err.code == 409) console.log("Such email already exists!");
+            else if(err.code == 400) console.log("Invalid data!");
+            else console.log('User creation error:', err);
+          },
+        }
+    );
     this.modalService.closeModal();
   }
 }

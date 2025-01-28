@@ -99,6 +99,6 @@ const tableConfig = {
     currentPage: 1,
     totalPages: 1,
   },
-  limit: 15
+  limit: 10
 }
 export default tableConfig;

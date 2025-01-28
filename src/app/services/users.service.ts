@@ -56,6 +56,12 @@ export class UsersService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
+  // todo: delete it
+  test(){
+    this.http.get<UsersResponse>(`${this.apiUrl}/users/?page=2&limit=10`).subscribe({
+      next: (val)=>console.log(val)
+    });
+  }
 
   getAllUsers(tableQueryParams: { [key: string]: any }) {
     let params = new HttpParams();
@@ -116,8 +122,15 @@ export class UsersService {
     return this.http.post(this.apiUrl+'/users', body);
   }
 
-  updateUser(data: User, id: string) {
-    //todo
+  updateUser(userData: any, id: string):Observable<any> {
+    let avatarUrl = userData.form.avatarUrl;
+    delete userData.form.avatarUrl;
+    let body  = {
+      ...userData.form,
+      profile: {
+        avatarUrl: avatarUrl,
+      }
+    };
+    return this.http.put(this.apiUrl+'/users/'+id, body);
   }
 }
-
