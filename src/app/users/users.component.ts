@@ -96,31 +96,21 @@ export class UsersComponent {
   }
   addNewUser(data: any) {
     this.usersService.createUser(data).subscribe(
+        (result: any) =>
         {
-          next: res => {
-            console.log("User created successfully:", res);
+          if (result) {
             this.refreshData();
-          },
-          error: err => {
-            if(err.code == 409) console.log("User already exists!");
-            else console.log('User creation error:', err);
-          },
+            this.modalService.closeModal();
+          }
         }
     );
-    this.modalService.closeModal();
   }
   updateUser(newData: any, id: string){
     this.usersService.updateUser(newData, id).subscribe(
         {
           next: res => {
-            console.log("User updated successfully:", res);
             this.refreshData();
-          },
-          error: err => {
-            if(err.code == 409) console.log("Such email already exists!");
-            else if(err.code == 400) console.log("Invalid data!");
-            else console.log('User creation error:', err);
-          },
+          }
         }
     );
     this.modalService.closeModal();

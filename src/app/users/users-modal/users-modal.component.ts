@@ -81,6 +81,7 @@ export class UsersModalComponent implements OnInit, OnDestroy {
             id: this.data?._id ? this.data._id : null,
             form: this.usersForm.getRawValue()
         }, modalEvent);
+        this.usersForm.markAllAsTouched();
     };
 
     changeModalComponent(componentData: any, event: Event) {

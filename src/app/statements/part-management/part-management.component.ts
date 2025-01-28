@@ -104,6 +104,7 @@ export class PartManagementComponent implements OnInit {
           }
 
           // General Modal Events
+          console.log(action.event);
           if (action.event === ModalTypes.NEW) {
             this.addNewMaterial(action.data);
           } else if (action.event === ModalTypes.UPDATE) {

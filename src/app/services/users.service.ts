@@ -73,10 +73,9 @@ export class UsersService {
       }
       console.log('params', params);
     }
-    return this.http.get<UsersResponse>(`${this.apiUrl}/users`, { params }).pipe(
+    return this.http.get<UsersResponse>(`${this.apiUrl}/users/?page=2&limit=10`, { params }).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
-
           // Return an empty array or fallback data in case of error
           const emptyUsersObj = {
             data: {
@@ -96,7 +95,7 @@ export class UsersService {
         })
     );
   }
-
+  // toastr
   createUser(userData: any):Observable<any> {
     let avatarUrl = userData.form.avatarUrl;
     delete userData.form.avatarUrl;
@@ -119,7 +118,17 @@ export class UsersService {
     //     })
     // )
 
-    return this.http.post(this.apiUrl+'/users', body);
+    return this.http.post(this.apiUrl+'/users', body).pipe(
+        tap((res: any) => {
+          if (res.code === 201) {
+            this.toastr.success('User has been successfully added');
+          }
+        }),
+        catchError((error) => {
+          this.toastr.error(error.error.message);
+          return of(null);
+        })
+    );
   }
 
   updateUser(userData: any, id: string):Observable<any> {
@@ -131,6 +140,16 @@ export class UsersService {
         avatarUrl: avatarUrl,
       }
     };
-    return this.http.put(this.apiUrl+'/users/'+id, body);
+    return this.http.put(this.apiUrl+'/users/'+id, body).pipe(
+        tap((res: any) => {
+          if (res.code === 201) {
+            this.toastr.success('User has been successfully updated');
+          }
+        }),
+        catchError((error) => {
+          this.toastr.error(error.error.message);
+          return of(null);
+        })
+    );
   }
 }
