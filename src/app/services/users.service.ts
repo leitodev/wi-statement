@@ -63,7 +63,7 @@ export class UsersService {
     });
   }
 
-  getAllUsers(tableQueryParams: { [key: string]: any }) {
+  getAll(tableQueryParams: { [key: string]: any }) {
     let params = new HttpParams();
     if (tableQueryParams) {
       for (const key in tableQueryParams) {
@@ -88,7 +88,7 @@ export class UsersService {
         })
     );
   }
-  getUser(id: string) {
+  get(id: string) {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
@@ -97,7 +97,7 @@ export class UsersService {
     );
   }
   // toastr
-  createUser(userData: any):Observable<any> {
+  create(userData: any):Observable<any> {
     let avatarUrl = userData.form.avatarUrl;
     delete userData.form.avatarUrl;
     let body  = {
@@ -132,7 +132,7 @@ export class UsersService {
     );
   }
 
-  updateUser(userData: any, id: string):Observable<any> {
+  update(userData: any, id: string):Observable<any> {
     let avatarUrl = userData.form.avatarUrl;
     delete userData.form.avatarUrl;
     let body  = {

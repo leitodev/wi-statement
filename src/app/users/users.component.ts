@@ -11,13 +11,15 @@ import {MockDataService} from "../services/mock-data.service";
 import {UsersModalComponent} from "./users-modal/users-modal.component";
 import {map, of, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
+import {UsersFilterComponent} from "./users-filter/users-filter.component";
 
 @Component({
   selector: 'app-users',
   standalone: true,
   imports: [
     WiTableComponent,
-    UsersModalComponent
+    UsersModalComponent,
+    UsersFilterComponent
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
@@ -46,6 +48,24 @@ export class UsersComponent {
   toggleFilter() {
     this.isFilterVisible = !this.isFilterVisible;
   };
+  applyFilter(data: { [key: string]: string }){
+    if (data === null) {
+      this.tableQueryParams  = {
+        ...this.defaultTableQueryParams
+      };
+      this.refreshData(this.tableQueryParams);
+      return;
+    };
+
+    this.tableQueryParams['page'] = 1; // filter works only with this param !???!?
+    for (const property in data) {
+      if (data[property] && data[property].length > 0) {
+        this.tableQueryParams[property] = data[property];
+      }
+    };
+
+    this.refreshData(this.tableQueryParams);
+  }
   openModal(modalTemplate: TemplateRef<any>, data: any) {
     this.modalService
         .open(modalTemplate, {
@@ -80,13 +100,14 @@ export class UsersComponent {
     this.refreshData();
   }
   refreshData(tableQueryParams: any = null) {
-    this.usersService.getAllUsers(tableQueryParams).pipe(
+    this.usersService.getAll(tableQueryParams).pipe(
         tap(users => {
           this.tableConfig.paginator.totalPages = users.data.totalPages;
           this.totalPages.set(users.data.totalPages);
         }),
-        map(result => result.data),
-        map(data => data.users)
+        // map(result => result.data),
+        // map(data => data.users),
+        map(({data}) => data.users)
     ).subscribe(data => {
       this.tableData.set(data);
     })
@@ -95,7 +116,7 @@ export class UsersComponent {
               private modalService: ModalService) {
   }
   addNewUser(data: any) {
-    this.usersService.createUser(data).subscribe(
+    this.usersService.create(data).subscribe(
         (result: any) =>
         {
           if (result) {
@@ -106,7 +127,7 @@ export class UsersComponent {
     );
   }
   updateUser(newData: any, id: string){
-    this.usersService.updateUser(newData, id).subscribe(
+    this.usersService.update(newData, id).subscribe(
         {
           next: res => {
             this.refreshData();
