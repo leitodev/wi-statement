@@ -1,10 +1,35 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
 import {catchError, of} from "rxjs";
 
-interface Suppliers {
+export interface SuppliersResponse {
+  code: number;
+  status: string;
+  data: {
+    currentPage: number,
+    totalPages: number,
+    suppliers: Supplier[],
+  }
+}
+
+export interface Supplier {
+  _id: string,
+  name: string,
+  email: string,
+  countryOfOrigin: string,
+  notes: string,
+  status: string,
+  contactPerson: any[],
+  factories: any[],
+  licensesAndCertifications: any[],
+  files: any[],
+  createdAt: string,
+  updatedAt: string,
+
+}
+export interface SuppliersDictionaries {
   code: number;
   status: number;
   data: {
@@ -19,12 +44,7 @@ interface Suppliers {
 
 const emptySuppliersObj = {
   data: {
-    suppliers: [
-      {
-        _id: 1,
-        name: ''
-      }
-    ],
+    suppliers: [],
     totalPages: 0,
   }
 };
@@ -37,8 +57,27 @@ export class SupplierService {
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
+  //TODO ASK MAX /suppliers for dictionary
+
   getAll() {
-    return this.http.get<Suppliers>(`${this.apiUrl}/suppliers`).pipe(
+    return this.http.get<SuppliersDictionaries>(`${this.apiUrl}/suppliers`).pipe(
+      catchError((error) => {
+        this.toastr.error(error.error.message)
+        return of(emptySuppliersObj);
+      })
+    );
+  }
+
+  get(tableQueryParams: { [key: string]: any }) {
+    let params = new HttpParams();
+    if (tableQueryParams) {
+      for (const key in tableQueryParams) {
+        if (tableQueryParams.hasOwnProperty(key) && tableQueryParams[key] !== undefined && tableQueryParams[key] !== null) {
+          params = params.set(key, tableQueryParams[key]);
+        }
+      }
+    }
+    return this.http.get<SuppliersResponse>(`${this.apiUrl}/suppliers`, { params }).pipe(
       catchError((error) => {
         this.toastr.error(error.error.message)
         return of(emptySuppliersObj);
