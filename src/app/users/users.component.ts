@@ -1,7 +1,7 @@
 import {Component, computed, signal, TemplateRef, ViewChild} from '@angular/core';
 import {MaterialsFilterComponent} from "../statements/part-management/materials-filter/materials-filter.component";
 import {ProductModalComponent} from "../statements/part-management/product-modal/product-modal.component";
-import {WiTableComponent} from "../components/wi-table/wi-table.component";
+import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
 import {MaterialList, MaterialService} from "../services/material.service";
 import {User, UsersResponse, UsersService} from "../services/users.service";
@@ -66,6 +66,11 @@ export class UsersComponent {
 
     this.refreshData(this.tableQueryParams);
   }
+  applySort(data: IFieldSortData) {
+    this.tableQueryParams['sortBy'] = data.sortBy;
+    this.tableQueryParams['sortOrder'] = data.sortOrder;
+    this.refreshData(this.tableQueryParams);
+  }
   openModal(modalTemplate: TemplateRef<any>, data: any) {
     this.modalService
         .open(modalTemplate, {
@@ -87,11 +92,11 @@ export class UsersComponent {
       this.tableQueryParams['page'] = event.data;
       this.refreshData(this.tableQueryParams);
     }
-    //
-    // if (event.eventName === 'applySort' && event.data?.sortBy) {
-    //   this.applySort(event.data);
-    // }
-    //
+
+    if (event.eventName === 'applySort' && event.data?.sortBy) {
+      this.applySort(event.data);
+    }
+
     if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
       this.openModal(this.modalTemplate, event.data);
     }
@@ -125,13 +130,16 @@ export class UsersComponent {
     );
   }
   updateUser(newData: any, id: string){
-    this.usersService.update(newData, id).subscribe(
+    this.usersService.update(newData, id).pipe(
+        tap(()=>this.refreshData(this.tableQueryParams))
+    ).subscribe(
+        (result: any) =>
         {
-          next: res => {
+          if (result) {
             this.refreshData();
+            this.modalService.closeModal();
           }
         }
     );
-    this.modalService.closeModal();
   }
 }
