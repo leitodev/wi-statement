@@ -146,7 +146,7 @@ export class PartManagementComponent implements OnInit {
     this.materialService.update(id, data)
       .subscribe((result: any) => {
         if (result) {
-          this.refreshData();
+          this.refreshData(this.tableQueryParams);
           this.modalService.closeModal();
         }
       });
