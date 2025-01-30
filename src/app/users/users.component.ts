@@ -105,8 +105,6 @@ export class UsersComponent {
           this.tableConfig.paginator.totalPages = users.data.totalPages;
           this.totalPages.set(users.data.totalPages);
         }),
-        // map(result => result.data),
-        // map(data => data.users),
         map(({data}) => data.users)
     ).subscribe(data => {
       this.tableData.set(data);

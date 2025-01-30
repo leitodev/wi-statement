@@ -36,18 +36,6 @@
                         class="w-full h-[2rem] border px-2 py-1"
                         formControlName="name">
             </div>
-            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
-                <label for="email" class="text-sm font-medium text-gray-900">Email
-                    <span *ngIf="usersForm.controls['email'].hasError('required') && usersForm.controls['email'].touched" class="text-red-500">
-                    is required!
-                </span>
-                </label>
-                <input  id="email"
-                        name="email"
-                        type="text"
-                        class="w-full h-[2rem] border px-2 py-1"
-                        formControlName="email">
-            </div>
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <label for="email" class="text-sm font-medium text-gray-900">Surname
@@ -61,6 +49,20 @@
                         class="w-full h-[2rem] border px-2 py-1"
                         formControlName="surname">
             </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="email" class="text-sm font-medium text-gray-900">Email
+                    <span *ngIf="usersForm.controls['email'].hasError('required') && usersForm.controls['email'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="email"
+                        name="email"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="email">
+            </div>
+
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
                         [label]="'Role'"
