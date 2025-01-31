@@ -39,7 +39,6 @@ export class WiTableComponent implements OnInit {
   constructor(private configStorageService: ConfigStorageService) {
     effect(() => {
       this.data = this.tableData() as any[];
-
       // re-generate pagination
       this.tablePages = Array.from({ length: this.totalPages() }, (_, i) => ({ id: i + 1, value: i + 1 }));
     });
@@ -124,4 +123,5 @@ export class WiTableComponent implements OnInit {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
 
+  protected readonly console = console;
 }
