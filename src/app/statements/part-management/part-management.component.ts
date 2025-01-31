@@ -159,10 +159,11 @@ export class PartManagementComponent implements OnInit {
   }
 
   applyFilter(data: { [key: string]: string }){
+    this.tableQueryParams  = {
+      ...this.defaultTableQueryParams
+    };
+
     if (data === null) {
-      this.tableQueryParams  = {
-        ...this.defaultTableQueryParams
-      };
       this.refreshData(this.tableQueryParams);
       return;
     };
