@@ -1,16 +1,11 @@
-import {Component, computed, signal, TemplateRef, ViewChild} from '@angular/core';
-import {MaterialsFilterComponent} from "../statements/part-management/materials-filter/materials-filter.component";
-import {ProductModalComponent} from "../statements/part-management/product-modal/product-modal.component";
+import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
-import {MaterialList, MaterialService} from "../services/material.service";
-import {User, UsersResponse, UsersService} from "../services/users.service";
+import {User, UsersService} from "../services/users.service";
 import {ModalTypes} from "../components/modal/modal-types";
 import {ModalService} from "../components/modal/modal.service";
-import {MockDataService} from "../services/mock-data.service";
 import {UsersModalComponent} from "./users-modal/users-modal.component";
-import {map, of, tap} from "rxjs";
-import {ToastrService} from "ngx-toastr";
+import {map, tap} from "rxjs";
 import {UsersFilterComponent} from "./users-filter/users-filter.component";
 
 @Component({
@@ -39,9 +34,6 @@ export class UsersComponent {
   isFilterVisible = false;
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
-  deleteMe(){
-    console.log(this.tableData())
-  }
   addNew() {
     this.openModal(this.modalTemplate, null);
   };
@@ -55,14 +47,14 @@ export class UsersComponent {
       };
       this.refreshData(this.tableQueryParams);
       return;
-    };
+    }
 
-    this.tableQueryParams['page'] = 1; // filter works only with this param !???!?
+    this.tableQueryParams['page'] = 1;
     for (const property in data) {
       if (data[property] && data[property].length > 0) {
         this.tableQueryParams[property] = data[property];
       }
-    };
+    }
 
     this.refreshData(this.tableQueryParams);
   }
@@ -79,7 +71,6 @@ export class UsersComponent {
         })
         .subscribe((action) => {
           // General Modal Events
-          console.log(action.event);
           if (action.event === ModalTypes.NEW) {
             this.addNewUser(action.data);
           } else if (action.event === ModalTypes.UPDATE) {

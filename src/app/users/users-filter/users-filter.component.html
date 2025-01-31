@@ -1,32 +1,20 @@
 <div [formGroup]="form" class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
-<!--    email name surname locale status lastLogitAt role-->
-<!--    <div *ngIf="supplierList$ | async as supplierList"-->
-<!--         class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6 flex items-start w-full">-->
-<!--        <app-dropdown-multi-->
-<!--                [label]="'Supplier'"-->
-<!--                [dataList]="supplierList"-->
-<!--                [listKeys]="['name']"-->
-<!--                [LabelClass]="'block font-medium text-gray-900'"-->
-<!--                formControlName="supplier"-->
-<!--                class="w-full"-->
-<!--        ></app-dropdown-multi>-->
-<!--    </div>-->
     <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
         <div class="input-group">
             <label id="name" class="font-medium">Name</label>
-            <input type="text" formControlName="name" class="w-full h-[2rem] border px-2 py-1" name="name">
+            <input type="text" formControlName="name" class="w-full h-[2rem] border px-2 py-1" name="name" autocomplete="off">
         </div>
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
         <div class="input-group">
             <label id="surname" class="font-medium">Surname</label>
-            <input type="text" formControlName="surname" class="w-full h-[2rem] border px-2 py-1" name="surname">
+            <input type="text" formControlName="surname" class="w-full h-[2rem] border px-2 py-1" name="surname" autocomplete="off">
         </div>
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-6">
         <div class="input-group">
             <label id="email" class="font-medium">Email</label>
-            <input type="text" formControlName="email" class="w-full h-[2rem] border px-2 py-1" name="email">
+            <input type="text" formControlName="email" class="w-full h-[2rem] border px-2 py-1" name="email" autocomplete="off">
         </div>
     </div>
     <div class="col-span-3 lg:col-span-3 md:col-span-4 sm:col-span-6 flex items-start w-full">

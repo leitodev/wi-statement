@@ -1,4 +1,4 @@
-import {Injectable, signal, WritableSignal} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {UserLocales} from "../users/enums/user-locales";
 import {UserTimeZones} from "../users/enums/user-timezones";
 import {UserStatuses} from "../users/enums/user-statuses";
@@ -7,7 +7,6 @@ import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
 import {catchError, Observable, of, tap} from "rxjs";
-import {MaterialsResponse} from "./material.service";
 
 export interface Profile{
   avatarUrl: string | null;
@@ -56,12 +55,6 @@ export class UsersService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
-  // todo: delete it
-  test(){
-    this.http.get<UsersResponse>(`${this.apiUrl}/users/?page=2&limit=10`).subscribe({
-      next: (val)=>console.log(val)
-    });
-  }
 
   getAll(tableQueryParams: { [key: string]: any }) {
     let params = new HttpParams();
@@ -71,9 +64,8 @@ export class UsersService {
           params = params.set(key, tableQueryParams[key]);
         }
       }
-      console.log('params', params);
     }
-    // ?page=2&limit=10
+
     return this.http.get<UsersResponse>(`${this.apiUrl}/users/`, { params }).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
@@ -96,7 +88,6 @@ export class UsersService {
         })
     );
   }
-  // toastr
   create(userData: any):Observable<any> {
     let avatarUrl = userData.form.avatarUrl;
     delete userData.form.avatarUrl;
@@ -106,18 +97,6 @@ export class UsersService {
         avatarUrl: avatarUrl,
       }
     };
-
-    // this.http.post(this.apiUrl+'/users', body).pipe(
-    //     tap((res: any) => {
-    //       if (res.code === 201) {
-    //         this.toastr.success('User has been successfully added');
-    //       }
-    //     }),
-    //     catchError((error) => {
-    //       this.toastr.error(error.error.message);
-    //       return of(null);
-    //     })
-    // )
 
     return this.http.post(this.apiUrl+'/users', body).pipe(
         tap((res: any) => {

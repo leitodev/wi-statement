@@ -3,15 +3,14 @@ import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angula
 import {CommonModule} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
-import {SupplierService} from "../../services/supplier.service";
-import {MaterialService} from "../../services/material.service";
-import {ToastrService} from "ngx-toastr";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {UserRoles} from "../enums/user-roles";
 import {UserStatuses} from "../enums/user-statuses";
 import {UserLocales} from "../enums/user-locales";
 import {UserTimeZones} from "../enums/user-timezones";
 
+// todo: винести в окремий файл
+// Функція, яка перетворює Enum в {id:number, name:string}[]
 export function dropDownComponentListFromEnum(enumData: any): Array<{ id: number; name: string }> {
     return Object.values(enumData).map((value, index) => ({
         id: index + 1,
@@ -32,7 +31,6 @@ export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 })
 
 export class UsersModalComponent implements OnInit, OnDestroy {
-    // @ViewChild(ComplianceComponent) childFormComponent!: ComplianceComponent;
     @Input() data?: any = null;
     public tabActive = 'General';
     currentID = signal(null);
@@ -59,9 +57,6 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private modal: ModalService,
-        private supplierService: SupplierService,
-        private materialService: MaterialService,
-        private toastr: ToastrService
     ) {}
 
     close() {
@@ -73,7 +68,7 @@ export class UsersModalComponent implements OnInit, OnDestroy {
 
         if(this.currentID()) {
             modalEvent = ModalTypes.UPDATE;
-        };
+        }
         // Tab General Data
         this.modal.submitModal({
             isParentChosen: this.isParentChosen,
@@ -111,48 +106,38 @@ export class UsersModalComponent implements OnInit, OnDestroy {
                 status: data.status,
                 role: data.role,
             });
-        };
-
+        }
     };
-
     ngOnInit() {
         if (!this.data) {
             return
-        };
+        }
         this.initForm(this.data);
     }
-
-    ngOnDestroy() {
-        console.log('ngOnDestroy users modal')
-    }
-
+    ngOnDestroy() {}
     setStatus(status: any) {
         return this.userStatuses.find(data => data.name === status);
     }
     selectStatus(data: any) {
         this.usersForm.patchValue({status: data.name})
     };
-
     setRole(role: any) {
         return this.userRoles.find(data => data.name === role);
     }
     selectRole(data: any) {
         this.usersForm.patchValue({role: data.name})
     };
-
     setLocale(locale: any) {
         return this.userLocales.find(data => data.name === locale);
     }
     selectLocale(data: any) {
         this.usersForm.patchValue({locale: data.name})
     };
-
     setTimeZone(timezone: any) {
         return this.userTimeZones.find(data => data.name === timezone);
     }
+    // todo: add changing timeZone
     selectTimeZone(data: any) {
         this.usersForm.patchValue({timezone: data.name})
     };
-
-    protected readonly userRoleList = userRoleList;
 }
