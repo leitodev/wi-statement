@@ -91,6 +91,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       id: this.data?._id ? this.data._id : null,
       form: this.productForm.getRawValue()
     }, modalEvent);
+    this.productForm.markAllAsTouched();
   };
 
   searchParent(searchedProduct: number | string = '') {

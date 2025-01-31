@@ -1,0 +1,15 @@
+export enum UserLocales{
+    en = 'en',
+    uk = 'uk',
+    es = 'es',
+    fr = 'fr',
+    de = 'de',
+    ja = 'ja',
+    ko = 'ko',
+    it = 'it',
+    pt = 'pt',
+    pl = 'pl',
+    tr = 'tr',
+    sv = 'sv',
+    fi = 'fi',
+}
