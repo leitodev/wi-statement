@@ -1,4 +1,4 @@
-<div class="sidebar fixed top-0 bottom-0 h-full w-[250px] p-5 text-white bg-indigo-600">
+<div class="sidebar fixed top-0 bottom-0 h-full select-none w-[250px] p-5 text-white bg-indigo-600">
 <!--  bg-indigo-500  -->
   <div routerLink="/contacts" class="flex justify-center user cursor-pointer bg-white rounded-md">
     <img class="w-20 h-20" src="img/avau1.png" alt="">
@@ -64,7 +64,7 @@
     </li>
 
       <li>
-          <div class="flex items-center m-1 p-1 gap-1 cursor-pointer text-slate-300" (click)="userMenuClicked()">
+          <div class="flex items-center m-1 p-1 gap-1 cursor-pointer text-slate-300" (click)="userMenuClicked()" [ngClass]="{ 'bg-indigo-700 text-white': isUserMenuOptionsBeingUsed}">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -75,11 +75,11 @@
 
           @if (isUserMenuOptionsActive) {
               <ul>
-                  <li class="pl-9 p-1 text-slate-300 cursor-pointer hover:bg-indigo-700" routerLink="users"
+                  <li class="m-1 pl-8 p-1 text-slate-300 cursor-pointer hover:bg-indigo-700" routerLink="users"
                       routerLinkActive="bg-indigo-700 text-white">
                       <span>Users</span>
                   </li>
-                  <li class="pl-9 p-1 text-slate-300 cursor-pointer hover:bg-indigo-700"
+                  <li class="m-1 pl-8 p-1 text-slate-300 cursor-pointer hover:bg-indigo-700"
                       routerLink="roles" routerLinkActive="bg-indigo-700 text-white">
                       <span>Roles</span>
                   </li>
