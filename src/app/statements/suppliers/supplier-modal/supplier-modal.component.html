@@ -1,6 +1,6 @@
 <!-- MODAL HEADER -->
 <div class="modal-header flex justify-between mb-3 text-lg">
-    {{ data ? data.partNumber : 'New Supplier'  }}
+    {{ data ? data.name : 'New Supplier'  }}
 
     <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
 </div>
@@ -12,11 +12,18 @@
          [class.bg-gray-100]="tabActive!=='General'">
         <span class="text-sm font-medium">General</span>
     </div>
+    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+         (click)="tabActive='Contacts'"
+         [class.bg-gray-100]="tabActive!=='Contacts'">
+        <span class="text-sm font-medium">Contacts</span>
+    </div>
 </div>
 
 <!-- MODAL CONTENT -->
 <div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
-    <ng-container *ngTemplateOutlet="modalBody"></ng-container>
+    <ng-container *ngTemplateOutlet="general"></ng-container>
+    <ng-container *ngTemplateOutlet="contacts"></ng-container>
+
 </div>
 
 <!-- MODAL FOOTER BUTTONS -->
@@ -26,7 +33,69 @@
             class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 disabled:bg-gray-500 disabled:cursor-not-allowed">Submit</button>
 </div>
 
+<ng-template #contacts>
+    <div [hidden]="tabActive!=='Contacts'">
+        <app-contacts [contactPersonsData]="data && data.contactPersons ? data.contactPersons : []"></app-contacts>
+    </div>
+</ng-template>
 
-<ng-template #modalBody>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam culpa cupiditate dicta eaque, enim exercitationem voluptas. Earum exercitationem modi possimus praesentium sed sit, vel. Accusantium cum dolores provident repellendus ut.
+<ng-template #general>
+    <form [formGroup]="productForm" [hidden]="tabActive!=='General'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="name" class="text-sm font-medium text-gray-900">Name
+                    <span *ngIf="productForm.controls['name'].hasError('required') && productForm.controls['name'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="name"
+                        name="name"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="name">
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="name" class="text-sm font-medium text-gray-900">Email
+                    <span *ngIf="productForm.controls['email'].hasError('required') && productForm.controls['email'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="email"
+                        name="email"
+                        type="text"
+                        class="w-full h-[2rem] border px-2 py-1"
+                        formControlName="email">
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="countryOfOrigin" class="text-sm font-medium text-gray-900">Country Of Origin</label>
+                <input id="countryOfOrigin"
+                       name="countryOfOrigin"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="countryOfOrigin">
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
+                <label for="notes" class="text-sm font-medium text-gray-900">Notes</label>
+                <input id="notes"
+                       name="notes"
+                       type="text"
+                       class="w-full h-[2rem] border px-2 py-1"
+                       formControlName="notes">
+            </div>
+
+            <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6 flex items-end w-full">
+                <app-dropdown
+                        [label]="'Status'"
+                        [default]="data && data?.status ? setStatus(data?.status) : statusDataList[2]"
+                        [dataList]="statusDataList"
+                        [listKeys]="['name']"
+                        class="w-full"
+                        (selectedItem)="selectStatus($event)">
+                </app-dropdown>
+            </div>
+        </div>
+    </form>
 </ng-template>

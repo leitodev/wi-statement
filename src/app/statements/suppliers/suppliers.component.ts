@@ -7,6 +7,8 @@ import {Supplier, SupplierService} from "../../services/supplier.service";
 import {map, tap} from "rxjs";
 import {ModalService} from "../../components/modal/modal.service";
 import {SupplierModalComponent} from "./supplier-modal/supplier-modal.component";
+import {ModalTypes} from "../../components/modal/modal-types";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-suppliers',
@@ -37,6 +39,7 @@ export class SuppliersComponent implements OnInit{
   };
 
   constructor(
+    private router: Router,
     private modalService: ModalService,
     private supplierService: SupplierService) {
   };
@@ -54,7 +57,6 @@ export class SuppliersComponent implements OnInit{
       map(({data}) => data.suppliers)
     ).subscribe(data => {
       this.tableData.set(data);
-      console.log('[refreshData] data', data);
     })
   }
 
@@ -70,18 +72,26 @@ export class SuppliersComponent implements OnInit{
 
   tableEvent(event: any) {
     // TODO Enums
-    // if (event.eventName == 'changePage') {
-    //   this.tableQueryParams['page'] = event.data;
-    //   this.refreshData(this.tableQueryParams);
-    // }
-    //
+    if (event.eventName == 'changePage') {
+      this.tableQueryParams['page'] = event.data;
+      this.refreshData(this.tableQueryParams);
+    }
+
     if (event.eventName === 'applySort' && event.data?.sortBy) {
       this.applySort(event.data);
     }
-    //
-    // if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
-    //   this.openModal(this.modalTemplate, event.data);
-    // }
+
+    if (event.eventName === 'tableRowEditBtn') {
+      this.openModal(this.modalTemplate, event.data);
+    }
+
+    if (event.eventName === 'tableFieldClick' && event.cellData.type === 'redirectTo') {
+      this.router.navigate(['/statements/list'], {
+        queryParams: {
+          supplier: event.cellValue
+        }
+      });
+    }
   };
 
   addNew() {
@@ -96,11 +106,32 @@ export class SuppliersComponent implements OnInit{
       })
       .subscribe((action) => {
         // General Modal Events
-        // if (action.event === ModalTypes.NEW) {
-        //   this.addNewMaterial(action.data);
-        // } else if (action.event === ModalTypes.UPDATE) {
-        //   this.updateMaterial(action.data.id, action.data);
-        // }
+        if (action.event === ModalTypes.NEW) {
+          this.addNewSupplier(action.data);
+        } else if (action.event === ModalTypes.UPDATE) {
+          this.updateSupplier(action.data.id, action.data);
+        }
       });
   };
+
+  addNewSupplier(newSupplier: Supplier) {
+    this.supplierService.add(newSupplier)
+      .subscribe((result) => {
+        if (result) {
+          this.tableData.set([result.data.supplier, ...this.tableData()]);
+          this.modalService.closeModal();
+        }
+      });
+  }
+
+  updateSupplier(id: string, data: any){
+    this.supplierService.update(id, data)
+      .subscribe((result) => {
+        if (result) {
+          this.refreshData(this.tableQueryParams);
+          this.modalService.closeModal();
+        }
+      });
+  }
+
 }

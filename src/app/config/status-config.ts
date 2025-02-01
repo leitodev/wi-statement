@@ -42,3 +42,10 @@ export const complianceStatus = [
     { id: 4, name: 'comply' },
     { id: 5, name: 'comply_with_exceptions' }
 ];
+
+export const supplierStatus = [
+    { id: 1, name: 'active' },
+    { id: 2, name: 'inactive' },
+    { id: 3, name: 'pending' },
+    { id: 4, name: 'suspended' }
+];

@@ -1,12 +1,22 @@
-import {Component, OnInit, output, OutputEmitterRef} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  output,
+  OutputEmitterRef,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
+import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
-import {complianceStatus, materialStatus} from "../../../config/status-config";
+import {complianceStatus, materialStatus, supplierStatus} from "../../../config/status-config";
 import {SupplierService} from "../../../services/supplier.service";
 import {map, Observable} from "rxjs";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {ToastrService} from "ngx-toastr";
 import {MaterialService} from "../../../services/material.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-materials-filter',
@@ -20,7 +30,7 @@ import {MaterialService} from "../../../services/material.service";
   templateUrl: './materials-filter.component.html',
   styleUrl: './materials-filter.component.scss'
 })
-export class MaterialsFilterComponent implements OnInit {
+export class MaterialsFilterComponent implements OnInit, AfterViewInit {
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
   statusList = materialStatus;
@@ -41,6 +51,7 @@ export class MaterialsFilterComponent implements OnInit {
   });
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     public fb: FormBuilder,
     private supplierService: SupplierService,
     private toastr: ToastrService,
@@ -77,6 +88,19 @@ export class MaterialsFilterComponent implements OnInit {
     );
   }
 
+  ngAfterViewInit() {
+    this.patchFromRouter();
+  }
+
+  patchFromRouter() {
+    // TODO
+    const supplier = this.activatedRoute.snapshot.queryParams['supplier'];
+    // this.form.patchValue({supplier: [{
+    //     id:23232,
+    //     name: supplier
+    //   }]});
+  }
+
   reset() {
     this.appliedFilter.emit(null);
     this.isFilterApplied = false;
@@ -84,6 +108,8 @@ export class MaterialsFilterComponent implements OnInit {
   }
 
   applyFilter() {
+    console.log('applyFilter', this.form.getRawValue());
+
     this.isFilterApplied = true;
     if (this.IsComplianceValid()) {
       this.appliedFilter.emit(this.form.getRawValue());

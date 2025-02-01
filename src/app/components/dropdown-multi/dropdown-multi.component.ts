@@ -3,11 +3,11 @@ import {
   EventEmitter, forwardRef,
   HostListener,
   Input,
-  OnInit,
-  Output, ViewChild, ViewContainerRef
+  OnInit, Optional,
+  Output, Self, ViewChild, ViewContainerRef
 } from '@angular/core';
 
-import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
@@ -71,8 +71,8 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  // not my
   writeValue(value: Data[]): void {
+    console.log('[writeValue] value', value);
     if (Array.isArray(value) && value.length > 0) {
       this.values = [...value];
     } else {

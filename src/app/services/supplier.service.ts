@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
-import {catchError, of} from "rxjs";
+import {catchError, of, tap} from "rxjs";
 
 export interface SuppliersResponse {
   code: number;
@@ -93,4 +93,42 @@ export class SupplierService {
       })
     );
   }
+
+  add(data: any) {
+    let body  = {
+      ...data.form,
+    };
+
+    return this.http.post(this.apiUrl+'/suppliers', body).pipe(
+      tap((res: any) => {
+        if (res.code === 201) {
+          this.toastr.success('Supplier has been successfully added');
+        }
+      }),
+      catchError((error) => {
+        this.toastr.error(error.error.message);
+        return of(null);
+      })
+    )
+  }
+
+  update(id: string, data: any) {
+    let body: Supplier = {
+      ...data.form
+    }
+
+    return this.http.put(this.apiUrl+'/suppliers/'+id, body).pipe(
+      tap((res: any) => {
+        if (res.code === 200) {
+          this.toastr.success('Material has been successfully updated');
+        }
+      }),
+      catchError((error) => {
+        this.toastr.error(error.error.message);
+        return of(null);
+      })
+    );
+  }
+
+
 }

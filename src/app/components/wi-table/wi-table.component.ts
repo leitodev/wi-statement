@@ -83,6 +83,15 @@ export class WiTableComponent implements OnInit {
     //this.tableEvent.emit({eventName:'tableRowCLick', data: rowItem });
   };
 
+  fieldClick(fieldName: string, cellValue: string, cellData: any) {
+    this.tableEvent.emit({
+      eventName:'tableFieldClick',
+      fieldName: fieldName,
+      cellValue,
+      cellData
+    });
+  }
+
   tableRowEditBtn(rowItem: any, event: Event){
     event.stopPropagation();
     this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });

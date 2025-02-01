@@ -71,11 +71,12 @@
           @if (cell.visible) {
           <ng-container *ngTemplateOutlet="
             cell.type === 'textCenter' ? textCenter :
+            cell.type === 'redirectTo' ? redirectTo :
             cell.type === 'componentsTemplate' ? componentsTemplate :
             cell.type === 'rcList' ? rcList :
             cell.type === 'shortDate' ? shortDate :
             defaultTemplate
-            context: { $implicit: item[cell.value] }
+            context: { $implicit: item[cell.value], cell: cell }
           "></ng-container>
           }
       }
@@ -123,6 +124,10 @@
 
 <ng-template #defaultTemplate let-data>
     <td class="border border-slate-300">{{ data }}</td>
+</ng-template>
+
+<ng-template #redirectTo let-data let-cell="cell">
+    <td (click)="fieldClick(cell.name, data, cell)" class="border border-slate-300 pl-2 text-sky-500 underline cursor-pointer">{{ data }}</td>
 </ng-template>
 
 <ng-template #textCenter let-data>
