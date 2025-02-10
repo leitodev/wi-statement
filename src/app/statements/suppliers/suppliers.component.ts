@@ -9,6 +9,7 @@ import {ModalService} from "../../components/modal/modal.service";
 import {SupplierModalComponent} from "./supplier-modal/supplier-modal.component";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {Router} from "@angular/router";
+import {SupplierFilterComponent} from "./supplier-filter/supplier-filter.component";
 
 @Component({
   selector: 'app-suppliers',
@@ -17,7 +18,8 @@ import {Router} from "@angular/router";
     MaterialsFilterComponent,
     ProductModalComponent,
     WiTableComponent,
-    SupplierModalComponent
+    SupplierModalComponent,
+    SupplierFilterComponent
   ],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss'
@@ -61,7 +63,7 @@ export class SuppliersComponent implements OnInit{
   }
 
   toggleFilter() {
-    // this.isFilterVisible = !this.isFilterVisible;
+    this.isFilterVisible = !this.isFilterVisible;
   };
 
   applySort(data: IFieldSortData) {
@@ -132,6 +134,26 @@ export class SuppliersComponent implements OnInit{
           this.modalService.closeModal();
         }
       });
+  }
+
+  applyFilter(data: { [key: string]: string }){
+    this.tableQueryParams  = {
+      ...this.defaultTableQueryParams
+    };
+
+    if (data === null) {
+      this.refreshData(this.tableQueryParams);
+      return;
+    };
+
+    this.tableQueryParams['page'] = 1; // filter works only with this param !???!?
+    for (const property in data) {
+      if (data[property] && data[property].length > 0) {
+        this.tableQueryParams[property] = data[property];
+      }
+    };
+
+    this.refreshData(this.tableQueryParams);
   }
 
 }

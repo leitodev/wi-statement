@@ -80,7 +80,6 @@ export class SupplierModalComponent implements OnInit{
 
   submitModal() {
     const contactData = this.contactsComponent.contactForm.value;
-    console.log('[submitModal] contactPersons', contactData);
     let modalEvent = ModalTypes.NEW;
 
     if(this.currentID()) {

@@ -11,6 +11,7 @@ import { map, tap} from "rxjs";
 import {MaterialList, MaterialService} from "../../services/material.service";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {MaterialsFilterComponent} from "./materials-filter/materials-filter.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-part-management',
@@ -37,14 +38,26 @@ export class PartManagementComponent implements OnInit {
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
   constructor(
-              private modalService: ModalService,
-              private materialService: MaterialService,
-              private mockDataService: MockDataService) {
+    private activatedRoute: ActivatedRoute,
+    private modalService: ModalService,
+    private materialService: MaterialService,
+    private mockDataService: MockDataService) {
   };
 
   ngOnInit() {
-    this.refreshData(this.tableQueryParams);
+    this.applyFilterFromURL();
   };
+
+  applyFilterFromURL() {
+    // TODO need improve it
+    const supplier = this.activatedRoute.snapshot.queryParams['supplier'];
+
+    if (supplier) {
+      this.isFilterVisible = true;
+    } else {
+      this.refreshData(this.tableQueryParams);
+    }
+  }
 
   refreshData(tableQueryParams: any = null) {
     this.materialService.get(tableQueryParams).pipe(

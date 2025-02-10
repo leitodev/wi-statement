@@ -1,16 +1,12 @@
 import {
-  AfterViewInit,
   Component,
   OnInit,
   output,
   OutputEmitterRef,
-  QueryList,
-  ViewChild,
-  ViewChildren
 } from '@angular/core';
-import {FormBuilder, FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
-import {complianceStatus, materialStatus, supplierStatus} from "../../../config/status-config";
+import {complianceStatus, materialStatus} from "../../../config/status-config";
 import {SupplierService} from "../../../services/supplier.service";
 import {map, Observable} from "rxjs";
 import {AsyncPipe, NgIf} from "@angular/common";
@@ -30,7 +26,7 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './materials-filter.component.html',
   styleUrl: './materials-filter.component.scss'
 })
-export class MaterialsFilterComponent implements OnInit, AfterViewInit {
+export class MaterialsFilterComponent implements OnInit {
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
   statusList = materialStatus;
@@ -41,7 +37,7 @@ export class MaterialsFilterComponent implements OnInit, AfterViewInit {
   form = this.fb.group({
     // parentID: [''],
     supplier: [''],
-    status: [[]],
+    status: [''],
     partNumber: [''],
     countryOfOrigin: [''],
     description: [''],
@@ -86,19 +82,20 @@ export class MaterialsFilterComponent implements OnInit, AfterViewInit {
         name: item.title
       })))
     );
+
+    this.applyFilterFromURL();
   }
 
-  ngAfterViewInit() {
-    this.patchFromRouter();
-  }
-
-  patchFromRouter() {
-    // TODO
+  applyFilterFromURL() {
+    // TODO need improve it
     const supplier = this.activatedRoute.snapshot.queryParams['supplier'];
-    // this.form.patchValue({supplier: [{
-    //     id:23232,
-    //     name: supplier
-    //   }]});
+    if (supplier) {
+      this.form.patchValue({supplier: supplier});
+      this.isFilterApplied = true;
+      this.appliedFilter.emit({
+        supplier: supplier
+      });
+    }
   }
 
   reset() {
@@ -108,14 +105,11 @@ export class MaterialsFilterComponent implements OnInit, AfterViewInit {
   }
 
   applyFilter() {
-    console.log('applyFilter', this.form.getRawValue());
-
     this.isFilterApplied = true;
     if (this.IsComplianceValid()) {
       this.appliedFilter.emit(this.form.getRawValue());
     } else {
       this.toastr.error('Fields "regulatoryCompliance" and "complianceStatus" can be used only in pairs!')
     }
-
   }
 }

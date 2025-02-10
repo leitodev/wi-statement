@@ -20,8 +20,9 @@
     </button>
 </div>
 
+
 @if (isFilterVisible) {
-    <app-materials-filter (appliedFilter)="applyFilter($event)"></app-materials-filter>
+<app-materials-filter (appliedFilter)="applyFilter($event)"></app-materials-filter>
 }
 
 <wi-table
