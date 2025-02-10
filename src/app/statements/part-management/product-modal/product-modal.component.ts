@@ -163,7 +163,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.currentID.set(data._id);
 
     if (data) {
-      console.log('data.parentID', data.parentID);
       if (data.parentID && data.parentID.length > 0) {
         this.oldParentID = data.parentID;
         this.materialService.searchById(data.parentID).subscribe(res => {

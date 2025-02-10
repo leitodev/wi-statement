@@ -3,6 +3,7 @@ import {HomeComponent} from "./home/home.component";
 import {AuthComponent} from "./auth/auth.component";
 import {DashboardComponent} from "./statements/dashboard/dashboard.component";
 import {AuthGuard} from "./auth/auth.guard";
+import {SuppliersComponent} from "./statements/suppliers/suppliers.component";
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -23,6 +24,9 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'list', loadComponent: () => import("./statements/part-management/part-management.component")
           .then((m) => m.PartManagementComponent)
+      },
+      {
+        path: 'suppliers', loadComponent: () => import("./statements/suppliers/suppliers.component").then((m) => m.SuppliersComponent)
       },
       { path: 'users',
         loadComponent: () => import("./users/users.component")

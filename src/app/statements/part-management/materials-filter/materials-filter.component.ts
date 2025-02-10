@@ -1,4 +1,9 @@
-import {Component, OnInit, output, OutputEmitterRef} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  output,
+  OutputEmitterRef,
+} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {DropdownMultiComponent} from "../../../components/dropdown-multi/dropdown-multi.component";
 import {complianceStatus, materialStatus} from "../../../config/status-config";
@@ -7,6 +12,7 @@ import {map, Observable} from "rxjs";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {ToastrService} from "ngx-toastr";
 import {MaterialService} from "../../../services/material.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-materials-filter',
@@ -31,7 +37,7 @@ export class MaterialsFilterComponent implements OnInit {
   form = this.fb.group({
     // parentID: [''],
     supplier: [''],
-    status: [[]],
+    status: [''],
     partNumber: [''],
     countryOfOrigin: [''],
     description: [''],
@@ -41,6 +47,7 @@ export class MaterialsFilterComponent implements OnInit {
   });
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     public fb: FormBuilder,
     private supplierService: SupplierService,
     private toastr: ToastrService,
@@ -75,6 +82,20 @@ export class MaterialsFilterComponent implements OnInit {
         name: item.title
       })))
     );
+
+    this.applyFilterFromURL();
+  }
+
+  applyFilterFromURL() {
+    // TODO need improve it
+    const supplier = this.activatedRoute.snapshot.queryParams['supplier'];
+    if (supplier) {
+      this.form.patchValue({supplier: supplier});
+      this.isFilterApplied = true;
+      this.appliedFilter.emit({
+        supplier: supplier
+      });
+    }
   }
 
   reset() {
@@ -90,6 +111,5 @@ export class MaterialsFilterComponent implements OnInit {
     } else {
       this.toastr.error('Fields "regulatoryCompliance" and "complianceStatus" can be used only in pairs!')
     }
-
   }
 }

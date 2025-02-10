@@ -5,7 +5,7 @@ import {catchError, of, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 
 export interface MaterialList {
-  _id: string;
+  _id: string,
   partNumber: string,
   description: string,
   supplier: string,
