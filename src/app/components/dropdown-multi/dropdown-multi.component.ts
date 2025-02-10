@@ -3,11 +3,11 @@ import {
   EventEmitter, forwardRef,
   HostListener,
   Input,
-  OnInit,
-  Output, ViewChild, ViewContainerRef
+  OnInit, Optional,
+  Output, Self, ViewChild, ViewContainerRef
 } from '@angular/core';
 
-import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
@@ -42,9 +42,6 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
 
   @Input() default: {id: number, name: string} | any = null;
-  // @Input() set default(value: Data) {
-  //   this.values.push(value);
-  // };
   @Input() set dataList(value: Data[]) {
     this.availableItems = [...value];
     this.itemsCache = [...value];
@@ -71,13 +68,24 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  // not my
-  writeValue(value: Data[]): void {
-    if (Array.isArray(value) && value.length > 0) {
-      this.values = [...value];
-    } else {
-      this.values = [];
+  writeValue(value: string): void {
+    this.values = [];
+
+    if (!value) {
+      return;
     }
+
+    const valuesFromControl = value.split(',');
+
+    if (Array.isArray(valuesFromControl) && value.length > 0) {
+      for (let i = 0; i < valuesFromControl.length; i++) {
+        this.values.push({
+          id: i,
+          name: valuesFromControl[i],
+        });
+      }
+    }
+
   }
   onChange(value: any){};
   onTouched(){};
