@@ -1,13 +1,14 @@
 import {
-  Component, effect,
-  EventEmitter,
+  Component, effect, ElementRef,
+  EventEmitter, HostListener,
   input,
   Input,
   OnInit,
-  Output,
+  Output, ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
+import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 
 export interface IFieldSortData {
   sortBy: string;
@@ -31,12 +32,22 @@ export class WiTableComponent implements OnInit {
     sortOrder: 'asc'
   };
 
-  @Input('tableConfigData') tableConfig: any = null;
+  defaultTableConfig: any;
+  tableConfig : any;
+  @Input('tableConfigData') set tableConfigData(value: object) {
+    this.tableConfig = value;
+    this.defaultTableConfig = structuredClone(value);
+  }
+
   tableData = input.required();
   totalPages = input(1);
   @Output() tableEvent = new EventEmitter();
+  @ViewChild('trigger') trigger!: ElementRef;
+  @ViewChild('dropdownTemplate') dropdownTemplate!: any;
 
-  constructor(private configStorageService: ConfigStorageService) {
+  constructor(
+    private ddPortalManagerService: DDPortalManagerService, private viewContainerRef: ViewContainerRef,
+    private configStorageService: ConfigStorageService) {
     effect(() => {
       this.data = this.tableData() as any[];
       // re-generate pagination
@@ -44,9 +55,30 @@ export class WiTableComponent implements OnInit {
     });
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Close dropdown if clicked outside
+    if (!this.isTableSettingActive) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    if (!target.closest('.settingsDropdown') && !target.closest('.settingsTrigger')) {
+      this.isTableSettingActive = false;
+      this.closeOverlay();
+    }
+  }
+
+  closeOverlay() {
+    this.ddPortalManagerService.detach();
+  }
+
   ngOnInit() {
     const settings = this.configStorageService.getTableSettings(this.tableConfig.tableName);
+    this.applyTableSettings(settings);
+  }
 
+  applyTableSettings(settings: any) {
     // TODO need better implementation for store table settings
     if (settings) {
       for (let i = 0; i < settings.cells.length; i++) {
@@ -57,7 +89,8 @@ export class WiTableComponent implements OnInit {
           }
         }
       }
-    } // if
+    }
+
   }
 
   sortByField(field: any){
@@ -98,6 +131,7 @@ export class WiTableComponent implements OnInit {
 
   toggleSettings() {
     this.isTableSettingActive = !this.isTableSettingActive;
+    this.ddPortalManagerService.managePortal(this.trigger, this.dropdownTemplate, this.viewContainerRef);
   }
 
   changeCellVisibility(cell: any) {
@@ -107,11 +141,14 @@ export class WiTableComponent implements OnInit {
   saveSettings() {
     this.isTableSettingActive = false;
     this.configStorageService.setTableSettings(this.tableConfig);
+    this.ddPortalManagerService.detach();
   }
 
   resetSettings() {
     this.isTableSettingActive = false;
     this.configStorageService.resetTableSettings(this.tableConfig.tableName);
+    this.applyTableSettings(this.defaultTableConfig)
+    this.ddPortalManagerService.detach();
   }
   prevPage() {
     if (this.currentPage && this.currentPage != 1) {
