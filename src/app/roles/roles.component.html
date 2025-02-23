@@ -1,0 +1,22 @@
+<!-- button bar component-->
+<div class="mb-1 flex gap-1">
+    <button (click)="addNew()"
+            class="flex items-center gap-1 submit-button px-2 py-1 bg-green-400 text-white font-semibold rounded-lg shadow-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        </svg>
+        Add
+    </button>
+</div>
+
+<wi-table
+        [tableConfigData]="tableConfig"
+        [tableData]="tableData()"
+        [totalPages]="totalPages()"
+        (tableEvent)="tableEvent($event)">
+</wi-table>
+
+<ng-template #modalTemplate let-data="data">
+    <app-roles-modal [data]="data"></app-roles-modal>
+</ng-template>

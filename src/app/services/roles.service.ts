@@ -1,42 +1,43 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {UserLocales} from "../users/enums/user-locales";
 import {UserTimeZones} from "../users/enums/user-timezones";
 import {UserStatuses} from "../users/enums/user-statuses";
 import {UserRoles} from "../users/enums/user-roles";
+import {Profile, User, UsersResponse} from "./users.service";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
 import {catchError, Observable, of, tap} from "rxjs";
 
-export interface Profile{
-  avatarUrl: string | null;
+export interface PageModule{
+  view: boolean,
+  create: boolean,
+  update: boolean,
+  delete: boolean
 }
-
-export interface User{
-  _id: string;
-  password: string;
-  email: string;
-  name: string;
-  surname: string;
-  locale: UserLocales;
-  timezone: UserTimeZones;
-  profile: Profile;
-  status: UserStatuses;
-  emailVerified: boolean;
-  lastLoginAt: Date | null;
-  role: UserRoles;
-  token: string | null;
+export interface Role{
+  _id: string,
+  name: string,
+  description: string,
+  permissions: { [key: string]: PageModule },
+  globalPermissions: {
+    canChangeUserRoles: boolean,
+    canViewReports: boolean,
+    canExport: boolean,
+    canEditOwnProfile: boolean
+  },
+  createdAt: Date,
+  updatedAt: Date,
 }
-
-export interface UserResponse {
+export interface RoleResponse {
   code: number;
   status: string;
   data: {
-    user: {}, // todo: change to user: User,
+    role: Role,
   };
 }
 
-export interface UsersResponse {
+export interface RolesResponse {
   totalPages: number;
   currentPage: number;
   code: number;
@@ -44,19 +45,18 @@ export interface UsersResponse {
   data: {
     currentPage: number;
     totalPages: number;
-    users: User[];
+    roles: Role[];
   };
 }
-
 @Injectable({
   providedIn: 'root'
 })
-export class UsersService {
+export class RolesService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
-  getAll(tableQueryParams: { [key: string]: any }) {
+  getAll(tableQueryParams: { [key: string]: any }){
     let params = new HttpParams();
     if (tableQueryParams) {
       for (const key in tableQueryParams) {
@@ -66,42 +66,38 @@ export class UsersService {
       }
     }
 
-    return this.http.get<UsersResponse>(`${this.apiUrl}/users/`, { params }).pipe(
+    return this.http.get<RolesResponse>(`${this.apiUrl}/roles/`, { params }).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
           // Return an empty array or fallback data in case of error
           const emptyUsersObj = {
             data: {
               totalPages: 0,
-              users: [],
+              roles: [],
             }
           };
           return of(emptyUsersObj);
         })
     );
   }
+
   get(id: string) {
-    return this.http.get<User>(`${this.apiUrl}/users/${id}`).pipe( // todo: change this.http.get<User> to this.http.get<UserResponse>
+    return this.http.get<RoleResponse>(`${this.apiUrl}/roles/${id}`).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
           return of({data: []});
         })
     );
   }
-  create(userData: any):Observable<any> {
-    let avatarUrl = userData.form.avatarUrl;
-    delete userData.form.avatarUrl;
-    let body  = {
-      ...userData.form,
-      profile: {
-        avatarUrl: avatarUrl,
-      }
-    };
 
-    return this.http.post(this.apiUrl+'/users', body).pipe(
+  create(roleData: any):Observable<any> {
+    let body  = {
+      ...roleData.form,
+    };
+    return this.http.post(this.apiUrl+'/roles', body).pipe(
         tap((res: any) => {
           if (res.code === 201) {
-            this.toastr.success('User has been successfully added');
+            this.toastr.success('Role has been successfully added');
           }
         }),
         catchError((error) => {
@@ -111,24 +107,29 @@ export class UsersService {
     );
   }
 
-  update(userData: any, id: string):Observable<any> {
-    let avatarUrl = userData.form.avatarUrl;
-    delete userData.form.avatarUrl;
+  update(roleData: any, id: string):Observable<any> {
     let body  = {
-      ...userData.form,
-      profile: {
-        avatarUrl: avatarUrl,
-      }
+      ...roleData.form,
     };
-    return this.http.put(this.apiUrl+'/users/'+id, body).pipe(
+    return this.http.put(this.apiUrl+'/roles/'+id, body).pipe(
         tap((res: any) => {
           if (res.code === 201) {
-            this.toastr.success('User has been successfully updated');
+            this.toastr.success('Role has been successfully updated');
           }
         }),
         catchError((error) => {
           this.toastr.error(error.error.message);
           return of(null);
+        })
+    );
+  }
+
+  delete(roleId: string):Observable<any> {
+    console.log('del')
+    return this.http.delete<RoleResponse>(`${this.apiUrl}/roles/${roleId}`).pipe(
+        catchError((error) => {
+          this.toastr.error(error.error.message)
+          return of({data: []});
         })
     );
   }

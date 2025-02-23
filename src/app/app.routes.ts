@@ -30,7 +30,11 @@ export const routes: Routes = [
       },
       { path: 'users',
         loadComponent: () => import("./users/users.component")
-          .then((m) => m.UsersComponent)
+            .then((m) => m.UsersComponent)
+      },
+      { path: 'roles',
+        loadComponent: () => import("./roles/roles.component")
+            .then((m) => m.RolesComponent)
       },
     ]
   },

@@ -8,15 +8,8 @@ import {UserRoles} from "../enums/user-roles";
 import {UserStatuses} from "../enums/user-statuses";
 import {UserLocales} from "../enums/user-locales";
 import {UserTimeZones} from "../enums/user-timezones";
+import {dropDownComponentListFromEnum} from "../../utils/utils";
 
-// todo: винести в окремий файл
-// Функція, яка перетворює Enum в {id:number, name:string}[]
-export function dropDownComponentListFromEnum(enumData: any): Array<{ id: number; name: string }> {
-    return Object.values(enumData).map((value, index) => ({
-        id: index + 1,
-        name: value as string, // Приведення типу до string
-    }));
-}
 export const userStatusList = dropDownComponentListFromEnum(UserStatuses);
 export const userRoleList = dropDownComponentListFromEnum(UserRoles);
 export const userLocaleList = dropDownComponentListFromEnum(UserLocales);
