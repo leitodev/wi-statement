@@ -1,11 +1,8 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
 import tableConfig from "./table-config";
-import {UsersFilterComponent} from "../users/users-filter/users-filter.component";
-import {UsersModalComponent} from "../users/users-modal/users-modal.component";
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {Role, RolesService} from "../services/roles.service";
 import {ModalTypes} from "../components/modal/modal-types";
-import {UsersService} from "../services/users.service";
 import {ModalService} from "../components/modal/modal.service";
 import {map, tap} from "rxjs";
 import {RolesModalComponent} from "./roles-modal/roles-modal.component";
