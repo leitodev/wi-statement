@@ -5,21 +5,21 @@ const tableConfig = {
   cells: [
     {
       name: 'ID',
-      sort: true,
+      sort: false,
       value: '_id',
       type: 'textCenter',
       visible: true,
     },
     {
       name: 'Name',
-      sort: true,
+      sort: false,
       value: 'name',
       type: 'textCenter',
       visible: true,
     },
     {
       name: 'Description',
-      sort: true,
+      sort: false,
       value: 'description',
       type: 'textCenter',
       visible: true,

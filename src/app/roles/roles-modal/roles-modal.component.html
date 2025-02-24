@@ -3,20 +3,22 @@
     <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
 </div>
 
-<div class="modal-tabs flex space-x-1 border-b border-gray-300">
-    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
-         (click)="tabActive='General'"
-         [class.bg-gray-100]="tabActive!=='General'">
-        <span class="text-sm font-medium">General</span>
-    </div>
-    <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
-         (click)="tabActive='Permissions'"
-         [class.bg-gray-100]="tabActive!=='Permissions'">
-        <span class="text-sm font-medium">Permissions</span>
+<div class="flex justify-between">
+    <div class="modal-tabs flex space-x-1 border-b border-gray-300">
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='General'"
+             [class.bg-gray-100]="tabActive!=='General'">
+            <span class="text-sm font-medium">General</span>
+        </div>
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='Permissions'"
+             [class.bg-gray-100]="tabActive!=='Permissions'">
+            <span class="text-sm font-medium">Permissions</span>
+        </div>
     </div>
     @if(data){
-        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md text-white bg-red-600"
-             (click)="deleteRole(data._id)"
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-400 rounded-t-md text-white bg-red-700"
+             (click)="deleteRole()"
              [class.bg-gray-100]="tabActive!=='Permissions'">
             <span class="text-sm font-medium">Delete</span>
         </div>
@@ -74,7 +76,7 @@
             <div class="col-span-12" formGroupName="globalPermissions">
                 <label for="name" class="w-full block text-sm font-medium text-gray-900">Global Permissions
                 </label>
-                @for (globalPermission of GlobalPermissionsArray; track $index){
+                @for (globalPermission of GlobalPermissionsKeys; track $index){
                     <div class="flex items-center">
                         <input id="{{globalPermission}}"
                                name="{{globalPermission}}"
@@ -82,19 +84,19 @@
                                class="h-[1rem] border px-2 py-1 mr-2"
                                formControlName="{{globalPermission}}"
                                autocomplete="off">
-                        <span>{{ globalPermission }}</span>
+                        <span>{{ GlobalPermissionsValues[$index]}}</span>
                     </div>
                 }
             </div>
 
             <!-- Page Modules Section -->
             <ng-container formGroupName="permissions">
-            @for(pageModule of PageModulesArray; track $index){
+            @for(pageModule of PageModulesKeys; track $index){
                 <div class="col-span-12">
-                    <label for="name" class="w-full block text-sm font-medium text-gray-900"> {{pageModule}}
+                    <label for="name" class="w-full block text-sm font-medium text-gray-900"> {{PageModulesValues[$index]}}
                     </label>
                     <div formGroupName="{{pageModule}}">
-                        @for (defaultPermission of DefaultPremissionsArray; track $index){
+                        @for (defaultPermission of DefaultPermissionsKeys; track $index){
                             <div class="flex items-center">
                                 <input id="{{pageModule}}_{{defaultPermission}}"
                                        name="{{pageModule}}_{{defaultPermission}}"
@@ -102,7 +104,7 @@
                                        class="h-[1rem] border px-2 py-1 mr-2"
                                        formControlName="{{defaultPermission}}"
                                        autocomplete="off">
-                                <span>{{ defaultPermission }}</span>
+                                <span>{{ DefaultPermissionsValues[$index]}}</span>
                             </div>
                         }
                     </div>

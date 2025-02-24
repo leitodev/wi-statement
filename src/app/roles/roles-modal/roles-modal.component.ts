@@ -1,11 +1,12 @@
 import {Component, Input, signal} from '@angular/core';
-import {FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup, AbstractControl, FormControl} from "@angular/forms";
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup,} from "@angular/forms";
 import {NgIf, NgTemplateOutlet} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {GlobalPermissions} from "../enums/global-permissions";
 import {PageModules} from "../enums/page-modules";
 import {RolesService} from "../../services/roles.service";
+import {DefaultPermissions} from "../enums/default-permissions";
 
 @Component({
   selector: 'app-roles-modal',
@@ -42,9 +43,15 @@ export class RolesModalComponent {
     console.log(this.rolesForm.value);
   }
 
-  GlobalPermissionsArray = Object.values(GlobalPermissions); // Глобальні дозволи
-  PageModulesArray = Object.values(PageModules); // Сторінки
-  DefaultPremissionsArray = ["view", "create", "update", "delete"]; // Дозволи на сторінці
+  // Глобальні дозволи
+  GlobalPermissionsKeys = Object.keys(GlobalPermissions);
+  GlobalPermissionsValues = Object.values(GlobalPermissions);
+  // Сторінки
+  PageModulesKeys = Object.keys(PageModules);
+  PageModulesValues = Object.values(PageModules);
+  // Дозволи на сторінці (модуля)
+  DefaultPermissionsKeys = Object.keys(DefaultPermissions);
+  DefaultPermissionsValues = Object.values(DefaultPermissions);
 
   constructor(
       private fb: FormBuilder,
@@ -56,9 +63,15 @@ export class RolesModalComponent {
     this.modal.closeModal();
   };
 
-  deleteRole(id: string){
-    let result = confirm('DELETE ROLE ' + id +'?');
-    if(result) this.rolesService.delete(id).subscribe();
+  deleteRole(){
+    let modalEvent = ModalTypes.DELETE;
+    // Tab General Data
+    this.modal.submitModal({
+      isParentChosen: this.isParentChosen,
+      oldParentID: this.oldParentID,
+      id: this.data?._id ? this.data._id : null,
+      form: this.rolesForm.getRawValue()
+    }, modalEvent);
   };
 
   submitModal() {
@@ -103,13 +116,10 @@ export class RolesModalComponent {
   };
   ngOnInit() {
     // Додаємо динамічно дозволи для кожного модуля
-    this.PageModulesArray.forEach(pageModule => {
-      (this.rolesForm.get('permissions') as FormGroup).addControl(pageModule, this.fb.group({
-        view: [false],
-        create: [false],
-        update: [false],
-        delete: [false]
-      }));
+    this.PageModulesKeys.forEach(pageModule => {
+      (this.rolesForm.get('permissions') as FormGroup).addControl(pageModule, this.fb.group(Object.fromEntries(
+          this.DefaultPermissionsKeys.map(key => [key, [false]])
+      )));
     });
 
     if (!this.data) {
@@ -118,10 +128,4 @@ export class RolesModalComponent {
     this.initForm(this.data);
   }
   ngOnDestroy() {}
-  // setStatus(status: any) {
-  //   return this.userStatuses.find(data => data.name === status);
-  // }
-  // selectStatus(data: any) {
-  //   this.rolesForm.patchValue({status: data.name})
-  // };
 }

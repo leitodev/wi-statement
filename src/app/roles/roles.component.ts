@@ -81,9 +81,11 @@ export class RolesComponent {
         .subscribe((action) => {
           // General Modal Events
           if (action.event === ModalTypes.NEW) {
-            this.addNewUser(action.data);
+            this.addNewRole(action.data);
           } else if (action.event === ModalTypes.UPDATE) {
-            this.updateUser(action.data, action.data.id);
+            this.updateRole(action.data, action.data.id);
+          } else if (action.event === ModalTypes.DELETE) {
+            this.deleteRole(action.data);
           }
         });
   };
@@ -92,7 +94,7 @@ export class RolesComponent {
     this.tableQueryParams['sortOrder'] = data.sortOrder;
     this.refreshData(this.tableQueryParams);
   }
-  addNewUser(data: any) {
+  addNewRole(data: any) {
     this.rolesService.create(data).subscribe(
         (result: any) =>
         {
@@ -103,7 +105,19 @@ export class RolesComponent {
         }
     );
   }
-  updateUser(newData: any, id: string){
+  deleteRole(data: any) {
+    let result = confirm('Delete role "' + data.form.name + '" (' + data.id + ')?');
+    if(result) this.rolesService.delete(data.id).subscribe(
+        (result: any) =>
+        {
+          if (result) {
+            this.refreshData();
+            this.modalService.closeModal();
+          }
+        }
+    );
+  }
+  updateRole(newData: any, id: string){
     this.rolesService.update(newData, id).pipe(
         tap(()=>this.refreshData(this.tableQueryParams))
     ).subscribe(

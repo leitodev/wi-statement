@@ -1,7 +1,7 @@
 export enum PageModules{
-    dashboard = "Dashboard",
-    supplier = "Supplier",
-    partManagement = "partManagement",
-    users = "Users",
+    Dashboard = "Dashboard",
+    Supplier = "Supplier",
+    partManagement = "Part Management",
+    Users = "Users",
     // roles = "Roles",
 }

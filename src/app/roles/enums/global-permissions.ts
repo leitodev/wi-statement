@@ -1,6 +1,6 @@
 export enum GlobalPermissions{
-    canChangeUserRoles = 'canChangeUserRoles',
-    canViewReports = 'canViewReports',
-    canExport = 'canExport',
-    canEditOwnProfile = 'canEditOwnProfile',
+    canChangeUserRoles = 'Can change user roles',
+    canViewReports = 'Can view reports',
+    canExport = 'Can export data',
+    canEditOwnProfile = 'Can edit own profile',
 }

@@ -1,9 +1,4 @@
 import { Injectable } from '@angular/core';
-import {UserLocales} from "../users/enums/user-locales";
-import {UserTimeZones} from "../users/enums/user-timezones";
-import {UserStatuses} from "../users/enums/user-statuses";
-import {UserRoles} from "../users/enums/user-roles";
-import {Profile, User, UsersResponse} from "./users.service";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
@@ -70,13 +65,13 @@ export class RolesService {
         catchError((error) => {
           this.toastr.error(error.error.message)
           // Return an empty array or fallback data in case of error
-          const emptyUsersObj = {
+          const emptyRolesObj = {
             data: {
               totalPages: 0,
               roles: [],
             }
           };
-          return of(emptyUsersObj);
+          return of(emptyRolesObj);
         })
     );
   }
@@ -125,8 +120,12 @@ export class RolesService {
   }
 
   delete(roleId: string):Observable<any> {
-    console.log('del')
     return this.http.delete<RoleResponse>(`${this.apiUrl}/roles/${roleId}`).pipe(
+        tap((res: any) => {
+          if (res.code === 200){
+            this.toastr.success('Role has been successfully deleted');
+          }
+        }),
         catchError((error) => {
           this.toastr.error(error.error.message)
           return of({data: []});
