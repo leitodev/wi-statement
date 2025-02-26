@@ -1,5 +1,5 @@
-import {Component, Input, signal} from '@angular/core';
-import {FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup,} from "@angular/forms";
+import {Component, Input, signal, ViewChild} from '@angular/core';
+import {FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup, FormGroupName,} from "@angular/forms";
 import {NgIf, NgTemplateOutlet} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {ModalTypes} from "../../components/modal/modal-types";
@@ -22,6 +22,7 @@ import {DefaultPermissions} from "../enums/default-permissions";
 })
 export class RolesModalComponent {
   @Input() data?: any = null;
+  @ViewChild(FormGroupName) formGroupNameDirective!: FormGroupName;
   public tabActive = 'General';
   currentID = signal(null);
   oldParentID = null; // need for back if we wanna change parent
@@ -40,7 +41,7 @@ export class RolesModalComponent {
     permissions: this.fb.group({})  // Пустий об'єкт для дозволів кожного модуля
   });
   consoleLogFormData(){
-    console.log(this.rolesForm.value);
+    // console.log(this.rolesForm.value);
   }
 
   // Глобальні дозволи
@@ -58,6 +59,23 @@ export class RolesModalComponent {
       private modal: ModalService,
       private rolesService: RolesService,
   ) {}
+
+  checkAllInGroupName(groupName: string, subGroupName?: string) {
+    let group: FormGroup | null = null;
+    if(subGroupName){
+      group = this.rolesForm.get(`permissions.${subGroupName}`) as FormGroup;
+    }
+    else {
+      group = this.rolesForm.get(groupName) as FormGroup;
+    }
+    if(group){
+      let groupValues = group.value;
+      let isGroupIncludesFalse = Object.values(groupValues).includes(false);
+      Object.keys(groupValues).forEach(key => {
+        group?.get(key)?.setValue(isGroupIncludesFalse);
+      })
+    }
+  }
 
   close() {
     this.modal.closeModal();

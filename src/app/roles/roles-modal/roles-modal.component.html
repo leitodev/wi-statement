@@ -68,10 +68,10 @@
 
 <ng-template #permissions>
     <form [formGroup]="rolesForm" [hidden]="tabActive!=='Permissions'" (click)="consoleLogFormData()">
-        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4 select-none">
             <!-- Global Permissions Section -->
-            <div class="col-span-12" formGroupName="globalPermissions">
-                <label for="name" class="w-full block text-sm font-medium text-gray-900">Global Permissions
+            <div class="col-span-4" formGroupName="globalPermissions">
+                <label title="Click to select all" (click)="checkAllInGroupName('globalPermissions')" for="name" class="cursor-pointer w-full block text-sm font-medium text-gray-900">Global
                 </label>
                 @for (globalPermission of GlobalPermissionsKeys; track $index){
                     <div class="flex items-center">
@@ -81,7 +81,7 @@
                                class="h-[1rem] border px-2 py-1 mr-2"
                                formControlName="{{globalPermission}}"
                                autocomplete="off">
-                        <span>{{ GlobalPermissionsValues[$index]}}</span>
+                        <label class="cursor-pointer" for="{{globalPermission}}">{{ GlobalPermissionsValues[$index]}}</label>
                     </div>
                 }
             </div>
@@ -89,10 +89,10 @@
             <!-- Page Modules Section -->
             <ng-container formGroupName="permissions">
             @for(pageModule of PageModulesKeys; track $index){
-                <div class="col-span-12">
-                    <label for="name" class="w-full block text-sm font-medium text-gray-900"> {{PageModulesValues[$index]}}
-                    </label>
+                <div class="col-span-4">
                     <div formGroupName="{{pageModule}}">
+                        <label title="Click to select all" (click)="checkAllInGroupName('permissions', pageModule)" for="name" class="cursor-pointer w-full block text-sm font-medium text-gray-900"> {{PageModulesValues[$index]}}
+                        </label>
                         @for (defaultPermission of DefaultPermissionsKeys; track $index){
                             <div class="flex items-center">
                                 <input id="{{pageModule}}_{{defaultPermission}}"
@@ -101,7 +101,7 @@
                                        class="h-[1rem] border px-2 py-1 mr-2"
                                        formControlName="{{defaultPermission}}"
                                        autocomplete="off">
-                                <span>{{ DefaultPermissionsValues[$index]}}</span>
+                                <label class="cursor-pointer" for="{{pageModule}}_{{defaultPermission}}">{{ DefaultPermissionsValues[$index]}}</label>
                             </div>
                         }
                     </div>
