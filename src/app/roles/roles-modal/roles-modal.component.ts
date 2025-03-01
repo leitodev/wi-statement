@@ -41,7 +41,7 @@ export class RolesModalComponent {
     permissions: this.fb.group({})  // Пустий об'єкт для дозволів кожного модуля
   });
   consoleLogFormData(){
-    // console.log(this.rolesForm.value);
+    console.log(this.rolesForm.value);
   }
 
   // Глобальні дозволи

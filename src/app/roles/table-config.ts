@@ -12,7 +12,7 @@ const tableConfig = {
     },
     {
       name: 'Name',
-      sort: false,
+      sort: true,
       value: 'name',
       type: 'textCenter',
       visible: true,
