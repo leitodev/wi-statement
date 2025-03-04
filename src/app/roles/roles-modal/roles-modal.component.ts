@@ -3,10 +3,7 @@ import {FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormGroup, Fo
 import {NgIf, NgTemplateOutlet} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {ModalTypes} from "../../components/modal/modal-types";
-import {GlobalPermissions} from "../enums/global-permissions";
-import {PageModules} from "../enums/page-modules";
 import {RolesService} from "../../services/roles.service";
-import {DefaultPermissions} from "../enums/default-permissions";
 
 @Component({
   selector: 'app-roles-modal',
@@ -40,19 +37,35 @@ export class RolesModalComponent {
     }),
     permissions: this.fb.group({})  // Пустий об'єкт для дозволів кожного модуля
   });
-  consoleLogFormData(){
-    console.log(this.rolesForm.value);
-  }
 
   // Глобальні дозволи
-  GlobalPermissionsKeys = Object.keys(GlobalPermissions);
-  GlobalPermissionsValues = Object.values(GlobalPermissions);
+  private globalPermissions = [
+    { key: 'canChangeUserRoles',  value: 'Can change user roles', },
+    { key: 'canViewReports',  value: 'Can view reports', },
+    { key: 'canExport',  value: 'Can export data', },
+    { key: 'canEditOwnProfile',  value: 'Can edit own profile', },
+  ];
+  globalPermissionsKeys: string[] = [];
+  globalPermissionsValues: string[] = [];
+
   // Сторінки
-  PageModulesKeys = Object.keys(PageModules);
-  PageModulesValues = Object.values(PageModules);
+  private pageModules = [
+    { key: "Dashboard", value: "Dashboard" },
+    { key: "Supplier",  value: "Supplier" },
+    { key: "PartManagement",  value: "Part Management" },
+    { key: "Users",  value: "Users" },
+  ];
+  pageModulesKeys: string[] = [];
+  pageModulesValues: string[] = [];
   // Дозволи на сторінці (модуля)
-  DefaultPermissionsKeys = Object.keys(DefaultPermissions);
-  DefaultPermissionsValues = Object.values(DefaultPermissions);
+  private defaultPermissions = [
+    { key: "view",  value: "view", },
+    { key: "create",  value: "create", },
+    { key: "update",  value: "update", },
+    { key: "delete",  value: "delete", }
+  ];
+  defaultPermissionsKeys: string[] = [];
+  defaultPermissionsValues: string[] = [];
 
   constructor(
       private fb: FormBuilder,
@@ -108,11 +121,6 @@ export class RolesModalComponent {
     this.rolesForm.markAllAsTouched();
   };
 
-  changeModalComponent(componentData: any, event: Event) {
-    event.stopPropagation();
-    this.rerenderAllData(componentData);
-  };
-
   rerenderAllData(data: any) {
     this.parentSearch = '';
     this.initForm(data);
@@ -133,10 +141,25 @@ export class RolesModalComponent {
     }
   };
   ngOnInit() {
+    this.defaultPermissions.forEach((data)=>{
+          this.defaultPermissionsKeys.push(data.key);
+          this.defaultPermissionsValues.push(data.value);
+        }
+    );
+    this.globalPermissions.forEach((data)=>{
+          this.globalPermissionsKeys.push(data.key);
+          this.globalPermissionsValues.push(data.value);
+        }
+    );
+    this.pageModules.forEach((data)=>{
+          this.pageModulesKeys.push(data.key);
+          this.pageModulesValues.push(data.value);
+        }
+    );
     // Додаємо динамічно дозволи для кожного модуля
-    this.PageModulesKeys.forEach(pageModule => {
+    this.pageModulesKeys.forEach(pageModule => {
       (this.rolesForm.get('permissions') as FormGroup).addControl(pageModule, this.fb.group(Object.fromEntries(
-          this.DefaultPermissionsKeys.map(key => [key, [false]])
+          this.defaultPermissionsKeys.map(key => [key, [false]])
       )));
     });
 
