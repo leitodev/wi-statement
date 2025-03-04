@@ -1,7 +1,7 @@
 
 // textCenter componentsTemplate rcList
 const tableConfig = {
-  tableName: 'users',
+  tableName: 'usersTable',
   cells: [
     {
       name: 'ID',
