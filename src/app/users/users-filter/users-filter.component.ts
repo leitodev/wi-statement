@@ -1,9 +1,9 @@
-import {Component, output, OutputEmitterRef} from '@angular/core';
+import {Component, Input, output, OutputEmitterRef} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 import {DropdownMultiComponent} from "../../components/dropdown-multi/dropdown-multi.component";
 import {map, Observable} from "rxjs";
 import {UsersService} from "../../services/users.service";
-import {userRoleList, userLocaleList, userStatusList} from "../users-modal/users-modal.component";
+import {userLocaleList, userStatusList} from "../users-modal/users-modal.component";
 
 @Component({
   selector: 'app-users-filter',
@@ -16,11 +16,12 @@ import {userRoleList, userLocaleList, userStatusList} from "../users-modal/users
   styleUrl: './users-filter.component.scss'
 })
 export class UsersFilterComponent {
+  @Input() userRoleList: {_id: string, name: string}[] = [];
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
 
   userStatuses = userStatusList;
-  userRoles = userRoleList;
+  userRoles: {id: number; name: string}[] = [];
   userLocales = userLocaleList;
 
   usersList$!: Observable<{ id: string; name: string; }[]>;
@@ -45,6 +46,12 @@ export class UsersFilterComponent {
           name: item.name
         })))
     );
+    this.userRoles = this.userRoleList.map(({_id, name}, index)=>{
+      return {id: index+1, name: name};
+    });
+    console.log(this.userStatuses);
+    console.log(this.userRoles);
+    console.log(this.userLocales);
   }
 
   reset() {

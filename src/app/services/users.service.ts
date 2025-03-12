@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {UserLocales} from "../users/enums/user-locales";
 import {UserTimeZones} from "../users/enums/user-timezones";
 import {UserStatuses} from "../users/enums/user-statuses";
-import {UserRoles} from "../users/enums/user-roles";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
@@ -24,7 +23,7 @@ export interface User{
   status: UserStatuses;
   emailVerified: boolean;
   lastLoginAt: Date | null;
-  role: UserRoles;
+  role: any; // todo: change
   token: string | null;
 }
 
@@ -32,7 +31,7 @@ export interface UserResponse {
   code: number;
   status: string;
   data: {
-    user: {}, // todo: change to user: User,
+    user: User,
   };
 }
 
@@ -47,7 +46,17 @@ export interface UsersResponse {
     users: User[];
   };
 }
-
+export interface RoleForDictionary {
+  _id: string;
+  name: string;
+}
+export  interface RolesForDictionaryResponse {
+  code: number;
+  status: string;
+  data: {
+    roles: RoleForDictionary[];
+  };
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -81,13 +90,24 @@ export class UsersService {
     );
   }
   get(id: string) {
-    return this.http.get<User>(`${this.apiUrl}/users/${id}`).pipe( // todo: change this.http.get<User> to this.http.get<UserResponse>
+    return this.http.get<UserResponse>(`${this.apiUrl}/users/${id}`).pipe(
         catchError((error) => {
           this.toastr.error(error.error.message)
           return of({data: []});
         })
     );
   }
+
+  getAllRoles():Observable<RolesForDictionaryResponse>{
+    return this.http.get<RolesForDictionaryResponse>(`${this.apiUrl}/rolesForDictionary`).pipe(
+      catchError((error) => {
+        this.toastr.error(error.error.message);
+        const emptyRolesObj = {data: {roles: [],}, code: 0, status: 'error'};
+        return of(emptyRolesObj);
+      })
+    );
+  }
+
   create(userData: any):Observable<any> {
     let avatarUrl = userData.form.avatarUrl;
     delete userData.form.avatarUrl;

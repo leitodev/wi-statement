@@ -4,14 +4,12 @@ import {CommonModule} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 import {ModalTypes} from "../../components/modal/modal-types";
-import {UserRoles} from "../enums/user-roles";
 import {UserStatuses} from "../enums/user-statuses";
 import {UserLocales} from "../enums/user-locales";
 import {UserTimeZones} from "../enums/user-timezones";
 import {dropDownComponentListFromEnum} from "../../utils/utils";
 
 export const userStatusList = dropDownComponentListFromEnum(UserStatuses);
-export const userRoleList = dropDownComponentListFromEnum(UserRoles);
 export const userLocaleList = dropDownComponentListFromEnum(UserLocales);
 export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
@@ -25,6 +23,7 @@ export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
 export class UsersModalComponent implements OnInit, OnDestroy {
     @Input() data?: any = null;
+    @Input() rolesList: {_id: string, name: string}[] = [];
     public tabActive = 'General';
     currentID = signal(null);
     oldParentID = null; // need for back if we wanna change parent
@@ -39,11 +38,11 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         timezone: [UserTimeZones.UTC],
         avatarUrl: [null],
         status: [''],
-        role: [UserRoles.employee],
+        role: [this.rolesList[0] ? this.rolesList[0] : ''],
     });
 
     userStatuses = userStatusList;
-    userRoles = userRoleList;
+    userRoles:{id: number, name: string}[] = [];
     userLocales = userLocaleList;
     userTimeZones = userTimeZoneList;
 
@@ -102,6 +101,10 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         }
     };
     ngOnInit() {
+        this.userRoles = this.rolesList.map(({_id ,name}, index) => {
+            return {id: index+1, name: name};
+        });
+
         if (!this.data) {
             return
         }
