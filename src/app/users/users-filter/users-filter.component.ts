@@ -49,9 +49,6 @@ export class UsersFilterComponent {
     this.userRoles = this.userRoleList.map(({_id, name}, index)=>{
       return {id: index+1, name: name};
     });
-    console.log(this.userStatuses);
-    console.log(this.userRoles);
-    console.log(this.userLocales);
   }
 
   reset() {

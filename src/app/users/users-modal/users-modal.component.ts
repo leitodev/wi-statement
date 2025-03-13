@@ -11,7 +11,6 @@ import {dropDownComponentListFromEnum} from "../../utils/utils";
 
 export const userStatusList = dropDownComponentListFromEnum(UserStatuses);
 export const userLocaleList = dropDownComponentListFromEnum(UserLocales);
-export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
 @Component({
     selector: 'app-users-modal',
@@ -27,7 +26,6 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     public tabActive = 'General';
     currentID = signal(null);
     oldParentID = null; // need for back if we wanna change parent
-    parentSearch = '';
     isParentChosen: any = false;
     usersForm = this.fb.group({
         password: ['', [Validators.required]],
@@ -42,9 +40,8 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     });
 
     userStatuses = userStatusList;
-    userRoles:{id: number, name: string}[] = [];
+    userRoles: {id: number, name: string}[] = [];
     userLocales = userLocaleList;
-    userTimeZones = userTimeZoneList;
 
     constructor(
         private fb: FormBuilder,
@@ -69,18 +66,6 @@ export class UsersModalComponent implements OnInit, OnDestroy {
             form: this.usersForm.getRawValue()
         }, modalEvent);
         this.usersForm.markAllAsTouched();
-    };
-
-    changeModalComponent(componentData: any, event: Event) {
-        event.stopPropagation();
-        this.rerenderAllData(componentData);
-    };
-
-    rerenderAllData(data: any) {
-        this.parentSearch = '';
-        this.initForm(data);
-        this.data = data;
-        this.tabActive = 'General';
     };
 
     initForm(data: any) {
@@ -128,12 +113,5 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     }
     selectLocale(data: any) {
         this.usersForm.patchValue({locale: data.name})
-    };
-    setTimeZone(timezone: any) {
-        return this.userTimeZones.find(data => data.name === timezone);
-    }
-    // todo: add changing timeZone
-    selectTimeZone(data: any) {
-        this.usersForm.patchValue({timezone: data.name})
     };
 }
