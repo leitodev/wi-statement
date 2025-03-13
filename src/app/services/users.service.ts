@@ -11,6 +11,11 @@ export interface Profile{
   avatarUrl: string | null;
 }
 
+export interface Role{
+  name: string;
+  _id: string;
+}
+
 export interface User{
   _id: string;
   password: string;
@@ -23,7 +28,7 @@ export interface User{
   status: UserStatuses;
   emailVerified: boolean;
   lastLoginAt: Date | null;
-  role: any; // todo: change
+  role: Role;
   token: string | null;
 }
 

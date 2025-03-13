@@ -105,8 +105,9 @@ export class UsersComponent {
         map(({data}) => data.users)
     ).subscribe(data => {
       let newData = data.map(user => {
-        user.role = user.role.name;
-        return user;
+        let processedUser: any = {...user};
+        processedUser.role = user.role.name;
+        return processedUser;
       });
       this.tableData.set(newData);
     });
