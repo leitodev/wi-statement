@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  host: "http://35.173.211.140:3000/",
-  apiUrl: 'http://35.173.211.140:3000/api',
+  host: "https://cloudcompliance.duckdns.org/",
+  apiUrl: 'https://cloudcompliance.duckdns.org/api',
   featureFlag: true
 };
 
