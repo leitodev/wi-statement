@@ -20,9 +20,7 @@
     </button>
 </div>
 
-@if (isFilterVisible) {
-    <app-users-filter (appliedFilter)="applyFilter($event)"></app-users-filter>
-}
+<app-users-filter [hidden]="!isFilterVisible" (appliedFilter)="applyFilter($event)"></app-users-filter>
 
 <wi-table
         [tableConfigData]="tableConfig"
