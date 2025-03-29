@@ -3,11 +3,11 @@ import {
   EventEmitter, forwardRef,
   HostListener,
   Input,
-  OnInit,
-  Output, ViewChild, ViewContainerRef
+  OnInit, Optional,
+  Output, Self, ViewChild, ViewContainerRef
 } from '@angular/core';
 
-import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
@@ -35,19 +35,16 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   values: Data[] = [];
   isListAvailable = false;
   availableItems: Data[] = [];
-  availableItemsBeforeSearch: Data[] = [];
+  itemsCache: Data[] = [];
   search = '';
 
   @ViewChild('trigger', { static: true, read: ElementRef }) trigger!: ElementRef<HTMLElement>;
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
 
   @Input() default: {id: number, name: string} | any = null;
-  // @Input() set default(value: Data) {
-  //   this.values.push(value);
-  // };
   @Input() set dataList(value: Data[]) {
     this.availableItems = [...value];
-    this.availableItemsBeforeSearch = [...value];
+    this.itemsCache = [...value];
   };
   @Input() listKeys: string[] = []; // [listKeys]="['partNumber', 'description']"
   @Input() label: string = '';
@@ -71,13 +68,24 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  // not my
-  writeValue(value: Data[]): void {
-    if (Array.isArray(value) && value.length > 0) {
-      this.values = [...value];
-    } else {
-      this.values = [];
+  writeValue(value: string): void {
+    this.values = [];
+
+    if (!value) {
+      return;
     }
+
+    const valuesFromControl = value.split(',');
+
+    if (Array.isArray(valuesFromControl) && value.length > 0) {
+      for (let i = 0; i < valuesFromControl.length; i++) {
+        this.values.push({
+          id: i,
+          name: valuesFromControl[i],
+        });
+      }
+    }
+
   }
   onChange(value: any){};
   onTouched(){};
@@ -102,6 +110,10 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   }
 
   toggleChoice() {
+    if (this.values.length === 0) { // parent form have reset
+      this.availableItems = [...this.itemsCache];
+    }
+
     this.isListAvailable = !this.isListAvailable;
     this.ddPortalManagerService.managePortal(this.trigger, this.dropdownTemplate, this.viewContainerRef);
   }
@@ -114,7 +126,7 @@ export class DropdownMultiComponent implements OnInit, ControlValueAccessor {
   }
 
   searchItem(){
-    this.availableItems = this.availableItemsBeforeSearch.filter(item => {
+    this.availableItems = this.itemsCache.filter(item => {
       return item.name.includes(this.search) || item.name.toLowerCase().includes(this.search.toLowerCase());
     }).filter(item => !this.values.includes(item));
   }

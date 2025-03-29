@@ -1,9 +1,12 @@
-<h1>Dashboard</h1>
+<h1 class="font-extrabold">Dashboard</h1>
 
 <ul>
-  <li>need component for side bar</li>
-  <li>need table component with pagination</li>
-  <li>need common components for buttons and popup window</li>
+    @for (supplier of suppliers | async; track supplier._id) {
+        <li class="flex justify-around">
+            <span class="font-bold">{{supplier.name}}</span>
+            <span>{{supplier.email}}</span>
+        </li>
+    }
 </ul>
 
-<div class="w-9/12 h-[400px] bg-gradient-to-r from-purple-500 to-pink-500"></div>
+<!--<span>{{supplier.countryOfOrigin}}</span>-->

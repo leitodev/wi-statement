@@ -5,7 +5,7 @@ import {catchError, of, tap} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 
 export interface MaterialList {
-  _id: string;
+  _id: string,
   partNumber: string,
   description: string,
   supplier: string,
@@ -92,7 +92,6 @@ export class MaterialService {
           params = params.set(key, tableQueryParams[key]);
         }
       }
-      console.log('params', params);
     }
     return this.http.get<MaterialsResponse>(`${this.apiUrl}/materials`, { params }).pipe(
       catchError((error) => {

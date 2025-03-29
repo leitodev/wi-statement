@@ -11,6 +11,7 @@ import {ModalTypes} from "../../../components/modal/modal-types";
 import {StatusSvgComponent} from "../../../components/status-svg/status-svg.component";
 import {materialStatus} from "../../../config/status-config";
 import {ComplianceComponent} from "./compliance/compliance.component";
+import {materialCategories} from "../../../config/categories-config";
 
 @Component({
   selector: 'app-product-modal',
@@ -24,15 +25,16 @@ export class ProductModalComponent implements OnInit, OnDestroy {
   @Input() data?: any = null;
   public tabActive = 'General';
   currentID = signal(null);
-  oldParentID = null; // need for back if we wanna change parent
+  materialCategoriesList = materialCategories;
+  oldParentID = null; // need for back-end if we wanna change parent
   parentSearch = '';
   isParentListAvailable = false;
   isParentChosen: any = false;
   productForm = this.fb.group({
     parentID: [''], // need only for view partNumber + Desc
     partNumber: ['', [Validators.required]],
-    description: [''],
-    status: [''],
+    description: ['', [Validators.required]],
+    status: ['', [Validators.required]],
     supplier: [''],
     supplierItemNumber: [''],
     countryOfOrigin: [''],
@@ -40,7 +42,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     category: [''],
     unitOfMeasure: [''],
     notes: [''],
-    leadTime: [''],
+    leadTime: 1,
   });
 
   productSearchList: any = [];
@@ -89,6 +91,7 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       id: this.data?._id ? this.data._id : null,
       form: this.productForm.getRawValue()
     }, modalEvent);
+    this.productForm.markAllAsTouched();
   };
 
   searchParent(searchedProduct: number | string = '') {
@@ -139,6 +142,10 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.productForm.patchValue({status: data.name})
   };
 
+  selectCategory(data: any) {
+    this.productForm.patchValue({category: data.name})
+  };
+
   changeModalComponent(componentData: any, event: Event) {
     event.stopPropagation();
     this.rerenderAllData(componentData);
@@ -156,7 +163,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.currentID.set(data._id);
 
     if (data) {
-      console.log('data.parentID', data.parentID);
       if (data.parentID && data.parentID.length > 0) {
         this.oldParentID = data.parentID;
         this.materialService.searchById(data.parentID).subscribe(res => {

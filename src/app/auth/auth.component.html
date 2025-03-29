@@ -1,11 +1,6 @@
 <div class="flex justify-center items-center h-screen bg-gradient-to-r from-purple-400 to-pink-800">
   <form [formGroup]="form" class="w-96 p-6 shadow-lg bg-white rounded-lg">
-      <h1 class="text-center text-2xl">Login
-          <span class="font-light text-sm text-orange-500 cursor-pointer"
-                (click)="fastLogin('test@gmail.com', 'test')">
-              [fast login]
-          </span>
-      </h1>
+      <h1 class="text-center text-2xl">Login</h1>
     <hr class="mt-3">
     <div class="mt-3">
       <label for="email" class="block text-base mb-2">Email</label>
@@ -53,6 +48,18 @@
         (click)="login()"
         class="hover:bg-violet-700 bg-violet-500 px-20 py-2 font-semibold text-sm text-white rounded-full shadow-sm disabled:bg-gray-500 disabled:cursor-not-allowed">Enter</button>
     </div>
+
+      <div #temp class="mt-3 flex justify-center items-center">
+          <button
+                  type="button"
+                  (click)="fastLogin('maksym.gastello@gmail.com', 'test12')"
+                  class="hover:bg-cyan-500 bg-cyan-300 px-4 py-2 font-semibold text-sm text-white rounded-full shadow-sm">Gastello</button>
+
+          <button
+                  type="button"
+                  (click)="fastLogin('Andriy.Hardy@gmail.com', 'test12')"
+                  class="hover:bg-amber-700 bg-amber-500 px-4 py-2 font-semibold text-sm text-white rounded-full shadow-sm">Andrii</button>
+      </div>
 
   </form>
 </div>
