@@ -80,7 +80,7 @@ export class RolesComponent {
           if (action.event === ModalTypes.NEW) {
             this.addNewRole(action.data);
           } else if (action.event === ModalTypes.UPDATE) {
-            this.updateRole(action.data, action.data.id);
+            this.updateRole(action.data);
           } else if (action.event === ModalTypes.DELETE) {
             this.deleteRole(action.data);
           }
@@ -103,7 +103,7 @@ export class RolesComponent {
     );
   }
   deleteRole(data: any) {
-    let result = confirm('Delete role "' + data.form.name + '" (' + data.id + ')?');
+    let result = confirm(`Delete role "${data.form.name}" (${data.id})?`);
     if(result) this.rolesService.delete(data.id).subscribe(
         (result: any) =>
         {
@@ -114,8 +114,8 @@ export class RolesComponent {
         }
     );
   }
-  updateRole(newData: any, id: string){
-    this.rolesService.update(newData, id).pipe(
+  updateRole(newData: any){
+    this.rolesService.update(newData, newData.id).pipe(
         tap(()=>this.refreshData(this.tableQueryParams))
     ).subscribe(
         (result: any) =>
