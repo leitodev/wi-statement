@@ -1,4 +1,4 @@
-import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
+import {Component, signal, TemplateRef, ViewChild, WritableSignal} from '@angular/core';
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import tableConfig from "./table-config";
 import {User, UsersService} from "../services/users.service";
@@ -31,7 +31,7 @@ export class UsersComponent {
   tableConfig = tableConfig;
   tableData = signal<User[]>([]);
   totalPages = signal(1);
-  rolesList: {_id: string, name: string}[] = [];
+  rolesList: WritableSignal<{_id: string, name: string}[]> = signal([]);
   isFilterVisible = false;
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
@@ -114,8 +114,9 @@ export class UsersComponent {
 
     this.usersService.getAllRoles().pipe(
         map(data => data.data.roles),
-        tap(value => this.rolesList = value),
-    ).subscribe();
+    ).subscribe(data => {
+      this.rolesList.set(data);
+    });
   }
   constructor(private usersService: UsersService,
               private modalService: ModalService) {
