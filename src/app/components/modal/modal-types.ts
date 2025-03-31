@@ -1,7 +1,8 @@
 export enum ModalTypes {
     NEW = 'NEW',
     UPDATE = 'UPDATE',
-    CLOSE = 'CLOSE'
+    CLOSE = 'CLOSE',
+    DELETE = 'DELETE',
 }
 
 export interface ModalAction {

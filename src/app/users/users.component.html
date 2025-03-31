@@ -20,7 +20,9 @@
     </button>
 </div>
 
-<app-users-filter [hidden]="!isFilterVisible" (appliedFilter)="applyFilter($event)"></app-users-filter>
+
+<app-users-filter [hidden]="!isFilterVisible" (appliedFilter)="applyFilter($event)" [userRoleList]="rolesList"></app-users-filter>
+
 
 <wi-table
         [tableConfigData]="tableConfig"
@@ -30,5 +32,5 @@
 </wi-table>
 
 <ng-template #modalTemplate let-data="data">
-    <app-users-modal [data]="data"></app-users-modal>
+    <app-users-modal [data]="data" [rolesList]="rolesList"></app-users-modal>
 </ng-template>
