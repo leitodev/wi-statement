@@ -4,23 +4,13 @@ import {CommonModule} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {DropdownComponent} from "../../components/dropdown/dropdown.component";
 import {ModalTypes} from "../../components/modal/modal-types";
-import {UserRoles} from "../enums/user-roles";
 import {UserStatuses} from "../enums/user-statuses";
 import {UserLocales} from "../enums/user-locales";
 import {UserTimeZones} from "../enums/user-timezones";
+import {dropDownComponentListFromEnum} from "../../utils/utils";
 
-// todo: винести в окремий файл
-// Функція, яка перетворює Enum в {id:number, name:string}[]
-export function dropDownComponentListFromEnum(enumData: any): Array<{ id: number; name: string }> {
-    return Object.values(enumData).map((value, index) => ({
-        id: index + 1,
-        name: value as string, // Приведення типу до string
-    }));
-}
 export const userStatusList = dropDownComponentListFromEnum(UserStatuses);
-export const userRoleList = dropDownComponentListFromEnum(UserRoles);
 export const userLocaleList = dropDownComponentListFromEnum(UserLocales);
-export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
 @Component({
     selector: 'app-users-modal',
@@ -32,10 +22,10 @@ export const userTimeZoneList = dropDownComponentListFromEnum(UserTimeZones);
 
 export class UsersModalComponent implements OnInit, OnDestroy {
     @Input() data?: any = null;
+    @Input() rolesList: {_id: string, name: string}[] = [];
     public tabActive = 'General';
     currentID = signal(null);
     oldParentID = null; // need for back if we wanna change parent
-    parentSearch = '';
     isParentChosen: any = false;
     usersForm = this.fb.group({
         password: ['', [Validators.required]],
@@ -46,13 +36,12 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         timezone: [UserTimeZones.UTC],
         avatarUrl: [null],
         status: [''],
-        role: [UserRoles.employee],
+        role: [this.rolesList[0] ? this.rolesList[0] : ''],
     });
 
     userStatuses = userStatusList;
-    userRoles = userRoleList;
+    userRoles: {id: number, name: string}[] = [];
     userLocales = userLocaleList;
-    userTimeZones = userTimeZoneList;
 
     constructor(
         private fb: FormBuilder,
@@ -79,18 +68,6 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         this.usersForm.markAllAsTouched();
     };
 
-    changeModalComponent(componentData: any, event: Event) {
-        event.stopPropagation();
-        this.rerenderAllData(componentData);
-    };
-
-    rerenderAllData(data: any) {
-        this.parentSearch = '';
-        this.initForm(data);
-        this.data = data;
-        this.tabActive = 'General';
-    };
-
     initForm(data: any) {
         this.currentID.set(data._id);
 
@@ -109,6 +86,10 @@ export class UsersModalComponent implements OnInit, OnDestroy {
         }
     };
     ngOnInit() {
+        this.userRoles = this.rolesList.map(({_id ,name}, index) => {
+            return {id: index+1, name: name};
+        });
+
         if (!this.data) {
             return
         }
@@ -132,12 +113,5 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     }
     selectLocale(data: any) {
         this.usersForm.patchValue({locale: data.name})
-    };
-    setTimeZone(timezone: any) {
-        return this.userTimeZones.find(data => data.name === timezone);
-    }
-    // todo: add changing timeZone
-    selectTimeZone(data: any) {
-        this.usersForm.patchValue({timezone: data.name})
     };
 }

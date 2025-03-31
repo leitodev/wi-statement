@@ -31,6 +31,7 @@ export class UsersComponent {
   tableConfig = tableConfig;
   tableData = signal<User[]>([]);
   totalPages = signal(1);
+  rolesList: {_id: string, name: string}[] = [];
   isFilterVisible = false;
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
@@ -103,8 +104,18 @@ export class UsersComponent {
         }),
         map(({data}) => data.users)
     ).subscribe(data => {
-      this.tableData.set(data);
-    })
+      let newData = data.map(user => {
+        let processedUser: any = {...user};
+        processedUser.role = user.role.name;
+        return processedUser;
+      });
+      this.tableData.set(newData);
+    });
+
+    this.usersService.getAllRoles().pipe(
+        map(data => data.data.roles),
+        tap(value => this.rolesList = value),
+    ).subscribe();
   }
   constructor(private usersService: UsersService,
               private modalService: ModalService) {

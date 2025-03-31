@@ -1,0 +1,113 @@
+<div class="modal-header flex justify-between mb-3 text-lg">
+    {{ data ? data.userId : 'New Role'  }}
+    <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
+</div>
+
+<div class="flex justify-between">
+    <div class="modal-tabs flex space-x-1 border-b border-gray-300">
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='General'"
+             [class.bg-gray-100]="tabActive!=='General'">
+            <span class="text-sm font-medium">General</span>
+        </div>
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='Permissions'"
+             [class.bg-gray-100]="tabActive!=='Permissions'">
+            <span class="text-sm font-medium">Permissions</span>
+        </div>
+    </div>
+    @if(data){
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-400 rounded-t-md text-white bg-red-700"
+             (click)="deleteRole()"
+             [class.bg-gray-100]="tabActive!=='Permissions'">
+            <span class="text-sm font-medium">Delete</span>
+        </div>
+    }
+</div>
+
+<div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
+    <ng-container *ngTemplateOutlet="general"></ng-container>
+    <ng-container *ngTemplateOutlet="permissions"></ng-container>
+</div>
+
+<div class="modal-footer flex justify-end gap-1">
+    <button (click)="close()" class="submit-button px-4 py-2 bg-red-700 text-white font-semibold rounded-lg shadow-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">Close</button>
+    <button (click)="submitModal()"
+            class="submit-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75 disabled:bg-gray-500 disabled:cursor-not-allowed">Submit</button>
+</div>
+
+<ng-template #general>
+    <form [formGroup]="rolesForm" [hidden]="tabActive!=='General'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-12">
+                <label for="name" class="text-sm font-medium text-gray-900">Name
+                    <span *ngIf="rolesForm.controls['name'].hasError('required') && rolesForm.controls['name'].touched" class="text-red-500">
+                    is required!
+                </span>
+                </label>
+                <input  id="name"
+                        name="name"
+                        type="text"
+                        class="w-1/4 h-[2rem] border px-2 py-1 block"
+                        formControlName="name"
+                        autocomplete="off">
+            </div>
+            <div class="col-span-12">
+                <label for="name" class="text-sm font-medium text-gray-900">Description
+                </label>
+                <textarea  id="description"
+                        name="name"
+                        type="text"
+                        class="w-full h-[8rem] border px-2 py-1"
+                        formControlName="description"
+                           autocomplete="off"></textarea>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #permissions>
+    <form [formGroup]="rolesForm" [hidden]="tabActive!=='Permissions'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4 select-none">
+            <!-- Global Permissions Section -->
+            <div class="col-span-4" formGroupName="globalPermissions">
+                <label title="Click to select all" (click)="checkAllInGroupName('globalPermissions')" for="name" class="cursor-pointer w-full block text-sm font-medium text-gray-900">Global
+                </label>
+                @for (globalPermission of globalPermissions; track $index){
+                    <div class="flex items-center">
+                        <input id="{{globalPermission.key}}"
+                               name="{{globalPermission.key}}"
+                               type="checkbox"
+                               class="h-[1rem] border px-2 py-1 mr-2"
+                               formControlName="{{globalPermission.key}}"
+                               autocomplete="off">
+                        <label class="cursor-pointer" for="{{globalPermission.key}}">{{ globalPermissions[$index].value}}</label>
+                    </div>
+                }
+            </div>
+
+            <!-- Page Modules Section -->
+            <ng-container formGroupName="permissions">
+            @for(pageModule of pageModules; track $index){
+                <div class="col-span-4">
+                    <div formGroupName="{{pageModule.key}}">
+                        <label title="Click to select all" (click)="checkAllInGroupName('permissions', pageModule.key)" for="name" class="cursor-pointer w-full block text-sm font-medium text-gray-900"> {{pageModules[$index].value}}
+                        </label>
+                        @for (defaultPermission of defaultPermissions; track $index){
+                            <div class="flex items-center">
+                                <input id="{{pageModule.key}}_{{defaultPermission.key}}"
+                                       name="{{pageModule.key}}_{{defaultPermission.key}}"
+                                       type="checkbox"
+                                       class="h-[1rem] border px-2 py-1 mr-2"
+                                       formControlName="{{defaultPermission.key}}"
+                                       autocomplete="off">
+                                <label class="cursor-pointer" for="{{pageModule.key}}_{{defaultPermission.key}}">{{ defaultPermissions[$index].value}}</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            </ng-container>
+        </div>
+    </form>
+</ng-template>
