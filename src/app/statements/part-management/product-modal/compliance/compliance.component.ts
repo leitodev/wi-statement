@@ -146,7 +146,6 @@ export class ComplianceComponent implements OnInit {
   }
 
   selectStatus(status: { name: string; id: string }){
-    console.log('status', status);
     this.complianceForm.patchValue({status: status.name})
   }
 
@@ -179,6 +178,12 @@ export class ComplianceComponent implements OnInit {
 
   clearFile(): void {
     this.uploadedFile = null;
+  }
+
+  downloadFile(document: IDocument) {
+    this.documentService.getDocumentFileById(document._id).subscribe(res => {
+      window.open(res.data.downloadUrl, '_blank');
+    });
   }
 
   selectFirstCompliance() {
