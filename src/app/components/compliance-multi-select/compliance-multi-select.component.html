@@ -36,6 +36,7 @@
                            value="{{compliance.title}}" class="w-4 h-4 text-blue-600 border-gray-400 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600 hover:cursor-pointer">
                     <label for="checkbox{{compliance.id}}" class="ms-1 text-md text-gray-700 cursor-pointer pl-1 pr-1">{{compliance.title}}</label>
                     </span>
+                        <!-- ! have to use selectStatus() -->
                         <app-dropdown
                                 [closeIfLeaveContent]="true"
                                 [label]="''"

@@ -99,19 +99,10 @@ export class UsersModalComponent implements OnInit, OnDestroy {
     setStatus(status: any) {
         return this.userStatuses.find(data => data.name === status);
     }
-    selectStatus(data: any) {
-        this.usersForm.patchValue({status: data.name})
-    };
     setRole(role: any) {
         return this.userRoles.find(data => data.name === role);
     }
-    selectRole(data: any) {
-        this.usersForm.patchValue({role: data.name})
-    };
     setLocale(locale: any) {
         return this.userLocales.find(data => data.name === locale);
     }
-    selectLocale(data: any) {
-        this.usersForm.patchValue({locale: data.name})
-    };
 }

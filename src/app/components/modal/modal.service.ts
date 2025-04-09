@@ -49,8 +49,6 @@ export class ModalService {
   }
 
   submitModal(data: any, event: ModalTypes) {
-    console.log(data);
-    console.log(event);
     this.modalNotifier?.next({
       event,
       data

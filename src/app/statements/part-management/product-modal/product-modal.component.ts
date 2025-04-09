@@ -20,7 +20,7 @@ import {materialCategories} from "../../../config/categories-config";
   templateUrl: './product-modal.component.html',
   styleUrl: './product-modal.component.scss'
 })
-export class ProductModalComponent implements OnInit, OnDestroy {
+export class ProductModalComponent implements OnInit {
   @ViewChild(ComplianceComponent) childFormComponent!: ComplianceComponent;
   @Input() data?: any = null;
   public tabActive = 'General';
@@ -114,9 +114,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
           description: material.description
         };
       });
-
-      console.log('this.productSearchList', this.productSearchList)
-
     });
   };
 
@@ -132,18 +129,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
     this.isParentListAvailable = false;
     this.parentSearch = '';
     this.isParentChosen = product;
-  };
-
-  selectSupplier(supplier: { id: number, name: string }) {
-    this.productForm.patchValue({supplier: supplier.name})
-  };
-
-  selectStatus(data: any) {
-    this.productForm.patchValue({status: data.name})
-  };
-
-  selectCategory(data: any) {
-    this.productForm.patchValue({category: data.name})
   };
 
   changeModalComponent(componentData: any, event: Event) {
@@ -166,7 +151,6 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       if (data.parentID && data.parentID.length > 0) {
         this.oldParentID = data.parentID;
         this.materialService.searchById(data.parentID).subscribe(res => {
-          console.log('searchById(data.parentID) res', res);
           this.productForm.patchValue({
             parentID: res.data.material.partNumber + ' - ' + res.data.material.description
           });
@@ -205,9 +189,5 @@ export class ProductModalComponent implements OnInit, OnDestroy {
       return
     };
     this.initForm(this.data);
-  }
-
-  ngOnDestroy() {
-    console.log('ngOnDestroy product modal')
   }
 }

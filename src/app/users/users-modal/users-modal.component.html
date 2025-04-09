@@ -67,33 +67,33 @@
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
+                        formControlName="role"
                         [label]="'Role'"
                         [default]="data && data?.role ? setRole(data?.role) : userRoles[0]"
                         [dataList]="userRoles"
                         [listKeys]="['name']"
-                        class="w-full"
-                        (selectedItem)="selectRole($event)">
+                        class="w-full">
                 </app-dropdown>
             </div>
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
+                        formControlName="status"
                         [label]="'Status'"
                         [default]="data && data?.status ? setStatus(data?.status) : userStatuses[0]"
                         [dataList]="userStatuses"
                         [listKeys]="['name']"
-                        class="w-full"
-                        (selectedItem)="selectStatus($event)">
+                        class="w-full">
                 </app-dropdown>
             </div>
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6">
                 <app-dropdown
+                        formControlName="locale"
                         [label]="'Locale'"
                         [default]="data && data?.status ? setLocale(data?.locale) : userLocales[0]"
                         [dataList]="userLocales"
                         [listKeys]="['name']"
-                        class="w-full"
-                        (selectedItem)="selectLocale($event)">
+                        class="w-full">
                 </app-dropdown>
             </div>
         </div>

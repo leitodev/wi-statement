@@ -106,11 +106,11 @@
 
                 <div class="col-span-6" [hidden]="currentState() !== 'addNewCompliance'">
                     <app-dropdown
+                            formControlName="status"
                             [label]="'Status'"
                             [default]="statuses[0]"
                             [dataList]="statuses"
-                            [listKeys]="['name']"
-                            (selectedItem)="selectStatus($event)">
+                            [listKeys]="['name']">
                     </app-dropdown>
                 </div>
             </div>
