@@ -34,7 +34,7 @@ const tableConfig = {
     },
     {
       name: 'User email',
-      sort: false,
+      sort: true,
       value: 'userEmail',
       type: 'textCenter',
       visible: false,

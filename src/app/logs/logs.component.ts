@@ -1,11 +1,10 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
 import {RolesModalComponent} from "../roles/roles-modal/roles-modal.component";
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
-import {Role} from "../services/roles.service";
 import {ModalService} from "../components/modal/modal.service";
 import {map, tap} from "rxjs";
 import {ModalTypes} from "../components/modal/modal-types";
-import {LogsService} from "../services/logs.service";
+import {Log, LogsService} from "../services/logs.service";
 import tableConfig from "./table-config";
 
 @Component({
@@ -34,7 +33,7 @@ export class LogsComponent {
   };
 
   tableConfig = tableConfig;
-  tableData = signal<Role[]>([]);
+  tableData = signal<Log[]>([]);
   totalPages = signal(1);
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
@@ -60,7 +59,7 @@ export class LogsComponent {
           this.tableConfig.paginator.totalPages = logs.data.totalPages;
           this.totalPages.set(logs.data.totalPages);
         }),
-        map(({data}) => data.roles)
+        map(({data}) => data.logs)
     ).subscribe(data => {
       this.tableData.set(data);
     })
@@ -78,12 +77,8 @@ export class LogsComponent {
         })
         .subscribe((action) => {
           // General Modal Events
-          if (action.event === ModalTypes.NEW) {
-            this.addNewRole(action.data);
-          } else if (action.event === ModalTypes.UPDATE) {
-            this.updateRole(action.data);
-          } else if (action.event === ModalTypes.DELETE) {
-            this.deleteRole(action.data);
+          if (action.event === ModalTypes.DELETE) {
+            // this.deleteRole(action.data);
           }
         });
   };
@@ -92,40 +87,17 @@ export class LogsComponent {
     this.tableQueryParams['sortOrder'] = data.sortOrder;
     this.refreshData(this.tableQueryParams);
   }
-  addNewRole(data: any) {
-    this.logsService.create(data).subscribe(
-        (result: any) =>
-        {
-          if (result) {
-            this.refreshData();
-            this.modalService.closeModal();
-          }
-        }
-    );
-  }
-  deleteRole(data: any) {
-    let result = confirm(`Delete role "${data.form.name}" (${data.id})?`);
-    if(result) this.logsService.delete(data.id).subscribe(
-        (result: any) =>
-        {
-          if (result) {
-            this.refreshData();
-            this.modalService.closeModal();
-          }
-        }
-    );
-  }
-  updateRole(newData: any){
-    this.logsService.update(newData, newData.id).pipe(
-        tap(()=>this.refreshData(this.tableQueryParams))
-    ).subscribe(
-        (result: any) =>
-        {
-          if (result) {
-            this.refreshData();
-            this.modalService.closeModal();
-          }
-        }
-    );
-  }
+
+  // deleteRole(data: any) {
+  //   let result = confirm(`Delete role "${data.form.name}" (${data.id})?`);
+  //   if(result) this.logsService.delete(data.id).subscribe(
+  //       (result: any) =>
+  //       {
+  //         if (result) {
+  //           this.refreshData();
+  //           this.modalService.closeModal();
+  //         }
+  //       }
+  //   );
+  // }
 }
