@@ -145,10 +145,6 @@ export class ComplianceComponent implements OnInit {
     this.currentState.set('addNewCompliance');
   }
 
-  selectStatus(status: { name: string; id: string }){
-    this.complianceForm.patchValue({status: status.name})
-  }
-
   selectCompliance(item: any) {
     this.documentService.getDocuments(this.data._id,item._id)
       .pipe(

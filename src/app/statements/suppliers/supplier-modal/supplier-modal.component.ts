@@ -70,10 +70,6 @@ export class SupplierModalComponent implements OnInit{
     return this.statusDataList.find(data => data.name === status);
   }
 
-  selectStatus(data: any) {
-    this.productForm.patchValue({status: data.name})
-  };
-
   close() {
     this.modal.closeModal();
   };

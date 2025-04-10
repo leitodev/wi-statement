@@ -88,12 +88,12 @@
 
             <div class="col-span-4 lg:col-span-4 md:col-span-4 sm:col-span-6 flex items-end w-full">
                 <app-dropdown
+                        formControlName="status"
                         [label]="'Status'"
                         [default]="data && data?.status ? setStatus(data?.status) : statusDataList[2]"
                         [dataList]="statusDataList"
                         [listKeys]="['name']"
-                        class="w-full"
-                        (selectedItem)="selectStatus($event)">
+                        class="w-full">
                 </app-dropdown>
             </div>
         </div>

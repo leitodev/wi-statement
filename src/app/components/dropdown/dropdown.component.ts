@@ -1,13 +1,13 @@
 import {
   Component, ElementRef,
-  EventEmitter,
+  EventEmitter, forwardRef,
   HostListener,
   Input,
   OnInit,
   Output, ViewChild, ViewContainerRef
 } from '@angular/core';
 
-import {FormsModule} from "@angular/forms";
+import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {OverlayModule} from '@angular/cdk/overlay';
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
@@ -17,9 +17,16 @@ import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
   standalone: true,
   imports: [FormsModule, OverlayModule, ParseItemListKeyPipe],
   templateUrl: './dropdown.component.html',
-  styleUrl: './dropdown.component.scss'
+  styleUrl: './dropdown.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DropdownComponent),
+      multi: true
+    },
+  ]
 })
-export class DropdownComponent implements OnInit {
+export class DropdownComponent implements OnInit, ControlValueAccessor {
   value: string = '';
   listAvailable = false;
   @ViewChild('trigger') trigger!: ElementRef;
@@ -63,6 +70,10 @@ export class DropdownComponent implements OnInit {
   selectItem(item: { id: number, name: string }) {
     this.selectedItem.emit(item);
     this.value = item.name;
+
+    // some hove change value for parent form by formController
+    this.onChange(this.value);
+
     this.listAvailable = false;
 
     this.ddPortalManagerService.detach();
@@ -77,5 +88,27 @@ export class DropdownComponent implements OnInit {
     if (this.closeIfLeaveContent) {
       this.closeOverlay();
     }
+  }
+
+
+  writeValue(value: string): void {
+    this.value = value;
+  }
+
+  // some hove change value for parent form by formController
+  onChange(value: any){};
+  onTouched(){};
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  // Disables or enables the control
+  setDisabledState(isDisabled: boolean): void {
+    // Handle disabled state
   }
 }

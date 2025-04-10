@@ -92,6 +92,7 @@ export class DropdownSearchComponent implements OnInit, ControlValueAccessor {
   selectItem(item: Data) {
     this.search = this.parseItemListKeyPipe.transform(item, this.listKeys);
     this.selectedItem.emit(item);
+    this.onChange(item.name);
     this.isParentListAvailable = false;
     this.isSearchModeActive = false;
   }
