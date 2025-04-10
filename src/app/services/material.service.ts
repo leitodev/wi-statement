@@ -21,18 +21,6 @@ export interface MaterialList {
   updatedAt: string
 };
 
-/*
-* {
-    "regulationType": "other",
-    "status": "active",
-    "jurisdiction": [],
-    "_id": "66d74d37c32d0715a4ff7a7b",
-    "title": "EU REACH",
-    "description": "Regulation concerning the Registration, Evaluation, Authorisation and Restriction of Chemicals",
-    "createdAt": "2024-09-03T17:53:59.167Z",
-    "updatedAt": "2024-09-05T16:17:13.589Z"
-}*/
-
 export interface RegulationList {
   regulationType: string;
   status: string,
@@ -65,7 +53,7 @@ export interface RegulationsResponse {
 }
 
 
-interface foundMaterial {
+export interface foundMaterial {
   code: number;
   status: string;
   data: {
@@ -218,6 +206,9 @@ export class MaterialService {
 
     return this.http.put(this.apiUrl+'/materials/compliance', body).pipe(
       tap((res: any) => {
+        if (res.code === 200) {
+          this.toastr.success(res.data.message);
+        }
         if (res.code === 201) {
           this.toastr.success('Compliance has updated');
         }
@@ -260,7 +251,6 @@ export class MaterialService {
       })
     )
   }
-
 
   getAllComplianceList() {
     return this.http.get<RegulationsResponse>(this.apiUrl+'/regulatories').pipe(

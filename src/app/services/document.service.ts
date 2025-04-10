@@ -23,6 +23,16 @@ export interface DocumentsResponse {
     }
 };
 
+export interface DocumentFileResponse {
+    code: number;
+    status: string;
+    data: {
+        title: string;
+        downloadUrl: string;
+    }
+};
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,6 +54,23 @@ export class DocumentService {
 
         return of(emptyObj);
       })
+    );
+  }
+
+  getDocumentFileById(id: string) {
+    return this.http.get<DocumentFileResponse>(`${this.apiUrl}/documents/download?docId=${id}`).pipe(
+        catchError((error) => {
+            this.toastr.error(error.error.message)
+
+            const emptyObj = {
+                data: {
+                    title: '',
+                    downloadUrl: '',
+                }
+            };
+
+            return of(emptyObj);
+        })
     );
   }
 }

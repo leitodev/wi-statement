@@ -16,7 +16,12 @@ import {userLocaleList, userStatusList} from "../users-modal/users-modal.compone
   styleUrl: './users-filter.component.scss'
 })
 export class UsersFilterComponent {
-  @Input() userRoleList: {_id: string, name: string}[] = [];
+  @Input() set userRoleList(value: {_id: string, name: string}[]) {
+    this.userRoles = value.map(({_id, name}, index)=>{
+      return {id: index+1, name: name};
+    });
+  }
+
   appliedFilter:OutputEmitterRef<any> = output();
   isFilterApplied = false;
 
@@ -46,9 +51,6 @@ export class UsersFilterComponent {
           name: item.name
         })))
     );
-    this.userRoles = this.userRoleList.map(({_id, name}, index)=>{
-      return {id: index+1, name: name};
-    });
   }
 
   reset() {
