@@ -1,0 +1,10 @@
+<wi-table
+        [tableConfigData]="tableConfig"
+        [tableData]="tableData()"
+        [totalPages]="totalPages()"
+        (tableEvent)="tableEvent($event)">
+</wi-table>
+
+<ng-template #modalTemplate let-data="data">
+    <app-roles-modal [data]="data"></app-roles-modal>
+</ng-template>
