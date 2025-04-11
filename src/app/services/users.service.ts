@@ -41,8 +41,6 @@ export interface UserResponse {
 }
 
 export interface UsersResponse {
-  // totalPages: number;
-  // currentPage: number;
   code: number;
   status: string;
   data: {

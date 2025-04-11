@@ -8,7 +8,7 @@ const tableConfig = {
       name: 'Action',
       sort: true,
       value: 'action',
-      type: 'textCenter',
+      type: 'colored',
       visible: true,
     },
     {
@@ -19,7 +19,7 @@ const tableConfig = {
       visible: true,
     },
     {
-      name: 'Changes',
+      name: 'Modified fields',
       sort: true,
       value: 'changes',
       type: 'textCenter',

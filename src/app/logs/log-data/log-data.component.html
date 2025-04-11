@@ -1,0 +1,57 @@
+@if (isObjectCheck(currentData)) { <!--Object-->
+    @for (item of currentData | keyvalue; track $index) {
+        @if (isNotEmpty(item.value)) {
+            @if (changesData.diff.hasOwnProperty(item.key)) {
+                <div [ngClass]="'log-diff log-diff__' + changesType">
+                    <div class="log-title cursor-pointer bg-gray-400 text-white px-2 py-1 font-bold flex justify-between"
+                         (click)="toggleLogInfo($event, item.key + '_' + changesType+'_' + isAllLogsVisible)">
+                        <span>{{ item.key }}</span>
+                        <span class="log-title-arrow">⮟</span>
+                    </div>
+                    <div [ngClass]="[
+                                      'pl-4',
+                                      'border-l',
+                                      'border-gray-300',
+                                      'log-text',
+                                      'log-text__' + changesType,
+                                      'log-text__' + item.key + '_' + changesType + '_' + isAllLogsVisible
+                                    ]">
+                        <app-log-data [changesData]="changesData" [changesType]="changesType"
+                                      [currentData]="item.value" [isAllLogsVisible]="true">
+                        </app-log-data>
+                    </div>
+                </div>
+            } @else if (isAllLogsVisible) {
+                <div [ngClass]="'log-diff log-diff__' + changesType">
+                    <div class="log-title cursor-pointer bg-gray-400 text-white px-2 py-1 font-bold flex justify-between"
+                         (click)="toggleLogInfo($event, item.key + '_' + changesType+'_' + isAllLogsVisible)">
+                        <span>{{ item.key }}</span>
+                        <span class="log-title-arrow">⮟</span>
+                    </div>
+                    <div [ngClass]="[
+                                      'pl-4',
+                                      'border-l',
+                                      'border-gray-300',
+                                      'log-text',
+                                      'log-text__' + item.key + '_' + changesType + '_' + isAllLogsVisible
+                                    ]">
+                        <app-log-data [changesData]="changesData" [changesType]="changesType"
+                                      [currentData]="item.value" [isAllLogsVisible]="true">
+                        </app-log-data>
+                    </div>
+                </div>
+            }
+        }
+    }
+}
+@else if(Array.isArray(currentData)) { <!--Array-->
+    @for (arrayItem of currentData; track $index) {
+        <div class="pl-4">
+            <app-log-data [changesData]="changesData" [changesType]="changesType"
+                          [currentData]="arrayItem" [isAllLogsVisible]="true"></app-log-data>
+        </div>
+    }
+}
+@else { <!--Cell-->
+    <div class="pl-4">{{ currentData }}</div>
+}

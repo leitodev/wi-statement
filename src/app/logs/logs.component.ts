@@ -1,17 +1,17 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
-import {RolesModalComponent} from "../roles/roles-modal/roles-modal.component";
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {ModalService} from "../components/modal/modal.service";
-import {map, tap} from "rxjs";
+import {catchError, map, tap} from "rxjs";
 import {ModalTypes} from "../components/modal/modal-types";
-import {Log, LogsService} from "../services/logs.service";
+import {Log, LogsService, LogTableItem, LogsResponse} from "../services/logs.service";
 import tableConfig from "./table-config";
+import {LogsModalComponent} from "./logs-modal/logs-modal.component";
 
 @Component({
   selector: 'app-logs',
   standalone: true,
   imports: [
-    RolesModalComponent,
+    LogsModalComponent,
     WiTableComponent
   ],
   templateUrl: './logs.component.html',
@@ -48,7 +48,7 @@ export class LogsComponent {
       this.applySort(event.data);
     }
 
-    if (['tableRowCLick', 'tableRowEditBtn'].includes(event.eventName)) {
+    if (['tableRowCLick', 'tableRowEditBtn', 'tableRowLogInfoBtn'].includes(event.eventName)) {
       this.openModal(this.modalTemplate, event.data);
     }
   };
@@ -59,15 +59,35 @@ export class LogsComponent {
           this.tableConfig.paginator.totalPages = logs.data.totalPages;
           this.totalPages.set(logs.data.totalPages);
         }),
-        map(({data}) => data.logs)
+        map(({data}) => {
+          let logsResponse: any = data.logs;
+          logsResponse = logsResponse.map((item:Log)=> {
+            let newLog: LogTableItem = {
+              action: item.action,
+              entityType: item.entityType,
+              changes: item.changes?.diff ? Object.keys(item.changes.diff).join(', '): '',
+              userId: item.user._id,
+              userEmail: item.user.email,
+              userName: item.user.name,
+              userRole: item.user.role,
+              timestamp: new Date(item.timestamp).toLocaleString('uk-UA', { // todo: Залежно від аккаунту current user змінювати locale 'uk-UA'
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              }),
+              changesFull: item.changes,
+            }
+            return newLog;
+          });
+          return logsResponse;
+        }),
     ).subscribe(data => {
       this.tableData.set(data);
     })
   }
-
-  addNew() {
-    this.openModal(this.modalTemplate, null);
-  };
 
   openModal(modalTemplate: TemplateRef<any>, data: any) {
     this.modalService

@@ -1,0 +1,50 @@
+<div class="modal-header flex justify-between mb-3 text-lg">
+    {{ data ? 'Log info - ' + (data.action | uppercase) : '' }}
+    <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
+</div>
+
+<div class="flex justify-between">
+    <div class="modal-tabs flex space-x-1 border-b border-gray-300">
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='All'"
+             [class.bg-gray-100]="tabActive!=='All'">
+            <span class="text-sm font-medium">All</span>
+        </div>
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='Difference'"
+             [class.bg-gray-100]="tabActive!=='Difference'">
+            <span class="text-sm font-medium">Difference</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
+    <ng-container *ngTemplateOutlet="all"></ng-container>
+    <ng-container *ngTemplateOutlet="difference"></ng-container>
+</div>
+<ng-template #all>
+    <div [hidden]="tabActive!=='All'">
+
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-6">
+                <app-log-data [isAllLogsVisible]="true" [changesData]="data.changesFull" [changesType]="'before'" [currentData]="data.changesFull.before"></app-log-data>
+            </div>
+            <div class="col-span-6">
+                <app-log-data [isAllLogsVisible]="true" [changesData]="data.changesFull" [changesType]="'after'" [currentData]="data.changesFull.after"></app-log-data>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #difference>
+    <div [hidden]="tabActive!=='Difference'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-6">
+                <app-log-data [isAllLogsVisible]="false" [changesData]="data.changesFull" [changesType]="'before'" [currentData]="data.changesFull.before"></app-log-data>
+            </div>
+            <div class="col-span-6">
+                <app-log-data [isAllLogsVisible]="false" [changesData]="data.changesFull" [changesType]="'after'" [currentData]="data.changesFull.after"></app-log-data>
+            </div>
+        </div>
+    </div>
+</ng-template>

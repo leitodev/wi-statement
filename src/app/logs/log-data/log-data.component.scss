@@ -1,0 +1,27 @@
+.log-title-arrow__rotated{
+  transform: rotate(270deg);
+}
+.log-text__hidden{
+  display:none;
+}
+
+// todo: use this:
+//export enum CellColor {
+//  delete = '#FFC7C2', // red
+//  update = '#F4F3CD', // yellow
+//  create = '#CDF4D3', // green
+//}
+.log-diff{
+  &__before{
+    .log-text__before{
+      background-color: #FFC7C2;
+      font-weight: 500;
+    }
+  }
+  &__after{
+    .log-text__after{
+      background-color: #CDF4D3;
+      font-weight: 500
+    }
+  }
+}
