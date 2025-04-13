@@ -7,7 +7,6 @@ import {CellColor} from "../../components/wi-table/wi-table.component";
   standalone: true,
   imports: [
     KeyValuePipe,
-    NgStyle,
     NgClass,
   ],
   templateUrl: './log-data.component.html',
@@ -44,5 +43,4 @@ export class LogDataComponent {
     document.querySelector(logTextClass)?.classList.toggle('log-text__hidden');
   }
   protected readonly Array = Array;
-  protected readonly CellColor = CellColor;
 }

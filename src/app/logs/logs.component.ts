@@ -1,9 +1,9 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {ModalService} from "../components/modal/modal.service";
-import {catchError, map, tap} from "rxjs";
+import {map, tap} from "rxjs";
 import {ModalTypes} from "../components/modal/modal-types";
-import {Log, LogsService, LogTableItem, LogsResponse} from "../services/logs.service";
+import {Log, LogsService, LogTableItem} from "../services/logs.service";
 import tableConfig from "./table-config";
 import {LogsModalComponent} from "./logs-modal/logs-modal.component";
 
@@ -53,6 +53,65 @@ export class LogsComponent {
     }
   };
 
+  logsObjectGenerator(entryItem: any){
+    let outputArray: any = [];
+    try {
+      // Not empty
+      if (this.isNotEmpty(entryItem)) {
+        // Object
+        if (this.isObjectCheck(entryItem)) {
+          for (let key in entryItem) {
+            let recursionObject: any = {};
+            recursionObject.styles = [];
+            recursionObject.logs = [];
+            recursionObject.title = key;
+            let res = this.logsObjectGenerator(entryItem[key]);
+            if (this.isNotEmpty(res)) {
+              recursionObject.logs.push(res);
+            }
+            else {
+              recursionObject.styles.push('empty');
+              recursionObject.logs.push('empty');
+            }
+            outputArray.push(recursionObject);
+          }
+        }
+        // Array
+        else if (this.isArrayCheck(entryItem)) {
+          for (let item of entryItem) {
+            let res = this.logsObjectGenerator(item);
+            if (this.isNotEmpty(res)) outputArray.push(res);
+          }
+        }
+        // Item
+        else {
+          return entryItem;
+        }
+      }
+    }
+    catch (error) {
+      console.error('Log Error:', error);
+    }
+    return outputArray;
+  }
+
+  isArrayCheck(item: any): boolean {
+    return Array.isArray(item)
+  }
+  isNotEmpty(item: any): boolean {
+    if (Array.isArray(item)) {
+      return item.length > 0;
+    } else if (item && typeof item === 'object') {
+      return Object.keys(item).length > 0;
+    } else if (typeof item === 'boolean') {
+      return true; // treat both true and false as 'not empty'
+    }
+    return !!item; // string, number, etc.
+  }
+  isObjectCheck(value: any): boolean {
+    return value && typeof value === 'object' && !Array.isArray(value);
+  }
+
   refreshData(tableQueryParams: any = null) {
     this.logsService.getAll(tableQueryParams).pipe(
         tap(logs => {
@@ -86,6 +145,7 @@ export class LogsComponent {
         }),
     ).subscribe(data => {
       this.tableData.set(data);
+      console.log('Final', this.logsObjectGenerator(data[1].changesFull));
     })
   }
 
