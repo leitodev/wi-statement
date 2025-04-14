@@ -1,5 +1,5 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
-import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
+import {CellColor, IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {ModalService} from "../components/modal/modal.service";
 import {map, tap} from "rxjs";
 import {ModalTypes} from "../components/modal/modal-types";
@@ -35,6 +35,7 @@ export class LogsComponent {
   tableConfig = tableConfig;
   tableData = signal<Log[]>([]);
   totalPages = signal(1);
+  logsTree: any = [];
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 
@@ -53,7 +54,7 @@ export class LogsComponent {
     }
   };
 
-  logsObjectGenerator(entryItem: any){
+  logsObjectGenerator(entryItem: any){ // [k {o: 1} [l l l] k]
     let outputArray: any = [];
     try {
       // Not empty
@@ -61,27 +62,58 @@ export class LogsComponent {
         // Object
         if (this.isObjectCheck(entryItem)) {
           for (let key in entryItem) {
-            let recursionObject: any = {};
-            recursionObject.styles = [];
-            recursionObject.logs = [];
-            recursionObject.title = key;
+            let recursionObject: any = {
+              title: key,
+              styles: [],
+              logs: [],
+              hasChildren: false,
+            };
+
             let res = this.logsObjectGenerator(entryItem[key]);
-            if (this.isNotEmpty(res)) {
+            if (!this.isNotEmpty(res)){
+              recursionObject.styles.push('italic');
+              recursionObject.logs.push('empty');
+            }
+            else if (this.isObjectCheck(res)){
+              recursionObject.hasChildren = true;
               recursionObject.logs.push(res);
             }
+            else if (this.isArrayCheck(res)) {
+              recursionObject.hasChildren = true;
+              recursionObject.logs.push(...res);
+            }
             else {
-              recursionObject.styles.push('empty');
-              recursionObject.logs.push('empty');
+              recursionObject.logs.push(res);
             }
             outputArray.push(recursionObject);
           }
         }
         // Array
         else if (this.isArrayCheck(entryItem)) {
-          for (let item of entryItem) {
-            let res = this.logsObjectGenerator(item);
-            if (this.isNotEmpty(res)) outputArray.push(res);
+          let recursionObjectArray: any = []
+          for (let i = 0; i < entryItem.length; i++) {
+            let recursionObject: any = {
+              title: i,
+              styles: [],
+              logs: [],
+              hasChildren: false,
+            };
+
+            let res: any = this.logsObjectGenerator(entryItem[i]);
+            if (!this.isNotEmpty(res)){
+              recursionObject.styles.push('italic');
+              recursionObject.logs.push('empty');
+            }
+            else if (this.isArrayCheck(res) || this.isObjectCheck(res)) {
+              recursionObject.hasChildren = true;
+              recursionObject.logs.push(...res);
+            }
+            else {
+              recursionObject.logs.push(res);
+            }
+            recursionObjectArray.push(recursionObject);
           }
+          return recursionObjectArray;
         }
         // Item
         else {
@@ -93,6 +125,55 @@ export class LogsComponent {
       console.error('Log Error:', error);
     }
     return outputArray;
+  }
+
+  generateLogs(array: any) {
+    let result: any = {
+      before: [],
+      after: [],
+      beforeDiff: [],
+      afterDiff: [],
+    };
+    for(let data of array) {
+      let before = this.logsObjectGenerator(data.changesFull.before);
+      let after = this.logsObjectGenerator(data.changesFull.after);
+
+      let beforeDiff = [];
+      let afterDiff = [];
+
+      // Item created
+      if(!before.length && after.length){
+        for(let i = 0; i < after.length; i++) {
+          after[i].styles.push(`bg-[${CellColor.create}]`);
+          afterDiff.push(after[i]);
+        }
+      }
+      // Item deleted
+      else if(before.length && !after.length){
+        for(let i = 0; i < before.length; i++) {
+          before[i].styles.push(`bg-[${CellColor.delete}]`);
+          beforeDiff.push(before[i]);
+        }
+      }
+      // Item updated
+      else{
+        for(let i = 0; i < before.length; i++) {
+          if((JSON.stringify(before[i]) != JSON.stringify(after[i])) && this.isNotEmpty(before[i]) && this.isNotEmpty(after[i])) {
+            
+            before[i].styles.push(`bg-[${CellColor.create}]`);
+            after[i].styles.push(`bg-[${CellColor.delete}]`);
+
+            beforeDiff.push(before[i]);
+            afterDiff.push(after[i]);
+          }
+        }
+      }
+      result.before.push(before);
+      result.after.push(after);
+      result.beforeDiff.push(beforeDiff);
+      result.afterDiff.push(afterDiff);
+    }
+    return result;
   }
 
   isArrayCheck(item: any): boolean {
@@ -118,7 +199,7 @@ export class LogsComponent {
           this.tableConfig.paginator.totalPages = logs.data.totalPages;
           this.totalPages.set(logs.data.totalPages);
         }),
-        map(({data}) => {
+        map(({data}, index) => {
           let logsResponse: any = data.logs;
           logsResponse = logsResponse.map((item:Log)=> {
             let newLog: LogTableItem = {
@@ -138,6 +219,7 @@ export class LogsComponent {
                 second: '2-digit',
               }),
               changesFull: item.changes,
+              logIndex: index,
             }
             return newLog;
           });
@@ -145,7 +227,7 @@ export class LogsComponent {
         }),
     ).subscribe(data => {
       this.tableData.set(data);
-      console.log('Final', this.logsObjectGenerator(data[1].changesFull));
+      this.logsTree = this.generateLogs(data);
     })
   }
 

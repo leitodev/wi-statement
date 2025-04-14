@@ -131,7 +131,6 @@ export class WiTableComponent implements OnInit {
 
   tableRowEditBtn(rowItem: any, event: Event){
     event.stopPropagation();
-    console.log(rowItem);
     this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
   };
 

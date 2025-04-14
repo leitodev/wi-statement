@@ -5,6 +5,7 @@ import {ModalService} from "../../components/modal/modal.service";
 import {ModalTypes} from "../../components/modal/modal-types";
 import {CellColor} from "../../components/wi-table/wi-table.component";
 import {LogDataComponent} from "../log-data/log-data.component";
+import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 @Component({
   selector: 'app-logs-modal',
@@ -14,21 +15,24 @@ import {LogDataComponent} from "../log-data/log-data.component";
     ReactiveFormsModule,
     NgTemplateOutlet,
     LogDataComponent,
-    UpperCasePipe
   ],
   templateUrl: './logs-modal.component.html',
   styleUrl: './logs-modal.component.scss'
 })
 export class LogsModalComponent {
-  @Input() data?: any = null;
-  @ViewChild(FormGroupName) formGroupNameDirective!: FormGroupName;
+  @Input() logsTree: { before: Array<any>, after: Array<any>, afterDiff: Array<any>, beforeDiff: Array<any> } = {
+    before: [],
+    after: [],
+    afterDiff: [],
+    beforeDiff: []
+  };
+  @Input() data: any;
   public tabActive = 'All';
   currentID = signal(null);
   oldParentID = null; // need for back if we wanna change parent
   isParentChosen: any = false;
 
   constructor(
-      private fb: FormBuilder,
       private modal: ModalService,
   ) {}
 
@@ -37,8 +41,9 @@ export class LogsModalComponent {
   };
 
   ngOnInit() {
-    if (!this.data) {
+    if (!this.logsTree) {
       return
     }
+    console.log(this.logsTree);
   }
 }

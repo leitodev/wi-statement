@@ -72,6 +72,7 @@ export interface LogTableItem {
     userRole: string,
     timestamp: string,
     changesFull?: LogChanges,
+    logIndex: number,
 }
 
 @Injectable({

@@ -1,5 +1,5 @@
 <div class="modal-header flex justify-between mb-3 text-lg">
-    {{ data ? 'Log info - ' + (data.action | uppercase) : '' }}
+    {{ logsTree ? 'Log info' : '' }}
     <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
 </div>
 
@@ -22,15 +22,24 @@
     <ng-container *ngTemplateOutlet="all"></ng-container>
     <ng-container *ngTemplateOutlet="difference"></ng-container>
 </div>
+
 <ng-template #all>
     <div [hidden]="tabActive!=='All'">
 
         <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
             <div class="col-span-6">
-                <app-log-data [isAllLogsVisible]="true" [changesData]="data.changesFull" [changesType]="'before'" [currentData]="data.changesFull.before"></app-log-data>
+                @for(log of logsTree.before[data.logIndex]; track $index){
+                    @if(log){
+                        <app-log-data [data]="log"></app-log-data>
+                    }
+                }
             </div>
             <div class="col-span-6">
-                <app-log-data [isAllLogsVisible]="true" [changesData]="data.changesFull" [changesType]="'after'" [currentData]="data.changesFull.after"></app-log-data>
+                @for(log of logsTree.after[data.logIndex]; track $index){
+                    @if(log){
+                        <app-log-data [data]="log"></app-log-data>
+                    }
+                }
             </div>
         </div>
     </div>
@@ -40,10 +49,14 @@
     <div [hidden]="tabActive!=='Difference'">
         <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
             <div class="col-span-6">
-                <app-log-data [isAllLogsVisible]="false" [changesData]="data.changesFull" [changesType]="'before'" [currentData]="data.changesFull.before"></app-log-data>
+                @for(log of logsTree.afterDiff[data.logIndex]; track $index){
+                    <app-log-data [data]="log"></app-log-data>
+                }
             </div>
             <div class="col-span-6">
-                <app-log-data [isAllLogsVisible]="false" [changesData]="data.changesFull" [changesType]="'after'" [currentData]="data.changesFull.after"></app-log-data>
+                @for(log of logsTree.afterDiff[data.logIndex]; track $index){
+                    <app-log-data [data]="log"></app-log-data>
+                }
             </div>
         </div>
     </div>
