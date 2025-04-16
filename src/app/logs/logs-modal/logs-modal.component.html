@@ -26,22 +26,40 @@
 <ng-template #all>
     <div [hidden]="tabActive!=='All'">
 
-        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
-            <div class="col-span-6">
-                @for(log of logsTree.before[data.logIndex]; track $index){
-                    @if(log){
+<!--        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">-->
+<!--            <div class="col-span-6">-->
+<!--                @for(log of logsTree.before[data.logIndex]; track $index){-->
+<!--                    @if(log){-->
+<!--                        <app-log-data [data]="log"></app-log-data>-->
+<!--                    }-->
+<!--                }-->
+<!--            </div>-->
+<!--            <div class="col-span-6">-->
+<!--                @for(log of logsTree.after[data.logIndex]; track $index){-->
+<!--                    @if(log){-->
+<!--                        <app-log-data [data]="log"></app-log-data>-->
+<!--                    }-->
+<!--                }-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="grid grid-cols-2 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-x-4">
+            @for(log of logsTree.before[data.logIndex]; track $index){
+                @if(log){
+                    <div [style.grid-row-start]="($index+1)" [style.grid-column-start]="'1'">
                         <app-log-data [data]="log"></app-log-data>
-                    }
+                    </div>
                 }
-            </div>
-            <div class="col-span-6">
-                @for(log of logsTree.after[data.logIndex]; track $index){
-                    @if(log){
+            }
+            @for(log of logsTree.after[data.logIndex]; track $index){
+                @if(log){
+                    <div [style.grid-row-start]="($index+1)" [style.grid-column-start]="'2'">
                         <app-log-data [data]="log"></app-log-data>
-                    }
+                    </div>
                 }
-            </div>
+            }
         </div>
+
     </div>
 </ng-template>
 
@@ -49,7 +67,7 @@
     <div [hidden]="tabActive!=='Difference'">
         <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
             <div class="col-span-6">
-                @for(log of logsTree.afterDiff[data.logIndex]; track $index){
+                @for(log of logsTree.beforeDiff[data.logIndex]; track $index){
                     <app-log-data [data]="log"></app-log-data>
                 }
             </div>
