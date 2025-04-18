@@ -14,6 +14,11 @@ export interface IFieldSortData {
   sortBy: string;
   sortOrder: string;
 }
+export enum CellColor {
+  delete = '#FFC7C2', // red
+  update = '#F4F3CD', // yellow
+  create = '#CDF4D3', // green
+}
 
 @Component({
   selector: 'wi-table',
@@ -34,6 +39,7 @@ export class WiTableComponent implements OnInit {
 
   defaultTableConfig: any;
   tableConfig : any;
+
   @Input('tableConfigData') set tableConfigData(value: object) {
     this.tableConfig = value;
     this.defaultTableConfig = structuredClone(value);
@@ -169,5 +175,13 @@ export class WiTableComponent implements OnInit {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
 
+  getCellColor(type: string): string {
+    if (type in CellColor) {
+      return CellColor[type as keyof typeof CellColor];
+    }
+    return 'transparent';
+  }
+
   protected readonly console = console;
+  protected readonly CellColor = CellColor;
 }

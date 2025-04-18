@@ -73,6 +73,7 @@
           @if (cell.visible) {
           <ng-container *ngTemplateOutlet="
             cell.type === 'textCenter' ? textCenter :
+            cell.type === 'colored' ? colored :
             cell.type === 'redirectTo' ? redirectTo :
             cell.type === 'componentsTemplate' ? componentsTemplate :
             cell.type === 'rcList' ? rcList :
@@ -85,11 +86,18 @@
       }
     <td class="border border-slate-300 w-[50px]">
       <div class="flex items-center justify-center">
-        <button (click)="tableRowEditBtn(item, $event)" type="button" class="text-white bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 font-medium text-sm px-1.5 rounded-sm py-0.5 text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-          </svg>
-        </button>
+          @if(tableConfig.tableName=='logsTable'){
+              <button (click)="tableRowEditBtn(item, $event)" type="button" class="text-black italic text-lg bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 font-medium px-3 rounded-sm py-0.5 text-center">
+                  i
+              </button>
+          }
+          @else{
+              <button (click)="tableRowEditBtn(item, $event)" type="button" class="text-white bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 font-medium text-sm px-1.5 rounded-sm py-0.5 text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+              </button>
+          }
 
 <!-- DELETE btn ??? -->
 <!--        <button type="button" class="text-white bg-red-700 hover:bg-red-800 border border-gray-200 hover:text-blue-700 font-medium text-sm px-1.5 rounded-sm py-0.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">-->
@@ -129,12 +137,17 @@
     <td class="border border-slate-300">{{ data }}</td>
 </ng-template>
 
+
 <ng-template #redirectTo let-data let-cell="cell">
     <td (click)="fieldClick(cell.name, data, cell)" class="border border-slate-300 pl-2 text-sky-500 underline cursor-pointer">{{ data }}</td>
 </ng-template>
 
 <ng-template #textCenter let-data>
-    <td class="border border-slate-300 pl-2">{{ data }}</td>
+    <td class="border border-slate-300 pl-1 pr-1 text-center">{{ data }}</td>
+</ng-template>
+
+<ng-template #colored let-data>
+    <td class="border border-slate-300 pl-1 pr-1 text-center" [ngStyle]="{'backgroundColor': getCellColor(data)}">{{ data }}</td>
 </ng-template>
 
 <ng-template #componentsTemplate let-data>
@@ -193,7 +206,7 @@
 </ng-template>
 
 <ng-template #userProfile let-data>
-    <td class="border border-slate-300">
+    <td class="border border-slate-300 pl-1 pr-1 text-center">
         @if(data.avatarUrl){
             {{ data.avatarUrl }}
         }

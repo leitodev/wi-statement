@@ -13,6 +13,7 @@ export class ModalComponent implements OnDestroy {
     'sm': 'w-1/4',
     'md': 'w-1/2',
     'lg': 'w-4/5',
+    'xl': 'w-11/12',
   };
 
   isInnerBackdropActive = false;

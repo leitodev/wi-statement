@@ -33,8 +33,6 @@ export interface RoleResponse {
 }
 
 export interface RolesResponse {
-  totalPages: number;
-  currentPage: number;
   code: number;
   status: string;
   data: {

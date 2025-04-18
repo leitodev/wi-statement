@@ -1,0 +1,81 @@
+<div class="modal-header flex justify-between mb-3 text-lg">
+    {{ logsTree ? 'Log info' : '' }}
+    <span class="modal-close cursor-pointer ml-auto" (click)="close()">✕</span>
+</div>
+
+<div class="flex justify-between">
+    <div class="modal-tabs flex space-x-1 border-b border-gray-300">
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='All'"
+             [class.bg-gray-100]="tabActive!=='All'">
+            <span class="text-sm font-medium">All</span>
+        </div>
+        <div class="cursor-pointer flex items-center space-x-2 px-2 py-1 border hover:border-gray-300 rounded-t-md"
+             (click)="tabActive='Difference'"
+             [class.bg-gray-100]="tabActive!=='Difference'">
+            <span class="text-sm font-medium">Difference</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-content mb-5 min-h-[400px] max-h-[450px] overflow-auto">
+    <ng-container *ngTemplateOutlet="all"></ng-container>
+    <ng-container *ngTemplateOutlet="difference"></ng-container>
+</div>
+
+<ng-template #all>
+    <div [hidden]="tabActive!=='All'">
+
+<!--        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">-->
+<!--            <div class="col-span-6">-->
+<!--                @for(log of logsTree.before[data.logIndex]; track $index){-->
+<!--                    @if(log){-->
+<!--                        <app-log-data [data]="log"></app-log-data>-->
+<!--                    }-->
+<!--                }-->
+<!--            </div>-->
+<!--            <div class="col-span-6">-->
+<!--                @for(log of logsTree.after[data.logIndex]; track $index){-->
+<!--                    @if(log){-->
+<!--                        <app-log-data [data]="log"></app-log-data>-->
+<!--                    }-->
+<!--                }-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="grid grid-cols-2 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-x-4">
+            @for(log of logsTree.before[data.logIndex]; track $index){
+                @if(log){
+                    <div [style.grid-row-start]="($index+1)" [style.grid-column-start]="'1'">
+                        <app-log-data [data]="log"></app-log-data>
+                    </div>
+                }
+            }
+            @for(log of logsTree.after[data.logIndex]; track $index){
+                @if(log){
+                    <div [style.grid-row-start]="($index+1)" [style.grid-column-start]="'2'">
+                        <app-log-data [data]="log"></app-log-data>
+                    </div>
+                }
+            }
+        </div>
+
+    </div>
+</ng-template>
+
+<ng-template #difference>
+    <div [hidden]="tabActive!=='Difference'">
+        <div class="grid grid-cols-12 auto-rows-auto bg-slate-50 border mb-5 py-1 px-1 gap-4">
+            <div class="col-span-6">
+                @for(log of logsTree.beforeDiff[data.logIndex]; track $index){
+                    <app-log-data [data]="log"></app-log-data>
+                }
+            </div>
+            <div class="col-span-6">
+                @for(log of logsTree.afterDiff[data.logIndex]; track $index){
+                    <app-log-data [data]="log"></app-log-data>
+                }
+            </div>
+        </div>
+    </div>
+</ng-template>
