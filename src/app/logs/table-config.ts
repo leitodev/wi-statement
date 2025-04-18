@@ -1,6 +1,3 @@
-
-// textCenter componentsTemplate rcList
-
 const tableConfig = {
   tableName: 'logsTable',
   cells: [

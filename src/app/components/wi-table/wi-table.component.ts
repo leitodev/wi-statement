@@ -39,6 +39,7 @@ export class WiTableComponent implements OnInit {
 
   defaultTableConfig: any;
   tableConfig : any;
+
   @Input('tableConfigData') set tableConfigData(value: object) {
     this.tableConfig = value;
     this.defaultTableConfig = structuredClone(value);

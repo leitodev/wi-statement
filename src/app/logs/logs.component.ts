@@ -56,157 +56,6 @@ export class LogsComponent {
 
   };
 
-  logsSort(a: any, b: any): number {
-    const extractTitle = (item: any) => {
-      if (typeof item === 'object' && item !== null && 'title' in item) {
-        return item.title.toString();
-      }
-      return item?.toString?.() ?? '';
-    }
-
-    return extractTitle(a).localeCompare(extractTitle(b));
-  }
-
-  logsObjectGenerator(entryItem: any){ // [k {o: 1} [l l l] k]
-    let outputArray: any = [];
-    try {
-      // Not empty
-      if (this.isNotEmpty(entryItem)) {
-        // Object
-        if (this.isObjectCheck(entryItem)) {
-          for (let key in entryItem) {
-            let recursionObject: any = {
-              title: key,
-              styles: [],
-              logs: [],
-              hasChildren: false,
-            };
-
-            let res = this.logsObjectGenerator(entryItem[key]);
-            if (!this.isNotEmpty(res)){
-              recursionObject.styles.push('italic');
-              recursionObject.logs.push('empty');
-            }
-            else if (this.isObjectCheck(res)){
-              recursionObject.hasChildren = true;
-              recursionObject.logs.push(res);
-            }
-            else if (this.isArrayCheck(res)) {
-              recursionObject.hasChildren = true;
-              recursionObject.logs.push(...res);
-            }
-            else {
-              recursionObject.logs.push(res);
-            }
-            outputArray.push(recursionObject);
-          }
-        }
-        // Array
-        else if (this.isArrayCheck(entryItem)) {
-          let recursionObjectArray: any = []
-          for (let i = 0; i < entryItem.length; i++) {
-            let recursionObject: any = {
-              title: i,
-              styles: [],
-              logs: [],
-              hasChildren: false,
-            };
-
-            let res: any = this.logsObjectGenerator(entryItem[i]);
-            if (!this.isNotEmpty(res)){
-              recursionObject.styles.push('italic');
-              recursionObject.logs.push('empty');
-            }
-            else if (this.isArrayCheck(res) || this.isObjectCheck(res)) {
-              recursionObject.hasChildren = true;
-              recursionObject.logs.push(...res);
-            }
-            else {
-              recursionObject.logs.push(res);
-            }
-            recursionObjectArray.push(recursionObject);
-          }
-          return recursionObjectArray;
-        }
-        // Item
-        else {
-          return entryItem;
-        }
-      }
-    }
-    catch (error) {
-      console.error('Log Error:', error);
-    }
-    outputArray.sort((a: any, b: any) => this.logsSort(a, b));
-    return outputArray;
-  }
-
-  generateLogs(array: any) {
-    let result: any = {
-      before: [],
-      after: [],
-      beforeDiff: [],
-      afterDiff: [],
-    };
-    for(let data of array) {
-      let before = this.logsObjectGenerator(data.changesFull.before);
-      let after = this.logsObjectGenerator(data.changesFull.after);
-
-      let beforeDiff = [];
-      let afterDiff = [];
-
-      // Item created
-      if(!before.length && after.length){
-        for(let i = 0; i < after.length; i++) {
-          after[i].styles.push(`bg-[${CellColor.create}]`);
-          afterDiff.push(after[i]);
-        }
-      }
-      // Item deleted
-      else if(before.length && !after.length){
-        for(let i = 0; i < before.length; i++) {
-          before[i].styles.push(`bg-[${CellColor.delete}]`);
-          beforeDiff.push(before[i]);
-        }
-      }
-      // Item updated
-      else{
-        for(let i = 0; i < before.length; i++) {
-          if((JSON.stringify(before[i]) != JSON.stringify(after[i])) && this.isNotEmpty(before[i]) && this.isNotEmpty(after[i])) {
-            
-            before[i].styles.push(`bg-[${CellColor.delete}]`);
-            after[i].styles.push(`bg-[${CellColor.create}]`);
-
-            beforeDiff.push(before[i]);
-            afterDiff.push(after[i]);
-          }
-        }
-      }
-      result.before.push(before);
-      result.after.push(after);
-      result.beforeDiff.push(beforeDiff);
-      result.afterDiff.push(afterDiff);
-    }
-    return result;
-  }
-
-  isArrayCheck(item: any): boolean {
-    return Array.isArray(item)
-  }
-  isNotEmpty(item: any): boolean {
-    if (Array.isArray(item)) {
-      return item.length > 0;
-    } else if (item && typeof item === 'object') {
-      return Object.keys(item).length > 0;
-    } else if (typeof item === 'boolean') {
-      return true; // treat both true and false as 'not empty'
-    }
-    return !!item; // string, number, etc.
-  }
-  isObjectCheck(value: any): boolean {
-    return value && typeof value === 'object' && !Array.isArray(value);
-  }
-
   refreshData(tableQueryParams: any = null) {
     this.logsService.getAll(tableQueryParams).pipe(
         tap((logs: any) => {
@@ -217,31 +66,34 @@ export class LogsComponent {
           let logsResponse: any = data.logs;
           logsResponse = logsResponse.map((item:Log, index: number)=> {
             let newLog: LogTableItem = {
-              action: item?.action || '',
-              entityType: item?.entityType || '',
+              action: item.action,
+              entityType: item.entityType,
               changes: item.changes?.diff ? Object.keys(item.changes.diff).join(', '): '',
-              userId: item?.user?._id || '',
-              userEmail: item?.user?.email || '',
-              userName: item?.user?.name || '',
-              userRole: item?.user?.role || '',
-              timestamp: item.timestamp? new Date(item.timestamp).toLocaleString('uk-UA', { // todo: Залежно від аккаунту current user змінювати locale 'uk-UA'
+              userId: item.user._id,
+              userEmail: item.user.email,
+              userName: item.user.name,
+              userRole: item.user.role,
+              timestamp: new Date(item.timestamp).toLocaleString('uk-UA', { // todo: Залежно від аккаунту current user змінювати locale 'uk-UA'
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-              }) : '',
+              }),
               changesFull: item.changes,
               logIndex: index,
+              _id: item._id,
             }
+            console.log('DATA', item);
+
             return newLog;
           });
           return logsResponse;
         }),
     ).subscribe(data => {
       this.tableData.set(data);
-      this.logsTree = this.generateLogs(data);
+      this.logsTree = this.logsService.generateLogs(data);
     })
   }
 

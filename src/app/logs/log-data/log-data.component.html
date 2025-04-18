@@ -5,14 +5,14 @@
     @for(log of data.logs; track $index){
         @if(data.hasChildren){
             <div [ngClass]="data.styles">
-                <div class="pl-4">
+                <div class="pl-4 border-l border-gray-300">
                     <app-log-data [data]="log"></app-log-data>
                 </div>
             </div>
         }
         @else {
             <div [ngClass]="data.styles">
-                <div class="pl-4">{{data.logs[0]}}</div>
+                <div class="pl-4 border-l border-gray-300">{{data.logs[0]}}</div>
             </div>
         }
     }
