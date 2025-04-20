@@ -1,7 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {JsonPipe, KeyValuePipe, NgClass, NgStyle} from "@angular/common";
-import {CellColor} from "../../components/wi-table/wi-table.component";
-
+import {NgClass} from "@angular/common";
 @Component({
   selector: 'app-log-data',
   standalone: true,

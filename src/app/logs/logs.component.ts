@@ -1,12 +1,11 @@
 import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
-import {CellColor, IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
+import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {ModalService} from "../components/modal/modal.service";
-import {map, Observable, tap} from "rxjs";
+import {map, tap} from "rxjs";
 import {ModalTypes} from "../components/modal/modal-types";
-import {Log, LogsResponse, LogsService, LogTableItem} from "../services/logs.service";
+import {LogsResponse, LogsService, LogTableItem} from "../services/logs.service";
 import tableConfig from "./table-config";
 import {LogsModalComponent} from "./logs-modal/logs-modal.component";
-import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 @Component({
   selector: 'app-logs',
@@ -34,7 +33,7 @@ export class LogsComponent {
   };
 
   tableConfig = tableConfig;
-  tableData = signal<Log[]>([]);
+  tableData = signal<LogTableItem[]>([]);
   totalPages = signal(1);
   logsTree: any = [];
 
@@ -63,35 +62,9 @@ export class LogsComponent {
           this.totalPages.set(logs.data.totalPages);
         }),
         map(({data}: LogsResponse) => {
-          let logsResponse: any = data.logs;
-          logsResponse = logsResponse.map((item:Log, index: number)=> {
-            let newLog: LogTableItem = {
-              action: item.action,
-              entityType: item.entityType,
-              changes: item.changes?.diff ? Object.keys(item.changes.diff).join(', '): '',
-              userId: item.user._id,
-              userEmail: item.user.email,
-              userName: item.user.name,
-              userRole: item.user.role,
-              timestamp: new Date(item.timestamp).toLocaleString('uk-UA', { // todo: Залежно від аккаунту current user змінювати locale 'uk-UA'
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-              }),
-              changesFull: item.changes,
-              logIndex: index,
-              _id: item._id,
-            }
-            console.log('DATA', item);
-
-            return newLog;
-          });
-          return logsResponse;
+          return this.logsService.prepareLog(data.logs);
         }),
-    ).subscribe(data => {
+    ).subscribe((data: LogTableItem[]) => {
       this.tableData.set(data);
       this.logsTree = this.logsService.generateLogs(data);
     })
@@ -116,6 +89,7 @@ export class LogsComponent {
     this.refreshData(this.tableQueryParams);
   }
 
+  // todo: use delete
   // deleteRole(data: any) {
   //   let result = confirm(`Delete role "${data.form.name}" (${data.id})?`);
   //   if(result) this.logsService.delete(data.id).subscribe(

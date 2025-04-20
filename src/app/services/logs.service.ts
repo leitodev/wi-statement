@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
-import {catchError, map, Observable, of, tap} from "rxjs";
-import {CellColor} from "../components/wi-table/wi-table.component";
+import {catchError, of} from "rxjs";
+import {DiffColor} from "../utils/utils";
 
 // user structure from API
 export interface LogUser{
@@ -118,14 +118,14 @@ export class LogsService {
             // Item created
             if(!before.length && after.length){
                 for(let i = 0; i < after.length; i++) {
-                    after[i].styles.push(`bg-[${CellColor.create}]`);
+                    after[i].styles.push(`bg-[${DiffColor.create}]`);
                     afterDiff.push(after[i]);
                 }
             }
             // Item deleted
             else if(before.length && !after.length){
                 for(let i = 0; i < before.length; i++) {
-                    before[i].styles.push(`bg-[${CellColor.delete}]`);
+                    before[i].styles.push(`bg-[${DiffColor.delete}]`);
                     beforeDiff.push(before[i]);
                 }
             }
@@ -134,8 +134,8 @@ export class LogsService {
                 for(let i = 0; i < before.length; i++) {
                     if((JSON.stringify(before[i]) != JSON.stringify(after[i])) && this.isNotEmpty(before[i]) && this.isNotEmpty(after[i])) {
 
-                        before[i].styles.push(`bg-[${CellColor.delete}]`);
-                        after[i].styles.push(`bg-[${CellColor.create}]`);
+                        before[i].styles.push(`bg-[${DiffColor.delete}]`);
+                        after[i].styles.push(`bg-[${DiffColor.create}]`);
 
                         beforeDiff.push(before[i]);
                         afterDiff.push(after[i]);
@@ -149,6 +149,33 @@ export class LogsService {
         }
         return result;
     }
+
+    prepareLog(logs: Log[]):LogTableItem[] {
+        return logs.map((item:Log, index: number) => {
+            let newLog: LogTableItem = {
+                action: item.action,
+                entityType: item.entityType,
+                changes: item.changes?.diff ? Object.keys(item.changes.diff).join(', '): '',
+                userId: item.user._id,
+                userEmail: item.user.email,
+                userName: item.user.name,
+                userRole: item.user.role,
+                timestamp: new Date(item.timestamp).toLocaleString('uk-UA', { // todo: Залежно від аккаунту current user змінювати locale 'uk-UA'
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                }),
+                changesFull: item.changes,
+                logIndex: index,
+                _id: item._id,
+            }
+            return newLog;
+        });
+    }
+
     private logsObjectGenerator(entryItem: any){
         let outputArray: any = [];
         try {
@@ -247,15 +274,17 @@ export class LogsService {
         return extractTitle(a).localeCompare(extractTitle(b));
     }
 
+    // todo: use get
     // get(id: string) {
-  //   return this.http.get<LogResponse>(`${this.apiUrl}/roles/${id}`).pipe(
-  //       catchError((error) => {
-  //         this.toastr.error(error.error.message)
-  //         return of({data: []});
-  //       })
-  //   );
-  // }
+    //   return this.http.get<LogResponse>(`${this.apiUrl}/roles/${id}`).pipe(
+    //       catchError((error) => {
+    //         this.toastr.error(error.error.message)
+    //         return of({data: []});
+    //       })
+    //   );
+    // }
 
+    // todo: use delete
     // delete():Observable<any> {
     //   return this.http.delete<LogResponse>(`${this.apiUrl}/logs/cleanup`).pipe(
     //       tap((res: any) => {

@@ -147,7 +147,7 @@
 </ng-template>
 
 <ng-template #colored let-data>
-    <td class="border border-slate-300 pl-1 pr-1 text-center" [ngStyle]="{'backgroundColor': getCellColor(data)}">{{ data }}</td>
+    <td class="border border-slate-300 pl-1 pr-1 text-center" [ngStyle]="{'backgroundColor': (data | getDiffColor) }">{{ data }}</td>
 </ng-template>
 
 <ng-template #componentsTemplate let-data>

@@ -9,21 +9,17 @@ import {
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
+import {GetDiffColorPipe} from "../../pipes/get-diff-color.pipe";
 
 export interface IFieldSortData {
   sortBy: string;
   sortOrder: string;
 }
-export enum CellColor {
-  delete = '#FFC7C2', // red
-  update = '#F4F3CD', // yellow
-  create = '#CDF4D3', // green
-}
 
 @Component({
   selector: 'wi-table',
   standalone: true,
-  imports: [CommonModule, NgIf],
+  imports: [CommonModule, NgIf, GetDiffColorPipe],
   templateUrl: './wi-table.component.html',
   styleUrl: './wi-table.component.scss'
 })
@@ -174,14 +170,4 @@ export class WiTableComponent implements OnInit {
   trackByFn(index: number, item: any): any {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
-
-  getCellColor(type: string): string {
-    if (type in CellColor) {
-      return CellColor[type as keyof typeof CellColor];
-    }
-    return 'transparent';
-  }
-
-  protected readonly console = console;
-  protected readonly CellColor = CellColor;
 }

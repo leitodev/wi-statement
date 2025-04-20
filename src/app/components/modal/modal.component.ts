@@ -12,8 +12,7 @@ export class ModalComponent implements OnDestroy {
   modalSizeClass: {[key: string]: string} = {
     'sm': 'w-1/4',
     'md': 'w-1/2',
-    'lg': 'w-4/5',
-    'xl': 'w-11/12',
+    'lg': 'w-4/5', 
   };
 
   isInnerBackdropActive = false;
