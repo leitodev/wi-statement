@@ -1,0 +1,75 @@
+<div class="relative inline-block" #pickerPanel>
+    <button
+            mat-button
+            (click)="togglePanel()"
+            class="px-4 py-2 text-sm border border-gray-300 rounded bg-white"
+    >
+        {{ selectedHour.toString().padStart(2, '0') }}:
+        {{ selectedMinute.toString().padStart(2, '0') }}
+        <span *ngIf="!is24Hour"> {{ amPm }} </span>
+    </button>
+
+    <button
+            mat-stroked-button
+            class="mb-2 text-xs"
+            (click)="toggleMode()"
+    >
+        Toggle {{ is24Hour ? '12-Hour' : '24-Hour' }} Mode
+    </button>
+
+    <div
+            *ngIf="panelOpen"
+            class="absolute z-10 mt-2 w-56 bg-white border border-gray-300 rounded shadow-lg p-2 flex gap-2"
+    >
+        <div
+            #hourContainer
+            class="h-40 w-20 overflow-y-auto scroll-smooth no-scrollbar flex flex-col items-center"
+        >
+            <div
+                    *ngFor="let hour of displayedHours"
+                    [class.bg-blue-500]="hour === (is24Hour ? selectedHour : (selectedHour % 12 || 12))"
+                    [class.text-white]="hour === (is24Hour ? selectedHour : (selectedHour % 12 || 12))"
+                    (click)="selectHour(hour)"
+                    [attr.data-val]="hour"
+                    class="cursor-pointer px-2 py-1 rounded text-sm hover:bg-blue-100 text-center w-full"
+            >
+                {{ hour.toString().padStart(2, '0') }}
+            </div>
+        </div>
+
+        <div
+            #minuteContainer
+            class="h-40 w-20 overflow-y-auto scroll-smooth no-scrollbar flex flex-col items-center"
+        >
+            <div
+                    *ngFor="let min of minutes"
+                    [class.bg-blue-500]="min === selectedMinute"
+                    [class.text-white]="min === selectedMinute"
+                    (click)="selectMinute(min)"
+                    [attr.data-val]="min"
+                    class="cursor-pointer px-2 py-1 rounded text-sm hover:bg-blue-100 text-center w-full"
+            >
+                {{ min.toString().padStart(2, '0') }}
+            </div>
+        </div>
+
+        <div *ngIf="!is24Hour" class="flex flex-col justify-center ml-2 gap-2 text-sm">
+            <button
+                    class="px-2 py-1 border rounded"
+                    [class.bg-blue-500]="amPm === 'AM'"
+                    [class.text-white]="amPm === 'AM'"
+                    (click)="setAmPm('AM')"
+            >
+                AM
+            </button>
+            <button
+                    class="px-2 py-1 border rounded"
+                    [class.bg-blue-500]="amPm === 'PM'"
+                    [class.text-white]="amPm === 'PM'"
+                    (click)="setAmPm('PM')"
+            >
+                PM
+            </button>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,7 @@ import {
   IComplianceInputData
 } from "../components/compliance-multi-select/compliance-multi-select.component";
 import {DropdownMultiComponent} from "../components/dropdown-multi/dropdown-multi.component";
+import {TimepickerComponent} from "./timepicker/timepicker.component";
 
 
 @Component({
@@ -28,7 +29,8 @@ import {DropdownMultiComponent} from "../components/dropdown-multi/dropdown-mult
         CommonModule,
         FormsModule,
         ComplianceMultiSelectComponent,
-        DropdownMultiComponent
+        DropdownMultiComponent,
+        TimepickerComponent
     ],
   templateUrl: './ui-kit.component.html',
   styleUrl: './ui-kit.component.scss'
