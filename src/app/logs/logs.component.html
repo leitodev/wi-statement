@@ -3,7 +3,15 @@
         [tableData]="tableData()"
         [totalPages]="totalPages()"
         (tableEvent)="tableEvent($event)">
+    <ng-template #actionTemplate let-item let-clickFn="clickFn">
+        <button (click)="clickFn(item, $event, 'tableRowEditBtn')"
+                type="button"
+                class="text-black italic text-lg bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 font-medium px-3 rounded-sm py-0.5 text-center">
+            i
+        </button>
+    </ng-template>
 </wi-table>
+
 
 <ng-template #modalTemplate let-data="data">
     <app-logs-modal [logsTree]="logsTree" [data]="data"></app-logs-modal>

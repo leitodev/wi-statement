@@ -1,10 +1,10 @@
 import {
-  Component, effect, ElementRef,
+  Component, ContentChild, effect, ElementRef,
   EventEmitter, HostListener,
   input,
   Input,
   OnInit,
-  Output, ViewChild, ViewContainerRef,
+  Output, TemplateRef, ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
@@ -46,6 +46,7 @@ export class WiTableComponent implements OnInit {
   @Output() tableEvent = new EventEmitter();
   @ViewChild('trigger') trigger!: ElementRef;
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
+  @ContentChild('actionTemplate') actionTemplate: TemplateRef<any> | null = null;
 
   constructor(
     private ddPortalManagerService: DDPortalManagerService, private viewContainerRef: ViewContainerRef,
@@ -126,9 +127,9 @@ export class WiTableComponent implements OnInit {
     });
   }
 
-  tableRowEditBtn(rowItem: any, event: Event){
+  onClickActionBtn(rowItem: any, event: Event, eventName = 'tableRowEditBtn'){
     event.stopPropagation();
-    this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
+    this.tableEvent.emit({eventName: eventName, data: rowItem });
   };
 
   toggleSettings() {

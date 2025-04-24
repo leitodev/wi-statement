@@ -1,4 +1,4 @@
-import {Component, signal, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit, signal, TemplateRef, ViewChild} from '@angular/core';
 import {IFieldSortData, WiTableComponent} from "../components/wi-table/wi-table.component";
 import {ModalService} from "../components/modal/modal.service";
 import {map, tap} from "rxjs";
@@ -6,6 +6,8 @@ import {ModalTypes} from "../components/modal/modal-types";
 import {LogsResponse, LogsService, LogTableItem} from "../services/logs.service";
 import tableConfig from "./table-config";
 import {LogsModalComponent} from "./logs-modal/logs-modal.component";
+
+export type LogsTreeType = { before: Array<any>, after: Array<any>, afterDiff: Array<any>, beforeDiff: Array<any> };
 
 @Component({
   selector: 'app-logs',
@@ -17,7 +19,7 @@ import {LogsModalComponent} from "./logs-modal/logs-modal.component";
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.scss'
 })
-export class LogsComponent {
+export class LogsComponent implements OnInit {
   constructor(private logsService: LogsService,
               private modalService: ModalService) {
   }
@@ -35,7 +37,12 @@ export class LogsComponent {
   tableConfig = tableConfig;
   tableData = signal<LogTableItem[]>([]);
   totalPages = signal(1);
-  logsTree: any = [];
+  logsTree: LogsTreeType = {
+    before: [],
+    after: [],
+    afterDiff: [],
+    beforeDiff: []
+  };
 
   @ViewChild('modalTemplate', { static: true }) modalTemplate!: TemplateRef<any>;
 

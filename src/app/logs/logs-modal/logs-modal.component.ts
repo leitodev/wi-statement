@@ -3,6 +3,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgTemplateOutlet} from "@angular/common";
 import {ModalService} from "../../components/modal/modal.service";
 import {LogDataComponent} from "../log-data/log-data.component";
+import {LogsTreeType} from "../logs.component";
 
 @Component({
   selector: 'app-logs-modal',
@@ -17,12 +18,7 @@ import {LogDataComponent} from "../log-data/log-data.component";
   styleUrl: './logs-modal.component.scss'
 })
 export class LogsModalComponent {
-  @Input() logsTree: { before: Array<any>, after: Array<any>, afterDiff: Array<any>, beforeDiff: Array<any> } = {
-    before: [],
-    after: [],
-    afterDiff: [],
-    beforeDiff: []
-  };
+  @Input() logsTree!: LogsTreeType;
   @Input() data: any;
   public tabActive = 'All';
   isParentChosen: any = false;
@@ -34,10 +30,4 @@ export class LogsModalComponent {
   close() {
     this.modal.closeModal();
   };
-
-  ngOnInit() {
-    if (!this.logsTree) {
-      return
-    }
-  }
 }

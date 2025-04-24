@@ -101,54 +101,66 @@ export class LogsService {
         );
     }
 
-    generateLogs(array: any) {
-        let result: any = {
+    // start generateLogs
+    generateLogs(array: any): any {
+        const result: any = {
             before: [],
             after: [],
             beforeDiff: [],
             afterDiff: [],
         };
-        for(let data of array) {
-            let before = this.logsObjectGenerator(data.changesFull.before);
-            let after = this.logsObjectGenerator(data.changesFull.after);
 
-            let beforeDiff = [];
-            let afterDiff = [];
+        for (const { changesFull } of array) {
+            const before = this.logsObjectGenerator(changesFull.before);
+            const after = this.logsObjectGenerator(changesFull.after);
 
-            // Item created
-            if(!before.length && after.length){
-                for(let i = 0; i < after.length; i++) {
-                    after[i].styles.push(`bg-[${DiffColor.create}]`);
-                    afterDiff.push(after[i]);
+            const beforeDiff: any[] = [];
+            const afterDiff: any[] = [];
+
+            const isBeforeEmpty = !before.length;
+            const isAfterEmpty = !after.length;
+
+            if (isBeforeEmpty && !isAfterEmpty) {
+                // Created items
+                for (const item of after) {
+                    item.styles.push(`bg-[${DiffColor.create}]`);
+                    afterDiff.push(item);
                 }
-            }
-            // Item deleted
-            else if(before.length && !after.length){
-                for(let i = 0; i < before.length; i++) {
-                    before[i].styles.push(`bg-[${DiffColor.delete}]`);
-                    beforeDiff.push(before[i]);
+            } else if (!isBeforeEmpty && isAfterEmpty) {
+                // Deleted items
+                for (const item of before) {
+                    item.styles.push(`bg-[${DiffColor.delete}]`);
+                    beforeDiff.push(item);
                 }
-            }
-            // Item updated
-            else{
-                for(let i = 0; i < before.length; i++) {
-                    if((JSON.stringify(before[i]) != JSON.stringify(after[i])) && this.isNotEmpty(before[i]) && this.isNotEmpty(after[i])) {
+            } else {
+                // Updated items
+                for (let i = 0; i < before.length; i++) {
+                    const beforeItem = before[i];
+                    const afterItem = after[i];
 
-                        before[i].styles.push(`bg-[${DiffColor.delete}]`);
-                        after[i].styles.push(`bg-[${DiffColor.create}]`);
+                    if (
+                        JSON.stringify(beforeItem) !== JSON.stringify(afterItem) &&
+                        this.isNotEmpty(beforeItem) &&
+                        this.isNotEmpty(afterItem)
+                    ) {
+                        beforeItem.styles.push(`bg-[${DiffColor.delete}]`);
+                        afterItem.styles.push(`bg-[${DiffColor.create}]`);
 
-                        beforeDiff.push(before[i]);
-                        afterDiff.push(after[i]);
+                        beforeDiff.push(beforeItem);
+                        afterDiff.push(afterItem);
                     }
                 }
             }
+
             result.before.push(before);
             result.after.push(after);
             result.beforeDiff.push(beforeDiff);
             result.afterDiff.push(afterDiff);
         }
+
         return result;
     }
+    // end generateLogs
 
     prepareLog(logs: Log[]):LogTableItem[] {
         return logs.map((item:Log, index: number) => {
@@ -176,77 +188,75 @@ export class LogsService {
         });
     }
 
-    private logsObjectGenerator(entryItem: any){
-        let outputArray: any = [];
+    // start logsObjectGenerator
+    private logsObjectGenerator(entryItem: any): any {
         try {
-            if (!this.isNotEmpty(entryItem)) return []; // Empty
-            // Object
+            if (!this.isNotEmpty(entryItem)) return [];
+
+            // Handle object
             if (this.isObjectCheck(entryItem)) {
-                for (let key in entryItem) {
-                    let recursionObject: any = {
+                const outputArray = Object.entries(entryItem).map(([key, value]) => {
+                    const result = this.logsObjectGenerator(value);
+                    const logEntry: any = {
                         title: key,
                         styles: [],
                         logs: [],
                         hasChildren: false,
                     };
 
-                    let res = this.logsObjectGenerator(entryItem[key]);
-                    if (!this.isNotEmpty(res)){
-                        recursionObject.styles.push('italic');
-                        recursionObject.logs.push('empty');
+                    if (!this.isNotEmpty(result)) {
+                        logEntry.styles.push('italic');
+                        logEntry.logs.push('empty');
+                    } else if (this.isObjectCheck(result)) {
+                        logEntry.hasChildren = true;
+                        logEntry.logs.push(result);
+                    } else if (this.isArrayCheck(result)) {
+                        logEntry.hasChildren = true;
+                        logEntry.logs.push(...result);
+                    } else {
+                        logEntry.logs.push(result);
                     }
-                    else if (this.isObjectCheck(res)){
-                        recursionObject.hasChildren = true;
-                        recursionObject.logs.push(res);
-                    }
-                    else if (this.isArrayCheck(res)) {
-                        recursionObject.hasChildren = true;
-                        recursionObject.logs.push(...res);
-                    }
-                    else {
-                        recursionObject.logs.push(res);
-                    }
-                    outputArray.push(recursionObject);
-                }
+
+                    return logEntry;
+                });
+
+                outputArray.sort((a, b) => this.logsSort(a, b));
+                return outputArray;
             }
-            // Array
-            else if (this.isArrayCheck(entryItem)) {
-                let recursionObjectArray: any = []
-                for (let i = 0; i < entryItem.length; i++) {
-                    let recursionObject: any = {
-                        title: i,
+
+            // Handle array
+            if (this.isArrayCheck(entryItem)) {
+                return entryItem.map((item: any, index: number) => {
+                    const result = this.logsObjectGenerator(item);
+                    const logEntry: any = {
+                        title: index,
                         styles: [],
                         logs: [],
                         hasChildren: false,
                     };
 
-                    let res: any = this.logsObjectGenerator(entryItem[i]);
-                    if (!this.isNotEmpty(res)){
-                        recursionObject.styles.push('italic');
-                        recursionObject.logs.push('empty');
+                    if (!this.isNotEmpty(result)) {
+                        logEntry.styles.push('italic');
+                        logEntry.logs.push('empty');
+                    } else if (this.isArrayCheck(result) || this.isObjectCheck(result)) {
+                        logEntry.hasChildren = true;
+                        logEntry.logs.push(...(Array.isArray(result) ? result : [result]));
+                    } else {
+                        logEntry.logs.push(result);
                     }
-                    else if (this.isArrayCheck(res) || this.isObjectCheck(res)) {
-                        recursionObject.hasChildren = true;
-                        recursionObject.logs.push(...res);
-                    }
-                    else {
-                        recursionObject.logs.push(res);
-                    }
-                    recursionObjectArray.push(recursionObject);
-                }
-                return recursionObjectArray;
+
+                    return logEntry;
+                });
             }
-            // Item
-            else {
-                return entryItem;
-            }
+
+            return entryItem;
+        } catch (error) {
+            console.error('[logsObjectGenerator] Error:', error);
+            return [];
         }
-        catch (error) {
-            console.error('Log Error:', error);
-        }
-        outputArray.sort((a: any, b: any) => this.logsSort(a, b));
-        return outputArray;
     }
+    // end logsObjectGenerator
+
     private isArrayCheck(item: any): boolean {
         return Array.isArray(item)
     }
@@ -273,6 +283,7 @@ export class LogsService {
 
         return extractTitle(a).localeCompare(extractTitle(b));
     }
+    // END
 
     // todo: use get
     // get(id: string) {
