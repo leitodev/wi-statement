@@ -1,14 +1,15 @@
 import {
-  Component, effect, ElementRef,
+  Component, ContentChild, effect, ElementRef,
   EventEmitter, HostListener,
   input,
   Input,
   OnInit,
-  Output, ViewChild, ViewContainerRef,
+  Output, TemplateRef, ViewChild, ViewContainerRef,
 } from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {ConfigStorageService} from "../../services/config-storage.service";
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
+import {GetDiffColorPipe} from "../../pipes/get-diff-color.pipe";
 
 export interface IFieldSortData {
   sortBy: string;
@@ -18,7 +19,7 @@ export interface IFieldSortData {
 @Component({
   selector: 'wi-table',
   standalone: true,
-  imports: [CommonModule, NgIf],
+  imports: [CommonModule, NgIf, GetDiffColorPipe],
   templateUrl: './wi-table.component.html',
   styleUrl: './wi-table.component.scss'
 })
@@ -34,6 +35,7 @@ export class WiTableComponent implements OnInit {
 
   defaultTableConfig: any;
   tableConfig : any;
+
   @Input('tableConfigData') set tableConfigData(value: object) {
     this.tableConfig = value;
     this.defaultTableConfig = structuredClone(value);
@@ -44,6 +46,7 @@ export class WiTableComponent implements OnInit {
   @Output() tableEvent = new EventEmitter();
   @ViewChild('trigger') trigger!: ElementRef;
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
+  @ContentChild('actionTemplate') actionTemplate: TemplateRef<any> | null = null;
 
   constructor(
     private ddPortalManagerService: DDPortalManagerService, private viewContainerRef: ViewContainerRef,
@@ -124,9 +127,9 @@ export class WiTableComponent implements OnInit {
     });
   }
 
-  tableRowEditBtn(rowItem: any, event: Event){
+  onClickActionBtn(rowItem: any, event: Event, eventName = 'tableRowEditBtn'){
     event.stopPropagation();
-    this.tableEvent.emit({eventName:'tableRowEditBtn', data: rowItem });
+    this.tableEvent.emit({eventName: eventName, data: rowItem });
   };
 
   toggleSettings() {
@@ -168,6 +171,4 @@ export class WiTableComponent implements OnInit {
   trackByFn(index: number, item: any): any {
     return item.parentID + '-' + index;  // Combines parentID with index to ensure uniqueness
   }
-
-  protected readonly console = console;
 }

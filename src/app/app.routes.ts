@@ -36,6 +36,10 @@ export const routes: Routes = [
         loadComponent: () => import("./roles/roles.component")
             .then((m) => m.RolesComponent)
       },
+      { path: 'logs',
+        loadComponent: () => import("./logs/logs.component")
+            .then((m) => m.LogsComponent)
+      },
     ]
   },
   { path: 'ui-kit',
