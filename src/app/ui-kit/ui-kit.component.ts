@@ -12,26 +12,28 @@ import {
 } from "../components/compliance-multi-select/compliance-multi-select.component";
 import {DropdownMultiComponent} from "../components/dropdown-multi/dropdown-multi.component";
 import {TimepickerComponent} from "./timepicker/timepicker.component";
+import {DatepickerComponent} from "../components/datepicker/datepicker.component";
 
 
 @Component({
   selector: 'app-ui-kit',
   standalone: true,
-    imports: [
-        RouterLink,
-        RouterLinkActive,
-        RouterOutlet,
-        NgOptimizedImage,
-        DropdownSearchComponent,
-        DropdownComponent,
-        RadioComponent,
-        ReactiveFormsModule,
-        CommonModule,
-        FormsModule,
-        ComplianceMultiSelectComponent,
-        DropdownMultiComponent,
-        TimepickerComponent
-    ],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    NgOptimizedImage,
+    DropdownSearchComponent,
+    DropdownComponent,
+    RadioComponent,
+    ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    ComplianceMultiSelectComponent,
+    DropdownMultiComponent,
+    TimepickerComponent,
+    DatepickerComponent
+  ],
   templateUrl: './ui-kit.component.html',
   styleUrl: './ui-kit.component.scss'
 })
