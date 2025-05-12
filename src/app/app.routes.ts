@@ -40,6 +40,10 @@ export const routes: Routes = [
         loadComponent: () => import("./logs/logs.component")
             .then((m) => m.LogsComponent)
       },
+      { path: 'profile',
+        loadComponent: () => import("./profile/profile.component")
+            .then((m) => m.ProfileComponent)
+      },
     ]
   },
   { path: 'ui-kit',

@@ -1,0 +1,61 @@
+.sidebar{
+  @apply fixed top-0 bottom-0 h-full select-none w-[320px] py-5 pl-5 text-white bg-sky-600 bg-gradient-to-b from-sky-500 to-blue-600;
+}
+.sidebar-menu__item{
+  @apply flex items-center p-3 gap-1 cursor-pointer text-white hover:bg-sky-600 hover:bg-gradient-to-r hover:from-sky-400 hover:to-sky-500 rounded-l-xl;
+}
+.sidebar-menu__subitem{
+  @apply flex items-center p-1 gap-1 pl-8 my-1 cursor-pointer text-white hover:bg-sky-600 hover:bg-gradient-to-r hover:from-sky-400 hover:to-sky-500 rounded-l-xl;
+}
+.sidebar-menu__item_active{
+  @apply bg-sky-600 bg-gradient-to-r from-sky-400 to-sky-500;
+}
+.sidebar-menu__subitem_active{
+  @apply bg-sky-600 bg-gradient-to-r from-sky-400 to-sky-500;
+}
+
+.sidebar-profile {
+  // .sidebar__profile_wrapper
+
+  &_wrapper{
+    @apply pr-5;
+  }
+
+  @apply bg-sky-50 rounded-md px-4 py-2 flex items-center justify-between;
+
+  // .sidebar-profile__info
+
+  &__info {
+    @apply text-black shrink basis-auto min-w-0;
+    div:not(:last-child){
+      @apply mb-2
+    }
+  }
+
+  // .sidebar-profile__role
+
+  &__role {
+    @apply text-base font-bold;
+  }
+
+  // .sidebar-profile__name
+
+  &__name {
+    @apply text-base break-words;
+  }
+
+  // .sidebar-profile__logout
+
+  &__logout {
+    @apply text-base opacity-60;
+  }
+
+  // .sidebar-profile__avatar
+
+  &__avatar {
+    @apply h-20 shrink-0 grow-0 basis-20 rounded-full overflow-hidden;
+    img{
+      @apply max-w-full w-full object-cover;
+          }
+  }
+}
