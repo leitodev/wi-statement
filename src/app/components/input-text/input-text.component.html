@@ -1,0 +1,22 @@
+<div class="input__wrapper" [ngClass]="customComponentClasses">
+    <label [ngClass]="[customLabelClasses, disabled ? 'text-gray-400' : '']">
+        {{disabled? labelDisabled : label}}
+    </label>
+    <input
+        type="text"
+        class="input"
+        [ngClass]="customInputClasses"
+        [placeholder]="disabled ? placeholderDisabled : placeholder"
+        [attr.required]="required ? '' : null"
+        [attr.disabled]="disabled ? '' : null"
+        [attr.autocomplete]="autocomplete ? 'on' : null"
+        [attr.pattern]="regexpPattern ? regexpPattern : null"
+        [attr.minlength]="minLength"
+        [attr.maxlength]="maxLength"
+        [attr.type]="type"
+        (input)="onInput($event)"
+        (change)="onChange($event)"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
+    />
+</div>

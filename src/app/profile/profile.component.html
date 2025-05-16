@@ -1,1 +1,71 @@
-<p>profile works!</p>
+<div class="profile">
+<!--    <div class="profile__left profile-left">-->
+<!--        <div class="profile-left__avatar">-->
+<!--            <img src="https://i.pravatar.cc/200" alt="User avatar">-->
+<!--        </div>-->
+<!--        <div class="profile-left__name">-->
+<!--            Maksym Lvov-->
+<!--        </div>-->
+<!--        <div class="profile-left__mail">-->
+<!--            maksym.lvov&#64;gmail.com-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="profile__right profile-right">
+<!--        <div class="profile-right__header">-->
+<!--            Profile Settings-->
+<!--        </div>-->
+        <form class="profile-right__form profile-right-form">
+            <app-input-text
+                    [placeholder]="'placeholder'"
+                    [label]="'label'"
+                    [required]="false"
+                    [autocomplete]="false"
+                    [regexpPattern]="'[A-Za-z]{3,10}'"
+                    [disabled]="true"
+                    [labelDisabled]="'Label disabled...'"
+                    [placeholderDisabled]="'placeholder disabled...'"
+                    [minLength]="0"
+                    [maxLength]="99999"
+                    [type]="'text'"
+            ></app-input-text>
+            <app-input-text
+                    [required]="true"
+                    [placeholder]="'Enter name here...'"
+                    [label]="'Name'"
+                    [minLength]="3"
+                    [maxLength]="30"
+                    [type]="'text'"
+                    (inputEvent)="console.log('inputEvent')"
+                    (changeEvent)="console.log('changeEvent')"
+                    (focusEvent)="console.log('focusEvent')"
+                    (blurEvent)="console.log('blurEvent')"
+            ></app-input-text>
+            <app-input-text
+                    [required]="true"
+                    [placeholder]="'Enter email here...'"
+                    [label]="'Email'"
+                    [minLength]="3"
+                    [maxLength]="30"
+                    [type]="'email'"
+            ></app-input-text>
+            <app-input-text
+                    [required]="true"
+                    [placeholder]="'Enter password here...'"
+                    [label]="'Password'"
+                    [minLength]="8"
+                    [maxLength]="30"
+                    [type]="'password'"
+            ></app-input-text>
+            <app-input-text
+                    [required]="true"
+                    [placeholder]="'Custom'"
+                    [label]="'Custom'"
+                    [type]="'text'"
+                    [customComponentClasses]="'flex flex-col'"
+                    [customLabelClasses]="'text-cyan-400 text-2xl font-bold p-1'"
+                    [customInputClasses]="'text-white border-2 bg-cyan-700 p-2 placeholder-white invalid:border-red-600'"
+            ></app-input-text>
+            <button type="submit">OK</button>
+        </form>
+    </div>
+</div>
