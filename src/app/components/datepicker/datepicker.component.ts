@@ -1,8 +1,7 @@
-import {Component, ElementRef, HostListener, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnInit, output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DatePipe, NgClass, NgForOf} from "@angular/common";
 import {ParseItemListKeyPipe} from "../../pipes/parse-item-list-key.pipe";
 import {DDPortalManagerService} from "../../services/dd-portal-manager.service";
-import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 type DateData = {
   day: number;
@@ -11,6 +10,11 @@ type DateData = {
 };
 
 type RangeData = [DateData, DateData];
+type SelectedDate = {start: string, end: string};
+
+export interface DatePickerError {
+  errorMessage: string;
+}
 
 @Component({
   selector: 'app-datepicker',
@@ -30,6 +34,10 @@ export class DatepickerComponent implements OnInit {
   // dd
   @Input() label: string = '';
   @Input() LabelClass: string = 'block text-sm font-medium text-gray-900';
+
+  datePickerError = output<DatePickerError>();
+  onSelectedDate = output<SelectedDate>();
+
   value: string = 'select date';
   @ViewChild('trigger') trigger!: ElementRef;
   @ViewChild('dropdownTemplate') dropdownTemplate!: any;
@@ -47,7 +55,7 @@ export class DatepickerComponent implements OnInit {
   private selectedDays = 0;
 
   isCalendarVisible = false;
-  selectedDate = { start: '', end: ''};
+  selectedDate: SelectedDate = { start: '', end: ''};
 
   constructor(private ddPortalManagerService: DDPortalManagerService, private viewContainerRef: ViewContainerRef) {}
 
@@ -106,7 +114,6 @@ export class DatepickerComponent implements OnInit {
     };
 
     this.days = [...emptyDays, ...monthDays];
-    console.log('generateCalendar.....');
   }
 
   changeMonth(offset: number) {
@@ -156,6 +163,7 @@ export class DatepickerComponent implements OnInit {
   }
 
   handleMultiDaySelect(day: number) {
+
     this.days.forEach(item => {
       if (item.day === day) {
         item.selected = true;
@@ -169,6 +177,17 @@ export class DatepickerComponent implements OnInit {
     }
   }
 
+  validateDateRange(range: SelectedDate) {
+    const startDate = new Date(range.start);
+    const endDate = new Date(range.end);
+
+    if (endDate < startDate) {
+      return false;
+    }
+
+    return true;
+  }
+
   getSingleDate() {
     const first = this.currentSelectedDates.order[0];
 
@@ -177,11 +196,19 @@ export class DatepickerComponent implements OnInit {
       end: ''
     };
 
+    this.onSelectedDate.emit(this.selectedDate);
+
     this.value =  this.selectedDate.start;
   }
 
   getRangeDate() {
     this.selectedDate = this.convertRangeToISODate(this.currentSelectedDates.order);
+    this.onSelectedDate.emit(this.selectedDate);
+
+    if (!this.validateDateRange(this.selectedDate)) {
+      this.datePickerError.emit({errorMessage: 'Invalid date range: end date is before start date'})
+    };
+
   }
 
   convertRangeToISODate(rangeData: RangeData) {

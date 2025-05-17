@@ -13,17 +13,24 @@ import {DecimalPipe, NgForOf, NgIf} from "@angular/common";
   styleUrl: './timepicker.component.scss'
 })
 export class TimepickerComponent {
-  hours = Array.from({ length: 24 }, (_, i) => i);
+  hours = Array.from({ length: 12 }, (_, i) => i);
   minutes = Array.from({ length: 60 }, (_, i) => i);
 
-  selectedHour = new Date().getHours();
+  selectedHour = this.getHour();
   selectedMinute = new Date().getMinutes();
-  is24Hour = false;
   panelOpen = false;
+  amPm: 'AM' | 'PM' = 'AM';
 
   @ViewChild('hourContainer') hourContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('minuteContainer') minuteContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('pickerPanel') pickerPanel!: ElementRef;
+
+  private getHour() {
+    let hour = new Date().getHours();
+    hour = hour % 12;
+    hour = hour === 0 ? 12 : hour;
+    return hour;
+  }
 
   togglePanel() {
     this.panelOpen = !this.panelOpen;
@@ -37,7 +44,7 @@ export class TimepickerComponent {
   }
 
   selectHour(hour: number) {
-    this.selectedHour = this.is24Hour ? hour : this.convert12To24(hour, this.amPm);
+    this.selectedHour =  hour;
     this.scrollToCenter(this.hourContainer.nativeElement, hour);
   }
 
@@ -46,38 +53,12 @@ export class TimepickerComponent {
     this.scrollToCenter(this.minuteContainer.nativeElement, minute);
   }
 
-  convert12To24(hour: number, period: 'AM' | 'PM') {
-    if (period === 'AM' && hour === 12) return 0;
-    if (period === 'PM' && hour !== 12) return hour + 12;
-    return hour;
-  }
-
-  toggleMode() {
-    this.is24Hour = !this.is24Hour;
-    if (this.is24Hour) {
-      if (this.selectedHour === 12) this.selectedHour = 0;
-      if (this.amPm === 'PM' && this.selectedHour < 12) {
-        this.selectedHour += 12;
-      }
-    } else {
-      this.selectedHour = this.selectedHour % 12 || 12;
-    }
-  }
-
   get displayedHours(): number[] {
-    if (this.is24Hour) return this.hours;
     return Array.from({ length: 12 }, (_, i) => i + 1);
   }
 
-  get amPm(): 'AM' | 'PM' {
-    return this.selectedHour >= 12 ? 'PM' : 'AM';
-  }
-
   setAmPm(value: 'AM' | 'PM') {
-    if (!this.is24Hour) {
-      if (value === 'AM' && this.selectedHour >= 12) this.selectedHour -= 12;
-      if (value === 'PM' && this.selectedHour < 12) this.selectedHour += 12;
-    }
+    this.amPm = value;
   }
 
   scrollToCenter(container: HTMLElement, value: number) {
@@ -93,10 +74,40 @@ export class TimepickerComponent {
     }
   }
 
+
+  time12ToISOString(hour: string, minute: string, mode: string) {
+
+    const dateStr = '2025-05-17'
+
+    let h = parseInt(hour, 10);
+    const m = parseInt(minute, 10);
+
+    // Convert 12-hour to 24-hour format
+    if (mode === 'PM' && h < 12) h += 12;
+    if (mode === 'AM' && h === 12) h = 0;
+
+    // Build full date-time string in UTC (Z suffix)
+    const isoString = new Date(`${dateStr}T${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:00Z`).toISOString();
+    return isoString;
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     if (this.panelOpen && !this.pickerPanel?.nativeElement.contains(event.target)) {
       this.panelOpen = false;
+      console.log('selectedHour', this.selectedHour);
+      console.log('selectedMinute', this.selectedMinute);
+      console.log('this.amPm', this.amPm);
+
+      let value: any = {
+        hour: this.selectedHour < 10 ? '0' + this.selectedHour : this.selectedHour.toString(),
+        minute: this.selectedMinute < 10 ? '0' + this.selectedMinute : this.selectedMinute.toString(),
+        mode: this.amPm,
+      }
+      value['iso'] = this.time12ToISOString(value.hour, value.minute, value.mode);
+
+      console.log('selected value', value);
+
     }
   }
 }

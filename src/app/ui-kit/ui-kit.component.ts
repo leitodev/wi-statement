@@ -185,4 +185,12 @@ export class UiKitComponent {
   ];
 
   protected readonly statuses = complianceStatus;
+
+    onSelectedDateTest($event: any) {
+      console.log('onSelectedDateTest', $event);
+    }
+
+  onSelectedDateError($event: any) {
+    console.log('ERROR DATE', $event);
+  }
 }
